@@ -1,5 +1,11 @@
 import localVarRequest from 'request';
 
+export * from './aiCreate200Response';
+export * from './aiCreateRequest';
+export * from './aiFetchRequest';
+export * from './aiSave200Response';
+export * from './aiSaveRequest';
+export * from './aicode';
 export * from './credentials';
 export * from './farmer';
 export * from './folder';
@@ -26,6 +32,12 @@ export interface RequestDetailedFile {
 export type RequestFile = string | Buffer | fs.ReadStream | RequestDetailedFile;
 
 
+import { AiCreate200Response } from './aiCreate200Response';
+import { AiCreateRequest } from './aiCreateRequest';
+import { AiFetchRequest } from './aiFetchRequest';
+import { AiSave200Response } from './aiSave200Response';
+import { AiSaveRequest } from './aiSaveRequest';
+import { Aicode } from './aicode';
 import { Credentials } from './credentials';
 import { Farmer } from './farmer';
 import { Folder } from './folder';
@@ -55,6 +67,12 @@ let enumsMap: {[index: string]: any} = {
 }
 
 let typeMap: {[index: string]: any} = {
+    "AiCreate200Response": AiCreate200Response,
+    "AiCreateRequest": AiCreateRequest,
+    "AiFetchRequest": AiFetchRequest,
+    "AiSave200Response": AiSave200Response,
+    "AiSaveRequest": AiSaveRequest,
+    "Aicode": Aicode,
     "Credentials": Credentials,
     "Farmer": Farmer,
     "Folder": Folder,

@@ -13,9 +13,7 @@
   "paths": {
     "/ai/save": {
       "post": {
-        "tags": [
-          "ai"
-        ],
+        "operationId": "AiSave",
         "description": "Save ai code",
         "requestBody": {
           "content": {
@@ -45,18 +43,8 @@
                     "modified": {
                       "type": "integer",
                       "description": "timestamp"
-                    },
-                    "result": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "array"
-                      }
                     }
-                  },
-                  "required": [
-                    "modified",
-                    "result"
-                  ]
+                  }
                 }
               }
             }
@@ -66,9 +54,7 @@
     },
     "/ai/new-name": {
       "post": {
-        "tags": [
-          "ai"
-        ],
+        "operationId": "AiCreate",
         "description": "Create new ai code",
         "requestBody": {
           "content": {
@@ -114,14 +100,7 @@
                     "folder": {
                       "type": "integer"
                     }
-                  },
-                  "required": [
-                    "id",
-                    "name",
-                    "level",
-                    "code",
-                    "folder"
-                  ]
+                  }
                 }
               }
             }
@@ -131,9 +110,7 @@
     },
     "/ai/sync": {
       "post": {
-        "tags": [
-          "ai"
-        ],
+        "operationId": "AiFetch",
         "description": "Fetch one or several ai code",
         "requestBody": {
           "content": {
@@ -141,7 +118,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "ias": {
+                  "ais": {
                     "type": "string",
                     "description": "json string of ai_id mapped by timestamp"
                   }
@@ -166,6 +143,7 @@
     },
     "/garden/get": {
       "get": {
+        "operationId": "GardenGet",
         "description": "Get Garden informations",
         "responses": {
           "200": {
@@ -183,6 +161,7 @@
     },
     "/farmer/login": {
       "post": {
+        "operationId": "Login",
         "description": "Login",
         "requestBody": {
           "description": "Credentials",
@@ -222,6 +201,7 @@
     "schemas": {
       "aicode": {
         "description": "AI code",
+        "title": "Ai",
         "type": "object",
         "properties": {
           "id": {
@@ -689,14 +669,6 @@
                   "level",
                   "emblem_changed"
                 ]
-              },
-              "solo_fights": {
-                "type": "array",
-                "description": "Array of solo fights (schema not provided in example; additional properties allowed)",
-                "items": {
-                  "type": "object",
-                  "additionalProperties": true
-                }
               },
               "total_solo_fights": {
                 "type": "integer"

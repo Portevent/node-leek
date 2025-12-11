@@ -3,6 +3,12 @@ api.ts
 api/apis.ts
 api/defaultApi.ts
 git_push.sh
+model/aiCreate200Response.ts
+model/aiCreateRequest.ts
+model/aiFetchRequest.ts
+model/aiSave200Response.ts
+model/aiSaveRequest.ts
+model/aicode.ts
 model/credentials.ts
 model/farmer.ts
 model/folder.ts

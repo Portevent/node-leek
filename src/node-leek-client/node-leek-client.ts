@@ -3,6 +3,7 @@ import getCookieToken from "./token-parsing";
 import {Farmer} from "../codegen/model/farmer";
 import {Folder} from "../codegen/model/folder";
 import {Ia} from "../codegen/model/ia";
+import {Aicode} from "../codegen/model/aicode";
 
 class NodeLeekClient {
 
@@ -12,20 +13,24 @@ class NodeLeekClient {
     private foldersById : {[id: number] : string} = {0:"/"}
     private filesByName : {[name: string] : number} = {"/": 0}
 
-    constructor(login: string, password: string) {
+    constructor() {
         this.apiClient = new DefaultApi();
+    }
 
-        this.apiClient.farmerLoginPost({
+    public login(login: string, password: string) {
+        return this.apiClient.login({
             login: login,
             password: password,
             keepConnected: true
         }).then(r => {
-            console.log("NodeLeek connected !");
+            console.log("💚 NodeLeek connected !");
             this.apiClient.setApiKey(DefaultApiApiKeys.cookieAuth, getCookieToken(r.response.headers["set-cookie"]))
             this.initClient(r.body.farmer);
+
+            return;
         }).catch(err => {
             if(err?.response?.statusCode == 401 && err.body.error == "invalid"){
-                console.error("Failed to start NodeLeek : invalid credentials.");
+                console.error("🛑 Failed to start NodeLeek : invalid credentials.");
             }else{
                 console.error(err);
             }
@@ -38,7 +43,6 @@ class NodeLeekClient {
         this.logFarmerInfos();
         this.registerFolders(this.farmer.folders);
         this.registerAis(this.farmer.ais);
-        console.log(this.filesByName);
     }
 
     logFarmerInfos() {
@@ -75,8 +79,17 @@ class NodeLeekClient {
         return this.filesByName;
     }
 
-    public fetchFile(ai: number, timestamp: number) : string {
-        return "TODO";
+    public async fetchFiles(requests: Array<[number, number]>): Promise<Array<Aicode>> {
+        const requestedAi: { [ai: number]: number } = {};
+        requests.forEach(([ai, timestamp]) => requestedAi[ai] = timestamp);
+        const files = await this.apiClient.aiFetch({
+            ais: JSON.stringify(requestedAi)
+        });
+        return files.body;
+    }
+
+    public async fetchFile(ai: number, timestamp: number) : Promise<Aicode> {
+        return (await this.fetchFiles([[ai, timestamp]]))[0];
     }
 }
 

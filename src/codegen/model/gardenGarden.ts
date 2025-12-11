@@ -33,10 +33,6 @@ export class GardenGarden {
     */
     'myCompositions': Array<GardenGardenMyCompositionsInner>;
     'myTeam': GardenGardenMyTeam;
-    /**
-    * Array of solo fights (schema not provided in example; additional properties allowed)
-    */
-    'soloFights': Array<{ [key: string]: any; }>;
     'totalSoloFights': number;
     'maxSoloFights': number;
     'teamFights': number;
@@ -77,11 +73,6 @@ export class GardenGarden {
             "name": "myTeam",
             "baseName": "my_team",
             "type": "GardenGardenMyTeam"
-        },
-        {
-            "name": "soloFights",
-            "baseName": "solo_fights",
-            "type": "Array<{ [key: string]: any; }>"
         },
         {
             "name": "totalSoloFights",
