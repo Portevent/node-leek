@@ -11,6 +11,37 @@
     }
   ],
   "paths": {
+    "/ai/sync": {
+      "post": {
+        "description": "Fetch ai",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ias": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/aicodes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/garden/get": {
       "get": {
         "description": "Get Garden informations",
@@ -67,6 +98,28 @@
   },
   "components": {
     "schemas": {
+      "aicode": {
+        "description": "AI code",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "modified": {
+            "type": "integer"
+          },
+          "code": {
+            "type": "string"
+          }
+        }
+      },
+      "aicodes": {
+        "description": "List of aicode",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/aicode"
+        }
+      },
       "team": {
         "description": "Team",
         "type": "object",
