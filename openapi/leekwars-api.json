@@ -11,9 +11,130 @@
     }
   ],
   "paths": {
+    "/ai/save": {
+      "post": {
+        "tags": [
+          "ai"
+        ],
+        "description": "Save ai code",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ai_id": {
+                    "type": "integer"
+                  },
+                  "code": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "modified": {
+                      "type": "integer",
+                      "description": "timestamp"
+                    },
+                    "result": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "array"
+                      }
+                    }
+                  },
+                  "required": [
+                    "modified",
+                    "result"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ai/new-name": {
+      "post": {
+        "tags": [
+          "ai"
+        ],
+        "description": "Create new ai code",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "folder_id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "integer",
+                    "description": "Leekscript version"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New ai file created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "level": {
+                      "type": "integer"
+                    },
+                    "code": {
+                      "type": "string"
+                    },
+                    "folder": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "level",
+                    "code",
+                    "folder"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/ai/sync": {
       "post": {
-        "description": "Fetch ai",
+        "tags": [
+          "ai"
+        ],
+        "description": "Fetch one or several ai code",
         "requestBody": {
           "content": {
             "application/json": {
@@ -21,7 +142,8 @@
                 "type": "object",
                 "properties": {
                   "ias": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "json string of ai_id mapped by timestamp"
                   }
                 }
               }
@@ -106,12 +228,18 @@
             "type": "integer"
           },
           "modified": {
-            "type": "integer"
+            "type": "integer",
+            "description": "timestamp"
           },
           "code": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "id",
+          "modified",
+          "code"
+        ]
       },
       "aicodes": {
         "description": "List of aicode",
