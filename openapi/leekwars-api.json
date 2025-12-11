@@ -1,0 +1,840 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Leekwars",
+    "description": "Leekwars backend api",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://leekwars.com/api"
+    }
+  ],
+  "paths": {
+    "/garden/get": {
+      "get": {
+        "description": "Get Garden informations",
+        "responses": {
+          "200": {
+            "description": "Information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/garden"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/farmer/login": {
+      "post": {
+        "description": "Login",
+        "requestBody": {
+          "description": "Credentials",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/credentials"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication successfull",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/logindump"
+                }
+              }
+            },
+            "headers": {
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "team": {
+        "description": "Team",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "level": {
+            "type": "integer"
+          },
+          "emblem_changed": {
+            "type": "boolean"
+          },
+          "chat": {
+            "type": "integer"
+          },
+          "member_level": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "level",
+          "emblem_changed",
+          "chat",
+          "member_level"
+        ]
+      },
+      "ia": {
+        "description": "IA file",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "valid": {
+            "type": "boolean"
+          },
+          "folder": {
+            "type": "integer"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "strict": {
+            "type": "boolean"
+          },
+          "total_lines": {
+            "type": "integer"
+          },
+          "total_chars": {
+            "type": "integer"
+          },
+          "entrypoint": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "valid",
+          "folder",
+          "version",
+          "total_lines",
+          "total_chars",
+          "entrypoint",
+          "strict"
+        ]
+      },
+      "item": {
+        "description": "Item",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "template": {
+            "type": "integer"
+          },
+          "quantity": {
+            "type": "integer"
+          },
+          "time": {
+            "type": "integer"
+          },
+          "hat_template": {
+            "type": "integer"
+          },
+          "level": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "template",
+          "quantity",
+          "time"
+        ]
+      },
+      "folder": {
+        "description": "IA Folder",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "folder": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "folder",
+          "name"
+        ]
+      },
+      "farmer": {
+        "description": "Farmer",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "login": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "talent": {
+            "type": "integer"
+          },
+          "victories": {
+            "type": "integer"
+          },
+          "draws": {
+            "type": "integer"
+          },
+          "defeats": {
+            "type": "integer"
+          },
+          "connected": {
+            "type": "boolean"
+          },
+          "admin": {
+            "type": "boolean"
+          },
+          "moderator": {
+            "type": "boolean"
+          },
+          "banned": {
+            "type": "boolean"
+          },
+          "in_garden": {
+            "type": "boolean"
+          },
+          "verified": {
+            "type": "boolean"
+          },
+          "won_solo_tournaments": {
+            "type": "integer"
+          },
+          "won_farmer_tournaments": {
+            "type": "integer"
+          },
+          "won_team_tournaments": {
+            "type": "integer"
+          },
+          "won_battle_royale": {
+            "type": "integer"
+          },
+          "total_level": {
+            "type": "integer"
+          },
+          "leek_count": {
+            "type": "integer"
+          },
+          "fights": {
+            "type": "integer"
+          },
+          "team_fights": {
+            "type": "integer"
+          },
+          "trophies": {
+            "type": "integer"
+          },
+          "points": {
+            "type": "integer"
+          },
+          "ranking": {
+            "type": "integer"
+          },
+          "godsons_level": {
+            "type": "integer"
+          },
+          "habs": {
+            "type": "integer"
+          },
+          "crystals": {
+            "type": "integer"
+          },
+          "team": {
+            "$ref": "#/components/schemas/team"
+          },
+          "weapons": {
+            "type": "array",
+            "description": "Weapons list",
+            "items": {
+              "$ref": "#/components/schemas/item"
+            }
+          },
+          "chips": {
+            "type": "array",
+            "description": "Chips list",
+            "items": {
+              "$ref": "#/components/schemas/item"
+            }
+          },
+          "potions": {
+            "type": "array",
+            "description": "Potions list",
+            "items": {
+              "$ref": "#/components/schemas/item"
+            }
+          },
+          "hats": {
+            "type": "array",
+            "description": "Hats list",
+            "items": {
+              "$ref": "#/components/schemas/item"
+            }
+          },
+          "resources": {
+            "type": "array",
+            "description": "Resources list",
+            "items": {
+              "$ref": "#/components/schemas/item"
+            }
+          },
+          "components": {
+            "type": "array",
+            "description": "Component list",
+            "items": {
+              "$ref": "#/components/schemas/item"
+            }
+          },
+          "schemes": {
+            "type": "array",
+            "description": "Component recipe list",
+            "items": {
+              "$ref": "#/components/schemas/item"
+            }
+          },
+          "pomps": {
+            "type": "array",
+            "description": "Some item list ???",
+            "items": {
+              "$ref": "#/components/schemas/item"
+            }
+          },
+          "leeks": {
+            "type": "object",
+            "description": "Leeks by id",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/leek"
+            }
+          },
+          "leek_ais": {
+            "type": "object",
+            "description": "Associated IA for each leek id",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "folders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/folder"
+            }
+          },
+          "ais": {
+            "type": "array",
+            "description": "List of ai",
+            "items": {
+              "$ref": "#/components/schemas/ia"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "login",
+          "name",
+          "talent",
+          "victories",
+          "draws",
+          "defeats",
+          "connected",
+          "admin",
+          "moderator",
+          "banned",
+          "in_garden",
+          "verified",
+          "won_solo_tournaments",
+          "won_farmer_tournaments",
+          "won_team_tournaments",
+          "won_battle_royale",
+          "total_level",
+          "leek_count",
+          "fights",
+          "team_fights",
+          "trophies",
+          "points",
+          "ranking",
+          "godsons_level",
+          "habs",
+          "crystals",
+          "team",
+          "weapons",
+          "chips",
+          "potions",
+          "hats",
+          "resources",
+          "components",
+          "schemes",
+          "pomps",
+          "leeks",
+          "folders",
+          "leek_ais",
+          "ais"
+        ]
+      },
+      "garden": {
+        "description": "Garden informations",
+        "type": "object",
+        "properties": {
+          "garden": {
+            "type": "object",
+            "description": "Garden payload",
+            "properties": {
+              "fights": {
+                "type": "integer",
+                "description": "Number of fights used"
+              },
+              "max_fights": {
+                "type": "integer",
+                "description": "Maximum allowed fights"
+              },
+              "farmer_enabled": {
+                "type": "boolean"
+              },
+              "team_enabled": {
+                "type": "boolean"
+              },
+              "my_compositions": {
+                "type": "array",
+                "description": "List of the user's compositions",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "team_id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Composition name"
+                    },
+                    "team_name": {
+                      "type": "string"
+                    },
+                    "level": {
+                      "type": "integer"
+                    },
+                    "total_level": {
+                      "type": "integer"
+                    },
+                    "talent": {
+                      "type": "integer"
+                    },
+                    "fights": {
+                      "type": "integer"
+                    },
+                    "emblem_changed": {
+                      "type": "integer"
+                    },
+                    "leek_count": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "team_id",
+                    "name",
+                    "team_name",
+                    "level",
+                    "total_level",
+                    "talent",
+                    "fights",
+                    "emblem_changed",
+                    "leek_count"
+                  ]
+                }
+              },
+              "my_team": {
+                "type": "object",
+                "description": "Summary info about the user's team",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "level": {
+                    "type": "integer"
+                  },
+                  "emblem_changed": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "level",
+                  "emblem_changed"
+                ]
+              },
+              "solo_fights": {
+                "type": "array",
+                "description": "Array of solo fights (schema not provided in example; additional properties allowed)",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              },
+              "total_solo_fights": {
+                "type": "integer"
+              },
+              "max_solo_fights": {
+                "type": "integer"
+              },
+              "team_fights": {
+                "type": "integer"
+              },
+              "max_team_fights": {
+                "type": "integer"
+              },
+              "battle_royale_fights": {
+                "type": "integer"
+              },
+              "max_battle_royale_fights": {
+                "type": "integer"
+              },
+              "battle_royale_enabled": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "fights",
+              "max_fights",
+              "farmer_enabled",
+              "team_enabled",
+              "my_compositions",
+              "my_team",
+              "solo_fights",
+              "total_solo_fights",
+              "max_solo_fights",
+              "team_fights",
+              "max_team_fights",
+              "battle_royale_fights",
+              "max_battle_royale_fights",
+              "battle_royale_enabled"
+            ]
+          }
+        },
+        "required": [
+          "garden"
+        ]
+      },
+      "credentials": {
+        "description": "Login credentials",
+        "type": "object",
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "keep_connected": {
+            "type": "boolean"
+          }
+        }
+      },
+      "leek": {
+        "description": "Leek characteristics",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unique character identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Character name"
+          },
+          "capital": {
+            "type": "integer",
+            "description": "???"
+          },
+          "level": {
+            "type": "integer",
+            "description": "Leek level"
+          },
+          "talent": {
+            "type": "integer",
+            "description": "Talent points"
+          },
+          "skin": {
+            "type": "integer",
+            "description": "Skin id"
+          },
+          "hat": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Hat id (nullable if none)"
+          },
+          "ai": {
+            "type": "integer",
+            "description": "leekscript id"
+          },
+          "weapon": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Displayed weapon id (cosmetic perk)"
+          },
+          "title": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of titles"
+          },
+          "metal": {
+            "type": "boolean",
+            "description": "Metallic cosmetic perk"
+          },
+          "face": {
+            "type": "integer",
+            "description": "Face variant id (0 neutral, 1 happy, other not documented yet)"
+          },
+          "life": {
+            "type": "integer",
+            "description": "Base life"
+          },
+          "strength": {
+            "type": "integer",
+            "description": "Base strength"
+          },
+          "wisdom": {
+            "type": "integer",
+            "description": "Base wisdom"
+          },
+          "agility": {
+            "type": "integer",
+            "description": "Base agility"
+          },
+          "resistance": {
+            "type": "integer",
+            "description": "Base resistance"
+          },
+          "science": {
+            "type": "integer",
+            "description": "Base science"
+          },
+          "magic": {
+            "type": "integer",
+            "description": "Base magic"
+          },
+          "frequency": {
+            "type": "integer",
+            "description": "Base frequency"
+          },
+          "cores": {
+            "type": "integer",
+            "description": "Number of cores"
+          },
+          "ram": {
+            "type": "integer",
+            "description": "RAM value"
+          },
+          "tp": {
+            "type": "integer",
+            "description": "TP stat"
+          },
+          "mp": {
+            "type": "integer",
+            "description": "MP stat"
+          },
+          "total_life": {
+            "type": "integer",
+            "description": "Total life with components"
+          },
+          "total_strength": {
+            "type": "integer",
+            "description": "Total strength with components"
+          },
+          "total_wisdom": {
+            "type": "integer",
+            "description": "Total wisdom with components"
+          },
+          "total_agility": {
+            "type": "integer",
+            "description": "Total agility with components"
+          },
+          "total_resistance": {
+            "type": "integer",
+            "description": "Total resistance with components"
+          },
+          "total_science": {
+            "type": "integer",
+            "description": "Total science with components"
+          },
+          "total_magic": {
+            "type": "integer",
+            "description": "Total magic with components"
+          },
+          "total_frequency": {
+            "type": "integer",
+            "description": "Total frequency with components"
+          },
+          "total_cores": {
+            "type": "integer",
+            "description": "Total cores with components"
+          },
+          "total_ram": {
+            "type": "integer",
+            "description": "Total RAM with components"
+          },
+          "total_tp": {
+            "type": "integer",
+            "description": "Total TP with components"
+          },
+          "total_mp": {
+            "type": "integer",
+            "description": "Total MP with components"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "capital",
+          "level",
+          "talent",
+          "skin",
+          "ai",
+          "title",
+          "metal",
+          "face",
+          "life",
+          "strength",
+          "wisdom",
+          "agility",
+          "resistance",
+          "science",
+          "magic",
+          "frequency",
+          "cores",
+          "ram",
+          "tp",
+          "mp",
+          "total_life",
+          "total_strength",
+          "total_wisdom",
+          "total_agility",
+          "total_resistance",
+          "total_science",
+          "total_magic",
+          "total_frequency",
+          "total_cores",
+          "total_ram",
+          "total_tp",
+          "total_mp"
+        ],
+        "example": {
+          "id": 103247,
+          "name": "Poplouf",
+          "capital": 174,
+          "level": 162,
+          "talent": 575,
+          "skin": 7,
+          "hat": null,
+          "ai": 397088,
+          "weapon": null,
+          "title": [],
+          "metal": false,
+          "face": 0,
+          "life": 1583,
+          "strength": 200,
+          "wisdom": 200,
+          "agility": 0,
+          "resistance": 2,
+          "science": 0,
+          "magic": 0,
+          "frequency": 100,
+          "cores": 1,
+          "ram": 6,
+          "tp": 16,
+          "mp": 4,
+          "total_life": 1773,
+          "total_strength": 260,
+          "total_wisdom": 270,
+          "total_agility": 60,
+          "total_resistance": -18,
+          "total_science": 0,
+          "total_magic": 40,
+          "total_frequency": 110,
+          "total_cores": 1,
+          "total_ram": 10,
+          "total_tp": 17,
+          "total_mp": 5
+        }
+      },
+      "logindump": {
+        "description": "Login big dump with a lot of informations",
+        "type": "object",
+        "properties": {
+          "farmer": {
+            "$ref": "#/components/schemas/farmer"
+          },
+          "farmers": {
+            "type": "integer",
+            "description": "Connected farmers"
+          }
+        },
+        "required": [
+          "farmer",
+          "farmers"
+        ]
+      }
+    },
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "token"
+      }
+    }
+  },
+  "security": [
+    {
+      "cookieAuth": []
+    }
+  ]
+}
