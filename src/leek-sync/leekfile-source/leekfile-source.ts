@@ -30,9 +30,12 @@ abstract class LeekfileSource {
 
         // Update files
         await Promise.all(
-            otherSource.filelist.getFiles().map((file: LeekFile) =>
-                this.updateFile(file)
-            )
+            otherSource.filelist.getFiles()
+                .filter((file: LeekFile) => !this.filelist.fileIsSimilar(file))
+                .map((file: LeekFile) => {
+                    console.log("Updating out of sync : " + file.name);
+                    this.updateFile(file)
+            })
         );
     }
 

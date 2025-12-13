@@ -1,7 +1,7 @@
 import LeekFile from "../filelist/leekfile";
 import LeekfileSource from "./leekfile-source";
 import Filelist from "../filelist/filelist";
-import fs from "node:fs";
+import fs, {Dirent} from "node:fs";
 import Watcher from 'watcher';
 
 
@@ -14,8 +14,24 @@ class LocalfileSource extends LeekfileSource {
         this.path = path;
     }
 
-    init(): void {
-        // TODO
+    async init(): Promise<void> {
+
+        // Get an updated list of leekwars files
+        const localFiles : Filelist = await this.exploreFiles();
+
+        this.filelist.removeAllNotIn(localFiles.getFileNames());
+
+        localFiles.getFiles().forEach(file => {
+            if (file.folder) {
+                this.createFolderInLocalFilesystem(file);
+                this.filelist.set(file.name , file);
+            } else {
+                if(this.filelist.fileIsSimilar(file)) return;
+                console.log("Load file from init because files differ : " + file.name);
+                console.log("timestamp : " + this.filelist.get(file.name).timestamp + " / " + file.timestamp)
+                this.filelist.set(file.name, this.loadFile(file.name));
+            }
+        });
     }
 
     async deleteFile(file: LeekFile) {
@@ -86,8 +102,29 @@ class LocalfileSource extends LeekfileSource {
         });
     }
 
-    public loadFile(filename: string): LeekFile {
-        return new LeekFile(filename, 0, fs.readFileSync(this.path + filename, "utf8"), 0, false);
+    public loadFile(filename: string, lazy: boolean = false): LeekFile {
+        if (!lazy) console.log("Loading " + filename);
+        return new LeekFile(filename, 0, lazy ? "Lazy loaded file, shouldn't be upload to leekwars as such" : fs.readFileSync(this.path + filename, "utf8"), fs.statSync(this.path + filename).mtime.getTime(), false);
+    }
+
+    private async exploreFiles() : Promise<Filelist> {
+        const files = fs.readdirSync(this.path, {recursive: true, withFileTypes: true})
+        const filelist: Filelist = new Filelist();
+        filelist.set("/", LeekFile.Folder("/", 0))
+
+        files.forEach(file => {
+            const trueFileName = this.cleanupPath(file);
+            filelist.set(trueFileName, file.isDirectory() ?
+                new LeekFile(trueFileName, 0, "", 0, true)
+                : this.loadFile(trueFileName, true));
+        })
+        return filelist;
+    }
+
+    private cleanupPath(file: Dirent<string>) {
+        var parentPath = file.parentPath.startsWith("./") ? file.parentPath.substring(2) + "/" : file.parentPath;
+        var parentName = parentPath.substring(this.path.length - 1);
+        return "/" + (parentName != "" ? parentName + "/" : "") + file.name + (file.isDirectory() ? "/" : "");
     }
 }
 

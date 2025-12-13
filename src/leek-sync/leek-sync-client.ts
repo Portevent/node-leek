@@ -27,15 +27,9 @@ class LeekSyncClient{
     }
 
     private async start(){
-        console.log("cached this.leekwarsFilesystem");
-        console.log(this.leekwarsFilelist);
-
         // Fetch leekwars file to ensure our filesystem is up to date since last session
         await this.leekwarsSource.init();
         await this.localSource.init();
-
-        console.log("Updated this.leekwarsFilesystem");
-        console.log(this.leekwarsFilelist);
 
         // Compare both local filesystem and assert that hash match
         // Ask what to do if something doesn't correspond (maybe have a boolean that indicate which got modified since last session to help understand what changes)

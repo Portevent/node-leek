@@ -47,7 +47,7 @@ class Filelist {
 
     removeAllNotIn(elements: string[]) {
         this.getFileNames().forEach(filename => {
-            if (filename in elements) return;
+            if (elements.includes(filename)) return;
             this.remove(filename);
         })
     }
@@ -75,8 +75,7 @@ class Filelist {
     }
 
     fileIsSimilar(file: LeekFile) : boolean {
-        return this.contains(file.name) && this.get(file.name).hash == file.hash;
-
+        return this.contains(file.name) && this.get(file.name).isSimilar(file);
     }
 }
 

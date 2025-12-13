@@ -1,5 +1,7 @@
 import Filelist from "./filelist";
 import fs from "node:fs";
+import debounce from 'debounce';
+import LeekFile from "./leekfile";
 
 class CachedFilelist extends Filelist {
     protected path: string;
@@ -12,7 +14,11 @@ class CachedFilelist extends Filelist {
 
     private loadCacheFile() {
         try{
-            this.fileList = JSON.parse(fs.readFileSync(this.path, "utf8"));
+            const fakeFileList : {[file: string]: LeekFile} = JSON.parse(fs.readFileSync(this.path, "utf8"))
+            this.fileList = {};
+            for (const file of Object.values(fakeFileList)) {
+                this.fileList[file.name] = new LeekFile(file.name, file.id, file.code, file.timestamp, file.folder, file.hash);
+            }
         }catch(e){
             this.fileList = {};
         }
@@ -25,6 +31,18 @@ class CachedFilelist extends Filelist {
                 console.error(err);
             }
         });
+    }
+
+    set(name: string, leekFile: LeekFile) {
+        super.set(name, leekFile)
+
+        debounce(this.save, 1000);
+    }
+
+    remove(name: string) {
+        super.remove(name)
+
+        debounce(this.save, 1000);
     }
 
     async save() {
