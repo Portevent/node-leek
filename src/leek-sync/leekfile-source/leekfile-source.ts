@@ -10,20 +10,30 @@ abstract class LeekfileSource {
         this.filelist = filelist;
     }
 
-    abstract updateFile(file: LeekFile): void;
-    abstract deleteFile(file: LeekFile): void;
+    async updateFile(file: LeekFile): Promise<void> {
+
+    }
+
+    async deleteFile(file: LeekFile): Promise<void> {
+
+    }
 
     abstract init(): void;
 
-    importFrom(otherSource: LeekfileSource): void {
+    async importFrom(otherSource: LeekfileSource): Promise<void> {
         // Remove file not present in the otherSource
-        this.filelist.getFiles().forEach((file: LeekFile) => {
-            if(!otherSource.filelist.contains(file.name)) this.deleteFile(file);
-        });
+        await Promise.all(
+            this.filelist.getFiles()
+                .filter((file: LeekFile) => !otherSource.filelist.contains(file.name))
+                .map((file: LeekFile) => this.deleteFile(file))
+        );
 
-        otherSource.filelist.getFiles().forEach((file: LeekFile) => {
-            this.updateFile(file)
-        });
+        // Update files
+        await Promise.all(
+            otherSource.filelist.getFiles().map((file: LeekFile) =>
+                this.updateFile(file)
+            )
+        );
     }
 
     compareWith(otherSource: LeekfileSource): boolean {

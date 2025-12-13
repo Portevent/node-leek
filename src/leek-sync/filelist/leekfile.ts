@@ -1,4 +1,4 @@
-import LeekSyncClient from "../leek-sync-client";
+import {createHash} from "node:crypto";
 
 class LeekFile{
     public name: string
@@ -22,7 +22,23 @@ class LeekFile{
     }
 
     getHash(code: string) : string{
-        return "";
+        return createHash('md5').update(code).digest('hex');
+    }
+
+    getFilename(): string{
+        if (this.folder){
+            const withoutLeadingSlash = this.name.substring(0, this.name.length - 1)
+            return withoutLeadingSlash.substring(withoutLeadingSlash.lastIndexOf("/") + 1)
+        }
+        return this.name.substring(this.name.lastIndexOf("/") + 1);
+    }
+
+    getParentFolder(): string{
+        if (this.folder){
+            const withoutLeadingSlash = this.name.substring(0, this.name.length - 1)
+            return withoutLeadingSlash.substring(0, withoutLeadingSlash.lastIndexOf("/") + 1)
+        }
+        return this.name.substring(0, this.name.lastIndexOf("/") + 1);
     }
 }
 

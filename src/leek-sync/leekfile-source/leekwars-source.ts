@@ -2,7 +2,6 @@ import LeekFile from "../filelist/leekfile";
 import LeekfileSource from "./leekfile-source";
 import NodeLeekClient from "../../node-leek-client/node-leek-client";
 import Filelist from "../filelist/filelist";
-import filelist from "../filelist/filelist";
 
 class LeekwarsSource extends LeekfileSource {
     private nodeLeekClient: NodeLeekClient;
@@ -13,6 +12,8 @@ class LeekwarsSource extends LeekfileSource {
     }
 
     async init() {
+        await this.nodeLeekClient.login();
+
         // Get an updated list of leekwars files
         const leekwarsFiles = this.nodeLeekClient.getFiles();
 
@@ -56,12 +57,63 @@ class LeekwarsSource extends LeekfileSource {
         return filename.charAt(filename.length - 1) == "/";
     }
 
-    deleteFile(file: LeekFile) {
+    async deleteFile(file: LeekFile) {
         // TODO
     }
 
-    updateFile(file: LeekFile): void {
-        // TODO
+    async updateFile(file: LeekFile): Promise<void> {
+        this.createOrUpdateFileInLeekwars(file).then(([id, modified]) => {
+            this.filelist.set(file.name, new LeekFile(file.name, id, file.code, modified, file.folder));
+        })
+    }
+
+    private async createOrUpdateFileInLeekwars(file: LeekFile): Promise<[number, number]> {
+        var leekwarsFile = this.filelist.get(file.name);
+        if (leekwarsFile != null) {
+            if (leekwarsFile.folder) return [leekwarsFile.id, 0];
+
+            return this.updateFileInLeekwars(leekwarsFile.id, file.code);
+        } else {
+            if (file.folder) return this.createFolderInLeekwars(file);
+            return this.createFileInLeekwars(file);
+        }
+    }
+
+    private async updateFileInLeekwars(id: number, code: string): Promise<[number, number]> {
+        return this.nodeLeekClient.saveFile(id, code)
+            .then((result) => [id, result.modified ?? 0])
+    }
+
+
+    private async createFolderInLeekwars(file: LeekFile): Promise<[number, number]> {
+        return this.getOrCreateFolderId(file.name).then((folderId) => [folderId, 0])
+    }
+
+
+    private async createFileInLeekwars(file: LeekFile): Promise<[number, number]> {
+        return this.nodeLeekClient.createFile(await this.getOrCreateFolderId(file.getParentFolder()), file.getFilename())
+            .then(result => {
+                return this.updateFileInLeekwars(result?.id ?? 0, file.code);
+            })
+    }
+
+    private async getOrCreateFolderId(dirname: string): Promise<number> {
+        if (this.filelist.contains(dirname)) return this.filelist.get(dirname).id;
+
+        return this.nodeLeekClient.createFolder(
+            await this.getOrCreateFolderId(this.getFolderParentPath(dirname)),
+            this.getFolderName(dirname)
+        ).then(result => result.id);
+    }
+
+    private getFolderParentPath(dirname: string){
+        const withoutLeadingSlash = dirname.substring(dirname.length - 1);
+        return withoutLeadingSlash.substring(0, withoutLeadingSlash.lastIndexOf("/") + 1);
+    }
+
+    private getFolderName(dirname: string){
+        const withoutLeadingSlash = dirname.substring(dirname.length - 1);
+        return withoutLeadingSlash.substring(withoutLeadingSlash.lastIndexOf("/") + 1);
     }
 }
 

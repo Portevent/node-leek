@@ -12,20 +12,24 @@ class NodeLeekClient {
     farmer: Farmer = new Farmer();
     private foldersById: { [id: number]: string } = {0: "/"}
     private filesByName: { [name: string]: number } = {"/": 0}
+    private username: string;
+    private password: string;
 
-    public static async Create(login: string, password: string): Promise<NodeLeekClient> {
-        var client = new NodeLeekClient();
-        return client.login(login, password).then(nodeLeek => client);
+    public static async Create(username: string, password: string): Promise<NodeLeekClient> {
+        var client = new NodeLeekClient(username, password);
+        return client.login().then(nodeLeek => client);
     }
 
-    constructor() {
+    constructor(username: string, password: string) {
+        this.username = username;
+        this.password = password;
         this.apiClient = new DefaultApi();
     }
 
-    public login(login: string, password: string) {
+    public async login() {
         return this.apiClient.login({
-            login: login,
-            password: password,
+            login: this.username,
+            password: this.password,
             keepConnected: true
         }).then(r => {
             console.log("💚 NodeLeek connected !");
@@ -102,6 +106,30 @@ class NodeLeekClient {
                 console.error("aiFetch -> [" + err.statusCode + "] " + err.body.error);
                 return new Aicode();
             });
+    }
+
+    public async saveFile(ai_id: number, code: string) {
+        return this.apiClient.aiSave({
+            aiId: ai_id,
+            code: code
+        }).then(result => {
+            return result.body;
+        })
+    }
+
+    public async createFile(folder_id: number, name: string, version: number = 4) {
+        return this.apiClient.aiCreate({
+            folderId: folder_id,
+            name: name,
+            version: version
+        }).then(result => result.body);
+    }
+
+    public async createFolder(folder_id: number, name: string) {
+        return this.apiClient.createFolder({
+            folderId: folder_id,
+            name: name
+        }).then(result => result.body);
     }
 }
 

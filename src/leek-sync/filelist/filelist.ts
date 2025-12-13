@@ -12,7 +12,7 @@ class Filelist {
         this.fileList = {};
     }
 
-    get(name: string) : LeekFile | null {
+    get(name: string) : LeekFile {
         return this.fileList[name];
     }
 
@@ -29,7 +29,8 @@ class Filelist {
     }
 
     getTimestamp(name: string) : number {
-        return this.get(name)?.timestamp ?? 0;
+        if (!this.contains(name)) return 0;
+        return this.get(name).timestamp;
     }
 
     getFileNames(): string[] {
@@ -63,8 +64,7 @@ class Filelist {
 
         // Check files doesn't differ in hash
         for (let file of this.getFiles()) {
-            if (filelist.get(file.name)?.hash == file.hash) continue;
-            return false
+            if (!filelist.fileIsSimilar(file)) return false;
         }
 
         return true;
@@ -72,6 +72,11 @@ class Filelist {
 
     async save() {
         // DO NOTHING
+    }
+
+    fileIsSimilar(file: LeekFile) : boolean {
+        return this.contains(file.name) && this.get(file.name).hash == file.hash;
+
     }
 }
 

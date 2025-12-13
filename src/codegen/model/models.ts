@@ -6,6 +6,8 @@ export * from './aiFetchRequest';
 export * from './aiSave200Response';
 export * from './aiSaveRequest';
 export * from './aicode';
+export * from './createFolder200Response';
+export * from './createFolderRequest';
 export * from './credentials';
 export * from './farmer';
 export * from './folder';
@@ -38,6 +40,8 @@ import { AiFetchRequest } from './aiFetchRequest';
 import { AiSave200Response } from './aiSave200Response';
 import { AiSaveRequest } from './aiSaveRequest';
 import { Aicode } from './aicode';
+import { CreateFolder200Response } from './createFolder200Response';
+import { CreateFolderRequest } from './createFolderRequest';
 import { Credentials } from './credentials';
 import { Farmer } from './farmer';
 import { Folder } from './folder';
@@ -73,6 +77,8 @@ let typeMap: {[index: string]: any} = {
     "AiSave200Response": AiSave200Response,
     "AiSaveRequest": AiSaveRequest,
     "Aicode": Aicode,
+    "CreateFolder200Response": CreateFolder200Response,
+    "CreateFolderRequest": CreateFolderRequest,
     "Credentials": Credentials,
     "Farmer": Farmer,
     "Folder": Folder,

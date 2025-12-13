@@ -9,30 +9,24 @@ import Filelist from "./filelist/filelist";
 
 class LeekSyncClient{
 
-    nodeLeekClient: NodeLeekClient
-    path: string;
-
     leekwarsFilelist: Filelist
     localFilelist: Filelist
 
     private leekwarsSource: LeekfileSource
-    private localSource: LeekfileSource
+    private localSource: LocalfileSource
 
 
     constructor(login: string, password: string, path: string){
-        this.nodeLeekClient = new NodeLeekClient();
         this.leekwarsFilelist = new CachedFilelist(".local.leekwars.json");
         this.localFilelist = new CachedFilelist(".local.filesystem.json");
 
-        this.leekwarsSource = new LeekwarsSource(this.nodeLeekClient, this.leekwarsFilelist);
+        this.leekwarsSource = new LeekwarsSource(new NodeLeekClient(login, password), this.leekwarsFilelist);
         this.localSource = new LocalfileSource(path, this.localFilelist);
-        this.path = path;
         console.log("Starting leeksync");
-        this.start(login, password);
+        this.start();
     }
 
-    private async start(login: string, password: string){
-        await this.nodeLeekClient.login(login, password);
+    private async start(){
         console.log("cached this.leekwarsFilesystem");
         console.log(this.leekwarsFilelist);
 
@@ -60,71 +54,9 @@ class LeekSyncClient{
 
         await this.leekwarsFilelist.save();
         await this.localFilelist.save();
+
+        this.localSource.startWatching(this.leekwarsSource);
     }
-
-    private async updateLocalFiles(){
-        // Turn on watcher
-        // Wait to list all already existing file
-
-        const newLeekwarsFiles = {"a/b/file.leek": 159182659};
-
-        // Remove in localFilesCache all files that aren't present in files anymore
-
-        // update hashes
-    }
-
-    private async pushToLeekwars(filesystem: {[file: string]: LeekFile}){
-        const idsToRemove: number[] = [];
-        // Remove in leekwars all files that aren't present in the new filesystem anymore
-        Object.keys(this.leekwarsFilelist).forEach(filename => {
-            if (filename in filesystem) return;
-            idsToRemove.push(this.leekwarsFilelist.get(filename)?.id ?? 0);
-            this.leekwarsFilelist.remove(filename);
-        })
-
-        // await this.nodeLeekClient.deleteFiles(idsToRemove);
-        // await this.nodeLeekClient.clearBin();
-        
-        // Update or create file
-        await Promise.all(
-            Object.keys(filesystem).map(filename => this.createOrUpdateFileInLeekwars(filesystem[filename]))
-        );
-    }
-
-    private async createOrUpdateFileInLeekwars(file: LeekFile){
-        if (file.name in this.leekwarsFilelist){
-            if (file.folder) return;
-
-            // return this.updateFileInLeekwars(file);
-        }else{
-            // if (file.folder) createFolderInLeekwars(file);
-            // this.nodeLeekClient.createFile(file.code).then((result) => {
-            //     file.id = result.id;
-            //     file.timestamp = result.modified;
-            // });
-        }
-    }
-
-    // private async updateFileInLeekwars(file: LeekScript){
-    //     return this.nodeLeekClient.updateFile(file.id, file.code).then((result) => {
-    //         file.timestamp = result.modified;
-    //         this.leekwarsFilesystem[file.id] = file;
-    //     })
-    // }
-
-
-    // private async createFolderInLeekwars(file: LeekFolder){
-    //     return this.nodeLeekClient.createFolder(file.name, (await this.createOrGetFolderInLeekwars(file.parent)).id).then((result) => {
-    //         file.id = result.id;
-    //         this.leekwarsFilesystem[result.id] = file;
-    //     })
-    // }
-
-
-    // private async createFileInLeekwars(file: LeekScript){
-       // TODO
-    // }
-
 
     private askSourceToUse() {
         return true;

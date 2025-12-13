@@ -20,8 +20,10 @@ class CachedFilelist extends Filelist {
 
     private async saveCacheFile() {
         return fs.writeFile(this.path, JSON.stringify(this.fileList), 'utf-8', (err) => {
-            console.error("Can't save local cache to " + this.path + " : ");
-            console.error(err);
+            if(err != null) {
+                console.error("Can't save local cache to " + this.path + " : ");
+                console.error(err);
+            }
         });
     }
 

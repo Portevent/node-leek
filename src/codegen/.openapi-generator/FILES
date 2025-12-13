@@ -9,6 +9,8 @@ model/aiFetchRequest.ts
 model/aiSave200Response.ts
 model/aiSaveRequest.ts
 model/aicode.ts
+model/createFolder200Response.ts
+model/createFolderRequest.ts
 model/credentials.ts
 model/farmer.ts
 model/folder.ts
