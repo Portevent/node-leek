@@ -1,5 +1,3 @@
-import NodeLeekClient from "./node-leek-client";
-
 function getTokenSetter(header: string[]) {
     return header
         .find(cookie => cookie.startsWith("token=") && !cookie.startsWith("token=deleted;")) ?? "token=undefined;";

@@ -7,11 +7,16 @@ import {Aicode} from "../codegen/model/aicode";
 
 class NodeLeekClient {
 
-    apiClient: DefaultApi;
+    private apiClient: DefaultApi;
     ready: boolean = false;
     farmer: Farmer = new Farmer();
-    private foldersById : {[id: number] : string} = {0:"/"}
-    private filesByName : {[name: string] : number} = {"/": 0}
+    private foldersById: { [id: number]: string } = {0: "/"}
+    private filesByName: { [name: string]: number } = {"/": 0}
+
+    public static async Create(login: string, password: string): Promise<NodeLeekClient> {
+        var client = new NodeLeekClient();
+        return client.login(login, password).then(nodeLeek => client);
+    }
 
     constructor() {
         this.apiClient = new DefaultApi();
@@ -26,12 +31,10 @@ class NodeLeekClient {
             console.log("💚 NodeLeek connected !");
             this.apiClient.setApiKey(DefaultApiApiKeys.cookieAuth, getCookieToken(r.response.headers["set-cookie"]))
             this.initClient(r.body.farmer);
-
-            return;
         }).catch(err => {
-            if(err?.response?.statusCode == 401 && err.body.error == "invalid"){
+            if (err?.response?.statusCode == 401 && err.body.error == "invalid") {
                 console.error("🛑 Failed to start NodeLeek : invalid credentials.");
-            }else{
+            } else {
                 console.error(err);
             }
         });
@@ -51,7 +54,7 @@ class NodeLeekClient {
     }
 
     private registerFolder(folder: Folder) {
-        if(this.foldersById[folder.folder] === undefined) {
+        if (this.foldersById[folder.folder] === undefined) {
             return false;
         }
         var fullname = this.foldersById[folder.folder] + folder.name + "/";
@@ -75,22 +78,31 @@ class NodeLeekClient {
         this.filesByName[this.foldersById[ai.folder] + ai.name + ".leek"] = ai.id
     }
 
-    public getFiles() : {[name: string] : number}{
+    public getFiles(): { [name: string]: number } {
         return this.filesByName;
     }
 
-    public async fetchFiles(requests: Array<[number, number]>): Promise<Array<Aicode>> {
-        const requestedAi: { [ai: number]: number } = {};
-        requests.forEach(([ai, timestamp]) => requestedAi[ai] = timestamp);
-        const files = await this.apiClient.aiFetch({
-            ais: JSON.stringify(requestedAi)
-        });
-        return files.body;
+    public async fetchFiles(requests: { [ai: number]: number }): Promise<Array<Aicode>> {
+        return this.apiClient.aiFetch({
+            ais: JSON.stringify(requests)
+        })
+            .then(result => result.body)
+            .catch(err => {
+                console.error("aiFetch(" + requests + ") -> [" + err.statusCode + "] " + err.body.error);
+                return [];
+            });
     }
 
-    public async fetchFile(ai: number, timestamp: number) : Promise<Aicode> {
-        return (await this.fetchFiles([[ai, timestamp]]))[0];
+    public async fetchFile(ai: number, timestamp: number): Promise<Aicode> {
+        const request: { [ai: number]: number } = {}
+        request[ai] = timestamp;
+        return this.fetchFiles(request)
+            .then(result => result[0])
+            .catch(err => {
+                console.error("aiFetch -> [" + err.statusCode + "] " + err.body.error);
+                return new Aicode();
+            });
     }
 }
 
-export default NodeLeekClient;
+export {NodeLeekClient as default};
