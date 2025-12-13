@@ -1,0 +1,78 @@
+import LeekFile from "./leekfile";
+
+class Filelist {
+    /*
+        Filelist represent some LeekFile mapped by their path
+        You can add or remove file
+     */
+
+    protected fileList: {[file: string]: LeekFile}= {};
+
+    constructor() {
+        this.fileList = {};
+    }
+
+    get(name: string) : LeekFile | null {
+        return this.fileList[name];
+    }
+
+    set(name: string, leekFile: LeekFile) {
+        this.fileList[name] = leekFile;
+    }
+
+    contains(name: string) : boolean {
+        return name in this.fileList;
+    }
+
+    getCount(): number {
+        return Object.keys(this.fileList).length;
+    }
+
+    getTimestamp(name: string) : number {
+        return this.get(name)?.timestamp ?? 0;
+    }
+
+    getFileNames(): string[] {
+        return Object.keys(this.fileList);
+    }
+
+    getFiles() {
+        return Object.values(this.fileList);
+    }
+
+    remove(filename: string) {
+        delete this.fileList[filename];
+    }
+
+    removeAllNotIn(elements: string[]) {
+        this.getFileNames().forEach(filename => {
+            if (filename in elements) return;
+            this.remove(filename);
+        })
+    }
+
+    compare(filelist: Filelist) : boolean {
+        // Check file count match
+        if(filelist.getCount() != this.getCount()) return false;
+
+        // Check other files all exists in this filelist
+        for (let file of filelist.getFiles()) {
+            if (this.contains(file.name)) continue;
+            return false
+        }
+
+        // Check files doesn't differ in hash
+        for (let file of this.getFiles()) {
+            if (filelist.get(file.name)?.hash == file.hash) continue;
+            return false
+        }
+
+        return true;
+    }
+
+    async save() {
+        // DO NOTHING
+    }
+}
+
+export default Filelist;

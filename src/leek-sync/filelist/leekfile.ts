@@ -1,4 +1,4 @@
-import LeekSyncClient from "./leek-sync-client";
+import LeekSyncClient from "../leek-sync-client";
 
 class LeekFile{
     public name: string
