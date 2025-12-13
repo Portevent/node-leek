@@ -8,10 +8,12 @@ import Watcher from 'watcher';
 class LocalfileSource extends LeekfileSource {
 
     private path: string
+    private observer: LeekfileSource[];
 
     constructor(path: string, filelist: Filelist) {
         super(filelist);
         this.path = path;
+        this.observer = []
     }
 
     async init(): Promise<void> {
@@ -72,34 +74,21 @@ class LocalfileSource extends LeekfileSource {
     }
 
     public startWatching(leekfilesource: LeekfileSource) {
-
-        const watcher = new Watcher(this.path);
+        this.observer = [leekfilesource]
+        const watcher = new Watcher(this.path, {
+            recursive: true,
+        });
 
         const root = require("path").resolve(this.path);
-        console.log("ROOT : " + root);
+
 
         watcher.on('error', error => {
             console.log(error instanceof Error); // => true, "Error" instances are always provided on "error"
         });
 
-        watcher.on('all', (event, targetPath, targetPathNext) => {
-            switch (event) {
-                case "add":
-                case "change":
-                    const file = this.loadFile(targetPath.substring(root.length))
-                    if (!this.filelist.fileIsSimilar(file)) {
-                        console.log("Updating " + file.name);
-                        this.filelist.set(file.name, file);
-                        leekfilesource.updateFile(file).then(() =>
-                            console.log("Updated " + file.name)
-                        )
-                    }
-                    break;
-                default:
-                    console.log("[" + event + "] @ " + targetPath + " " + (targetPathNext != "" ? "\n    => " + targetPathNext : "")); // => could be any target event: 'add', 'addDir', 'change', 'rename', 'renameDir', 'unlink' or 'unlinkDir'
-                    break;
-            }
-        });
+        watcher.on('all', (event, targetPath, targetPathNext) =>
+            this.onChange(event, targetPath.substring(root.length), targetPathNext?.targetPath.substring(root.length))
+        );
     }
 
     public loadFile(filename: string, lazy: boolean = false): LeekFile {
@@ -125,6 +114,26 @@ class LocalfileSource extends LeekfileSource {
         var parentPath = file.parentPath.startsWith("./") ? file.parentPath.substring(2) + "/" : file.parentPath;
         var parentName = parentPath.substring(this.path.length - 1);
         return "/" + (parentName != "" ? parentName + "/" : "") + file.name + (file.isDirectory() ? "/" : "");
+    }
+
+    private onChange(event: any, path: string, toPath: any) {
+        switch (event) {
+            case "add":
+            case "change":
+
+                if (!this.filelist.fileIsSimilar(this.loadFile(path, true))) {
+                    console.log("Updating " + path);
+                    const file = this.loadFile(path)
+                    this.filelist.set(file.name, file);
+                    this.observer.forEach(observer => observer.updateFile(file).then(() =>
+                        console.log("Updated " + file.name)
+                    ))
+                }
+                break;
+            default:
+                console.log("[" + event + "] @ " + path + " " + (toPath != undefined ? "\n    => " + toPath : "")); // => could be any target event: 'add', 'addDir', 'change', 'rename', 'renameDir', 'unlink' or 'unlinkDir'
+                break;
+        }
     }
 }
 
