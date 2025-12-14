@@ -55,5 +55,5 @@ Actions :
 
 On edition :
 - LeekWars : not watching edit and don't plan to yet. Edit made on LeekWars while LeekSync is up won't be recorded
-- Local files : will watch for new file, file change, and file deletion.
-  - Planning to add rename support and folder creation support
+- Local files : will watch for new file, file change, and file or folder deletion.
+  - Planning to add rename support

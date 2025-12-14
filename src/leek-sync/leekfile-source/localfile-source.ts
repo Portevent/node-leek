@@ -81,7 +81,8 @@ class LocalfileSource extends LeekfileSource {
     public startWatching(leekfilesource: LeekfileSource) {
         this.observer = [leekfilesource]
         const watcher = new Watcher(this.path, {
-            recursive: true
+            recursive: true,
+            renameDetection: true
         });
 
         const root = require("path").resolve(this.path);
@@ -92,7 +93,7 @@ class LocalfileSource extends LeekfileSource {
         });
 
         watcher.on('all', (event, targetPath, targetPathNext) =>
-            this.onChange(event, targetPath.substring(root.length), targetPathNext?.targetPath.substring(root.length))
+            this.onChange(event, targetPath.substring(root.length), targetPathNext?.substring(root.length))
         );
     }
 

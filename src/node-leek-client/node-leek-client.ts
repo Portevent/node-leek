@@ -1,9 +1,15 @@
 import {DefaultApi, DefaultApiApiKeys} from "../codegen/api/defaultApi";
-import getCookieToken from "./token-parsing";
+import {getCookieToken, getPhpsessidToken} from "./token-parsing";
 import {Farmer} from "../codegen/model/farmer";
 import {Folder} from "../codegen/model/folder";
 import {Ia} from "../codegen/model/ia";
 import {Aicode} from "../codegen/model/aicode";
+import {Opponent} from "../codegen/model/opponent";
+import {FightResult} from "../codegen/model/fightResult";
+
+function randomIn(array: any[]){
+    return array[Math.floor(Math.random() * array.length)];
+}
 
 class NodeLeekClient {
 
@@ -27,6 +33,7 @@ class NodeLeekClient {
     }
 
     public async login() {
+        if (this.ready) return;
         return this.apiClient.login({
             login: this.username,
             password: this.password,
@@ -34,6 +41,7 @@ class NodeLeekClient {
         }).then(r => {
             console.log("💚 NodeLeek connected !");
             this.apiClient.setApiKey(DefaultApiApiKeys.cookieAuth, getCookieToken(r.response.headers["set-cookie"]))
+            this.apiClient.setApiKey(DefaultApiApiKeys.phpsessid, getPhpsessidToken(r.response.headers["set-cookie"]))
             this.initClient(r.body.farmer);
         }).catch(err => {
             if (err?.response?.statusCode == 401 && err.body.error == "invalid") {
@@ -116,7 +124,6 @@ class NodeLeekClient {
             .then(result => result.body)
             .catch(err => {
                 console.error("saveFile " + ai_id + " (code is " + code.substring(0, 20) + ") -> [" + err.statusCode + "] " + err.body.error);
-                return new Aicode();
             });
     }
 
@@ -129,7 +136,6 @@ class NodeLeekClient {
             .then(result => result.body.ai)
             .catch(err => {
                 console.error("createFile " + name + " (parent is " + folder_id + ") -> [" + err.statusCode + "] " + err.body.error);
-                return new Aicode();
             });
     }
 
@@ -141,7 +147,6 @@ class NodeLeekClient {
             .then(result => result.body)
             .catch(err => {
                 console.error("createFolder " + name + " (parent is " + folder_id + ") -> [" + err.statusCode + "] " + err.body.error);
-                return new Aicode();
             });
     }
 
@@ -152,7 +157,6 @@ class NodeLeekClient {
             .then(result => result.body)
             .catch(err => {
                 console.error("deleteFile " + ai_id + " -> [" + err.statusCode + "] " + err.body.error);
-                return new Aicode();
             });
     }
 
@@ -163,8 +167,60 @@ class NodeLeekClient {
             .then(result => result.body)
             .catch(err => {
                 console.error("deleteFolder " + folder_id + " -> [" + err.statusCode + "] " + err.body.error);
-                return new Aicode();
             });
+    }
+
+    private async getSoloOpponents(leek_id: number) : Promise<Opponent[]> {
+        return this.apiClient.getSoloOpponents(leek_id)
+            .then(result => result.body.opponents)
+            .catch(err => {
+                console.error("getSoloOpponents " + leek_id + " -> [" + err.statusCode + "] " + err.body.error);
+                return [];
+            });
+    }
+
+    private async startSoloFight(leek_id: number, target_id: number) : Promise<number> {
+        return this.apiClient.startSoloFight({
+            leekId: leek_id,
+            targetId: target_id
+        })
+            .then(result => result.body.fight)
+            .catch(err => {
+                console.error("startFight " + leek_id + " " + target_id + " -> [" + err.statusCode + "] " + err.body);
+                return -1;
+            });
+    }
+
+    public async startRandomSoloFight(leek_id: number) : Promise<[Opponent, number]> {
+        return this.getSoloOpponents(leek_id)
+            .then((opponents) => {
+                if (opponents.length == 0) {
+                    console.error("Can't find opponent for " + leek_id);
+                    return [null, -1];
+                }
+
+                const opponent = randomIn(opponents);
+                return this.startSoloFight(leek_id, opponent.id)
+                    .then((fightId) => [opponent, fightId]);
+            });
+    }
+
+    public async getFight(fight_id: number) : Promise<FightResult | void> {
+        return this.apiClient.getFight(fight_id)
+            .then(result => result.body)
+            .catch(err => {
+                console.error("getFight " + fight_id + " -> [" + err.statusCode + "] " + err.body.error);
+            });
+    }
+
+    public async getCompleteFight(fight_id: number) : Promise<FightResult | void> {
+        var result = await this.getFight(fight_id);
+        if (result == null) return;
+        if (result.status == 0) {
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            return this.getCompleteFight(result.id);
+        }
+        return result;
     }
 }
 

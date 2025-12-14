@@ -11,6 +11,116 @@
     }
   ],
   "paths": {
+    "/fight/get/{fightId}": {
+      "get": {
+        "description": "Get a fight result",
+        "operationId": "getFight",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fightId",
+            "description": "ID of the fight",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fight result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/fightResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/garden/start-solo-fight": {
+      "post": {
+        "description": "Start a solo fight",
+        "operationId": "startSoloFight",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "leek_id": {
+                    "type": "integer"
+                  },
+                  "target_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Fight started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "fight": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "fight"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/garden/get-leek-opponents/{leekId}": {
+      "get": {
+        "description": "Start a solo fight",
+        "operationId": "getSoloOpponents",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "leekId",
+            "description": "ID of the leek",
+            "required": "true",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fight started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "opponents": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/opponent"
+                      }
+                    }
+                  },
+                  "required": ["opponents"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/ai/new-name": {
       "post": {
         "operationId": "createFile",
@@ -1083,6 +1193,80 @@
           "farmer",
           "farmers"
         ]
+      },
+      "fightResult": {
+        "description": "Result of a fight",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "date": {
+            "type": "integer"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "integer"
+          },
+          "context": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "winner": {
+            "type": "integer"
+          },
+          "leeks1": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/leek"
+            }
+          },
+          "leeks2": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/leek"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "date",
+          "year",
+          "type",
+          "context",
+          "status",
+          "winner",
+          "leeks1",
+          "leeks2"
+        ]
+      },
+      "opponent": {
+        "description": "Opponent",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "level": {
+            "type": "integer"
+          },
+          "talent": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "level",
+          "talent"
+        ]
       }
     },
     "securitySchemes": {
@@ -1090,12 +1274,18 @@
         "type": "apiKey",
         "in": "cookie",
         "name": "token"
+      },
+      "phpsessid": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "PHPSESSID"
       }
     }
   },
   "security": [
     {
-      "cookieAuth": []
+      "cookieAuth": [],
+      "phpsessid": []
     }
   ]
 }

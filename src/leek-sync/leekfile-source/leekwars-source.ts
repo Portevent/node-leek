@@ -88,7 +88,7 @@ class LeekwarsSource extends LeekfileSource {
 
     private async updateFileInLeekwars(id: number, code: string): Promise<[number, number]> {
         return this.nodeLeekClient.saveFile(id, code)
-            .then((result) => [id, result.modified ?? 0])
+            .then((result) => [id, result?.modified ?? 0])
     }
 
 
@@ -100,7 +100,7 @@ class LeekwarsSource extends LeekfileSource {
     private async createFileInLeekwars(file: LeekFile): Promise<[number, number]> {
         return this.nodeLeekClient.createFile(await this.getOrCreateFolderId(file.getParentFolder()), file.getFilename())
             .then(result => {
-                return this.updateFileInLeekwars(result.id ?? 0, file.code);
+                return this.updateFileInLeekwars(result?.id ?? 0, file.code);
             })
     }
 
@@ -110,7 +110,7 @@ class LeekwarsSource extends LeekfileSource {
         return this.nodeLeekClient.createFolder(
             await this.getOrCreateFolderId(this.getFolderParentPath(dirname)),
             this.getFolderName(dirname)
-        ).then(result => result.id);
+        ).then(result => result?.id ?? 0);
     }
 
     private getFolderParentPath(dirname: string){

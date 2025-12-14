@@ -10,18 +10,23 @@ export * from './credentials';
 export * from './deleteFileRequest';
 export * from './deleteFolderRequest';
 export * from './farmer';
+export * from './fightResult';
 export * from './folder';
 export * from './garden';
 export * from './gardenGarden';
 export * from './gardenGardenMyCompositionsInner';
 export * from './gardenGardenMyTeam';
 export * from './getFilesContentRequest';
+export * from './getSoloOpponents200Response';
 export * from './ia';
 export * from './item';
 export * from './leek';
 export * from './logindump';
+export * from './opponent';
 export * from './saveFile200Response';
 export * from './saveFileRequest';
+export * from './startSoloFight200Response';
+export * from './startSoloFightRequest';
 export * from './team';
 
 import * as fs from 'fs';
@@ -47,18 +52,23 @@ import { Credentials } from './credentials';
 import { DeleteFileRequest } from './deleteFileRequest';
 import { DeleteFolderRequest } from './deleteFolderRequest';
 import { Farmer } from './farmer';
+import { FightResult } from './fightResult';
 import { Folder } from './folder';
 import { Garden } from './garden';
 import { GardenGarden } from './gardenGarden';
 import { GardenGardenMyCompositionsInner } from './gardenGardenMyCompositionsInner';
 import { GardenGardenMyTeam } from './gardenGardenMyTeam';
 import { GetFilesContentRequest } from './getFilesContentRequest';
+import { GetSoloOpponents200Response } from './getSoloOpponents200Response';
 import { Ia } from './ia';
 import { Item } from './item';
 import { Leek } from './leek';
 import { Logindump } from './logindump';
+import { Opponent } from './opponent';
 import { SaveFile200Response } from './saveFile200Response';
 import { SaveFileRequest } from './saveFileRequest';
+import { StartSoloFight200Response } from './startSoloFight200Response';
+import { StartSoloFightRequest } from './startSoloFightRequest';
 import { Team } from './team';
 
 /* tslint:disable:no-unused-variable */
@@ -87,18 +97,23 @@ let typeMap: {[index: string]: any} = {
     "DeleteFileRequest": DeleteFileRequest,
     "DeleteFolderRequest": DeleteFolderRequest,
     "Farmer": Farmer,
+    "FightResult": FightResult,
     "Folder": Folder,
     "Garden": Garden,
     "GardenGarden": GardenGarden,
     "GardenGardenMyCompositionsInner": GardenGardenMyCompositionsInner,
     "GardenGardenMyTeam": GardenGardenMyTeam,
     "GetFilesContentRequest": GetFilesContentRequest,
+    "GetSoloOpponents200Response": GetSoloOpponents200Response,
     "Ia": Ia,
     "Item": Item,
     "Leek": Leek,
     "Logindump": Logindump,
+    "Opponent": Opponent,
     "SaveFile200Response": SaveFile200Response,
     "SaveFileRequest": SaveFileRequest,
+    "StartSoloFight200Response": StartSoloFight200Response,
+    "StartSoloFightRequest": StartSoloFightRequest,
     "Team": Team,
 }
 
