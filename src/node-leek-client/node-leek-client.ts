@@ -87,7 +87,7 @@ class NodeLeekClient {
     }
 
     public async fetchFiles(requests: { [ai: number]: number }): Promise<Array<Aicode>> {
-        return this.apiClient.aiFetch({
+        return this.apiClient.getFilesContent({
             ais: JSON.stringify(requests)
         })
             .then(result => result.body)
@@ -109,7 +109,7 @@ class NodeLeekClient {
     }
 
     public async saveFile(ai_id: number, code: string) {
-        return this.apiClient.aiSave({
+        return this.apiClient.saveFile({
             aiId: ai_id,
             code: code
         }).then(result => {
@@ -118,7 +118,7 @@ class NodeLeekClient {
     }
 
     public async createFile(folder_id: number, name: string, version: number = 4) {
-        return this.apiClient.aiCreate({
+        return this.apiClient.createFile({
             folderId: folder_id,
             name: name,
             version: version
@@ -129,6 +129,18 @@ class NodeLeekClient {
         return this.apiClient.createFolder({
             folderId: folder_id,
             name: name
+        }).then(result => result.body);
+    }
+
+    public async deleteFile(ai_id: number) {
+        return this.apiClient.deleteFile({
+            aiId: ai_id,
+        }).then(result => result.body);
+    }
+
+    public async deleteFolder(folder_id: number) {
+        return this.apiClient.deleteFolder({
+            folderId: folder_id,
         }).then(result => result.body);
     }
 }

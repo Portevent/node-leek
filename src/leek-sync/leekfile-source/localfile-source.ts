@@ -30,7 +30,7 @@ class LocalfileSource extends LeekfileSource {
             } else {
                 if(this.filelist.fileIsSimilar(file)) return;
                 console.log("Load file from init because files differ : " + file.name);
-                console.log("timestamp : " + this.filelist.get(file.name).timestamp + " / " + file.timestamp)
+                console.log("timestamp : " + this.filelist.get(file.name)?.timestamp + " / " + file?.timestamp)
                 this.filelist.set(file.name, this.loadFile(file.name));
             }
         });
@@ -76,7 +76,7 @@ class LocalfileSource extends LeekfileSource {
     public startWatching(leekfilesource: LeekfileSource) {
         this.observer = [leekfilesource]
         const watcher = new Watcher(this.path, {
-            recursive: true,
+            recursive: true
         });
 
         const root = require("path").resolve(this.path);
@@ -127,6 +127,16 @@ class LocalfileSource extends LeekfileSource {
                     this.filelist.set(file.name, file);
                     this.observer.forEach(observer => observer.updateFile(file).then(() =>
                         console.log("Updated " + file.name)
+                    ))
+                }
+                break;
+            case "unlink":
+            case "unlinkDir":
+                if(this.filelist.contains(path)){
+                    console.log("Deleting file " + path);
+                    this.filelist.remove(path);
+                    this.observer.forEach(observer => observer.deleteFile(new LeekFile(path, 0, "", 0)).then(() =>
+                        console.log("Updated " + path)
                     ))
                 }
                 break;

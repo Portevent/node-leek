@@ -48,9 +48,12 @@ On launch :
 - Issue resolver : can be done both way but won't ask yet and choose LeekWars (-> local files will be overridden)
 
 Actions :
-- LeekWars : can create new file, folder, and update file content. Plan to do folder delete and rename
-- Local files : can create new file, folder, update file content and delete file and folder. Plan to do rename
+- LeekWars : can create new file, folder, update file content and delete file and folder. 
+    - Planning to do rename
+- Local files : can create new file, folder, update file content and delete file and folder.
+  - Planning to do rename
 
 On edition :
 - LeekWars : not watching edit and don't plan to yet. Edit made on LeekWars while LeekSync is up won't be recorded
-- Local files : will watch for new file and file change, planning to add rename support and folder creation support
+- Local files : will watch for new file, file change, and file deletion.
+  - Planning to add rename support and folder creation support

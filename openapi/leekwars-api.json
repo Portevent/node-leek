@@ -11,21 +11,18 @@
     }
   ],
   "paths": {
-    "/ai-folder/new-name": {
-      "post": {
-        "description": "Create new folder",
-        "operationId": "createFolder",
+    "/ai/delete": {
+      "delete": {
+        "description": "Delete file",
+        "operationId": "deleteFile",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "folder_id": {
+                  "ai_id": {
                     "type": "integer"
-                  },
-                  "name": {
-                    "type": "string"
                   }
                 }
               }
@@ -34,29 +31,14 @@
         },
         "responses": {
           "200": {
-            "description": "New response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "integer"
-                    }
-                  },
-                  "required": [
-                    "id"
-                  ]
-                }
-              }
-            }
+            "description": "Ok"
           }
         }
       }
     },
     "/ai/save": {
       "post": {
-        "operationId": "AiSave",
+        "operationId": "saveFile",
         "description": "Save ai code",
         "requestBody": {
           "content": {
@@ -97,7 +79,7 @@
     },
     "/ai/new-name": {
       "post": {
-        "operationId": "AiCreate",
+        "operationId": "createFile",
         "description": "Create new ai code",
         "requestBody": {
           "content": {
@@ -153,7 +135,7 @@
     },
     "/ai/sync": {
       "post": {
-        "operationId": "AiFetch",
+        "operationId": "getFilesContent",
         "description": "Fetch one or several ai code",
         "requestBody": {
           "content": {
@@ -180,6 +162,74 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/ai-folder/new-name": {
+      "post": {
+        "description": "Create new folder",
+        "operationId": "createFolder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "folder_id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ai-folder/delete": {
+      "delete": {
+        "description": "Delete folder",
+        "operationId": "deleteFolder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "folder_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok"
           }
         }
       }

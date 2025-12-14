@@ -1,24 +1,26 @@
 import localVarRequest from 'request';
 
-export * from './aiCreate200Response';
-export * from './aiCreateRequest';
-export * from './aiFetchRequest';
-export * from './aiSave200Response';
-export * from './aiSaveRequest';
 export * from './aicode';
+export * from './createFile200Response';
+export * from './createFileRequest';
 export * from './createFolder200Response';
 export * from './createFolderRequest';
 export * from './credentials';
+export * from './deleteFileRequest';
+export * from './deleteFolderRequest';
 export * from './farmer';
 export * from './folder';
 export * from './garden';
 export * from './gardenGarden';
 export * from './gardenGardenMyCompositionsInner';
 export * from './gardenGardenMyTeam';
+export * from './getFilesContentRequest';
 export * from './ia';
 export * from './item';
 export * from './leek';
 export * from './logindump';
+export * from './saveFile200Response';
+export * from './saveFileRequest';
 export * from './team';
 
 import * as fs from 'fs';
@@ -34,25 +36,27 @@ export interface RequestDetailedFile {
 export type RequestFile = string | Buffer | fs.ReadStream | RequestDetailedFile;
 
 
-import { AiCreate200Response } from './aiCreate200Response';
-import { AiCreateRequest } from './aiCreateRequest';
-import { AiFetchRequest } from './aiFetchRequest';
-import { AiSave200Response } from './aiSave200Response';
-import { AiSaveRequest } from './aiSaveRequest';
 import { Aicode } from './aicode';
+import { CreateFile200Response } from './createFile200Response';
+import { CreateFileRequest } from './createFileRequest';
 import { CreateFolder200Response } from './createFolder200Response';
 import { CreateFolderRequest } from './createFolderRequest';
 import { Credentials } from './credentials';
+import { DeleteFileRequest } from './deleteFileRequest';
+import { DeleteFolderRequest } from './deleteFolderRequest';
 import { Farmer } from './farmer';
 import { Folder } from './folder';
 import { Garden } from './garden';
 import { GardenGarden } from './gardenGarden';
 import { GardenGardenMyCompositionsInner } from './gardenGardenMyCompositionsInner';
 import { GardenGardenMyTeam } from './gardenGardenMyTeam';
+import { GetFilesContentRequest } from './getFilesContentRequest';
 import { Ia } from './ia';
 import { Item } from './item';
 import { Leek } from './leek';
 import { Logindump } from './logindump';
+import { SaveFile200Response } from './saveFile200Response';
+import { SaveFileRequest } from './saveFileRequest';
 import { Team } from './team';
 
 /* tslint:disable:no-unused-variable */
@@ -71,25 +75,27 @@ let enumsMap: {[index: string]: any} = {
 }
 
 let typeMap: {[index: string]: any} = {
-    "AiCreate200Response": AiCreate200Response,
-    "AiCreateRequest": AiCreateRequest,
-    "AiFetchRequest": AiFetchRequest,
-    "AiSave200Response": AiSave200Response,
-    "AiSaveRequest": AiSaveRequest,
     "Aicode": Aicode,
+    "CreateFile200Response": CreateFile200Response,
+    "CreateFileRequest": CreateFileRequest,
     "CreateFolder200Response": CreateFolder200Response,
     "CreateFolderRequest": CreateFolderRequest,
     "Credentials": Credentials,
+    "DeleteFileRequest": DeleteFileRequest,
+    "DeleteFolderRequest": DeleteFolderRequest,
     "Farmer": Farmer,
     "Folder": Folder,
     "Garden": Garden,
     "GardenGarden": GardenGarden,
     "GardenGardenMyCompositionsInner": GardenGardenMyCompositionsInner,
     "GardenGardenMyTeam": GardenGardenMyTeam,
+    "GetFilesContentRequest": GetFilesContentRequest,
     "Ia": Ia,
     "Item": Item,
     "Leek": Leek,
     "Logindump": Logindump,
+    "SaveFile200Response": SaveFile200Response,
+    "SaveFileRequest": SaveFileRequest,
     "Team": Team,
 }
 

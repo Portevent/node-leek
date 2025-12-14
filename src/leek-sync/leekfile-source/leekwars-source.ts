@@ -58,7 +58,14 @@ class LeekwarsSource extends LeekfileSource {
     }
 
     async deleteFile(file: LeekFile) {
-        // TODO
+        var leekwarsFile = this.filelist.get(file.name);
+        if (leekwarsFile != null) {
+            if (leekwarsFile.folder) return this.nodeLeekClient.deleteFolder(leekwarsFile.id);
+
+            return this.nodeLeekClient.deleteFile(leekwarsFile.id);
+        } else {
+            console.error("Trying to delete on leekwars " + file.name + ". But this file doesn't exists")
+        }
     }
 
     async updateFile(file: LeekFile): Promise<void> {
