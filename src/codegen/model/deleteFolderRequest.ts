@@ -12,23 +12,20 @@
 
 import { RequestFile } from './models';
 
-export class AiFetchRequest {
-    /**
-    * json string of ai_id mapped by timestamp
-    */
-    'ais'?: string;
+export class DeleteFolderRequest {
+    'folderId'?: number;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "ais",
-            "baseName": "ais",
-            "type": "string"
+            "name": "folderId",
+            "baseName": "folder_id",
+            "type": "number"
         }    ];
 
     static getAttributeTypeMap() {
-        return AiFetchRequest.attributeTypeMap;
+        return DeleteFolderRequest.attributeTypeMap;
     }
 }
 

@@ -11,6 +11,77 @@
     }
   ],
   "paths": {
+    "/ai/new-name": {
+      "post": {
+        "operationId": "createFile",
+        "description": "Create new ai code",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "folder_id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "integer",
+                    "description": "Leekscript version"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New ai file created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ai": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "level": {
+                          "type": "integer"
+                        },
+                        "code": {
+                          "type": "string"
+                        },
+                        "folder": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "name",
+                        "level",
+                        "code",
+                        "folder"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "ai"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/ai/delete": {
       "delete": {
         "description": "Delete file",
@@ -68,62 +139,6 @@
                     "modified": {
                       "type": "integer",
                       "description": "timestamp"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/ai/new-name": {
-      "post": {
-        "operationId": "createFile",
-        "description": "Create new ai code",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "folder_id": {
-                    "type": "integer"
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "version": {
-                    "type": "integer",
-                    "description": "Leekscript version"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "New ai file created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "integer"
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "level": {
-                      "type": "integer"
-                    },
-                    "code": {
-                      "type": "string"
-                    },
-                    "folder": {
-                      "type": "integer"
                     }
                   }
                 }

@@ -12,23 +12,20 @@
 
 import { RequestFile } from './models';
 
-export class AiSave200Response {
-    /**
-    * timestamp
-    */
-    'modified'?: number;
+export class DeleteFileRequest {
+    'aiId'?: number;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "modified",
-            "baseName": "modified",
+            "name": "aiId",
+            "baseName": "ai_id",
             "type": "number"
         }    ];
 
     static getAttributeTypeMap() {
-        return AiSave200Response.attributeTypeMap;
+        return DeleteFileRequest.attributeTypeMap;
     }
 }
 

@@ -8,7 +8,7 @@ class LeekFile{
     public folder: boolean = true;
     public hash: string = "";
 
-    static Folder(name: string, id: number) : LeekFile{
+    static Folder(name: string, id: number = 0) : LeekFile{
         return new LeekFile(name, id, "", 0, true)
     }
 

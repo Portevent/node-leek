@@ -3,6 +3,7 @@ import LeekfileSource from "./leekfile-source";
 import Filelist from "../filelist/filelist";
 import fs, {Dirent} from "node:fs";
 import Watcher from 'watcher';
+import Leekfile from "../filelist/leekfile";
 
 
 class LocalfileSource extends LeekfileSource {
@@ -29,17 +30,21 @@ class LocalfileSource extends LeekfileSource {
                 this.filelist.set(file.name , file);
             } else {
                 if(this.filelist.fileIsSimilar(file)) return;
-                console.log("Load file from init because files differ : " + file.name);
-                console.log("timestamp : " + this.filelist.get(file.name)?.timestamp + " / " + file?.timestamp)
+                console.log("File has been created/changed while LeekSync was off : " + file.name + " (" + this.filelist.get(file.name)?.timestamp + " / " + file?.timestamp + ")")
                 this.filelist.set(file.name, this.loadFile(file.name));
             }
         });
     }
 
     async deleteFile(file: LeekFile) {
-        return fs.unlink(this.path + file.name, (err) => {
-            console.log(err)
-        });
+        if (file.folder)
+            return fs.rmdir(this.path + file.name, (err) => {
+                console.log(err)
+            });
+        else
+            return fs.unlink(this.path + file.name, (err) => {
+                console.log(err)
+            });
     }
 
     async updateFile(file: LeekFile) {
@@ -62,7 +67,7 @@ class LocalfileSource extends LeekfileSource {
 
         return fs.writeFile(this.path + file.name, file.code, 'utf-8', (err) => {
             if (err) throw err;
-            this.filelist.set(file.name, new LeekFile(file.name, file.id, file.code, 0));
+            this.filelist.set(file.name, new LeekFile(file.name, file.id, file.code, this.getFileTimestamp(file.name)));
         });
     }
 
@@ -92,8 +97,12 @@ class LocalfileSource extends LeekfileSource {
     }
 
     public loadFile(filename: string, lazy: boolean = false): LeekFile {
-        if (!lazy) console.log("Loading " + filename);
-        return new LeekFile(filename, 0, lazy ? "Lazy loaded file, shouldn't be upload to leekwars as such" : fs.readFileSync(this.path + filename, "utf8"), fs.statSync(this.path + filename).mtime.getTime(), false);
+        if (!lazy) console.debug("Loading " + filename);
+        return new LeekFile(filename, 0, lazy ? "Lazy loaded file, shouldn't be upload to leekwars as such" : fs.readFileSync(this.path + filename, "utf8"), this.getFileTimestamp(filename), false);
+    }
+
+    private getFileTimestamp(filename: string) {
+        return fs.statSync(this.path + filename).mtime.getTime();
     }
 
     private async exploreFiles() : Promise<Filelist> {
@@ -118,9 +127,19 @@ class LocalfileSource extends LeekfileSource {
 
     private onChange(event: any, path: string, toPath: any) {
         switch (event) {
+            case "addDir":
+                const dirname = path + "/";
+                if (!this.filelist.contains(dirname)) {
+                    console.log("Updating folder " + dirname);
+                    const file = Leekfile.Folder(dirname);
+                    this.filelist.set(file.name, file);
+                    this.observer.forEach(observer => observer.updateFile(file).then(() =>
+                        console.log("Updated folder " + file.name)
+                    ))
+                }
+                break;
             case "add":
             case "change":
-
                 if (!this.filelist.fileIsSimilar(this.loadFile(path, true))) {
                     console.log("Updating " + path);
                     const file = this.loadFile(path)
@@ -130,8 +149,9 @@ class LocalfileSource extends LeekfileSource {
                     ))
                 }
                 break;
-            case "unlink":
             case "unlinkDir":
+                path = path + "/"
+            case "unlink":
                 if(this.filelist.contains(path)){
                     console.log("Deleting file " + path);
                     this.filelist.remove(path);

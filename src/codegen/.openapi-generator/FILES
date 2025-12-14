@@ -1,10 +1,12 @@
 .gitignore
+.openapi-generator-ignore
 api.ts
 api/apis.ts
 api/defaultApi.ts
 git_push.sh
 model/aicode.ts
 model/createFile200Response.ts
+model/createFile200ResponseAi.ts
 model/createFileRequest.ts
 model/createFolder200Response.ts
 model/createFolderRequest.ts

@@ -12,12 +12,12 @@
 
 import { RequestFile } from './models';
 
-export class AiCreate200Response {
-    'id'?: number;
-    'name'?: string;
-    'level'?: number;
-    'code'?: string;
-    'folder'?: number;
+export class CreateFile200ResponseAi {
+    'id': number;
+    'name': string;
+    'level': number;
+    'code': string;
+    'folder': number;
 
     static discriminator: string | undefined = undefined;
 
@@ -49,7 +49,7 @@ export class AiCreate200Response {
         }    ];
 
     static getAttributeTypeMap() {
-        return AiCreate200Response.attributeTypeMap;
+        return CreateFile200ResponseAi.attributeTypeMap;
     }
 }
 

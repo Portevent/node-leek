@@ -100,7 +100,7 @@ class LeekwarsSource extends LeekfileSource {
     private async createFileInLeekwars(file: LeekFile): Promise<[number, number]> {
         return this.nodeLeekClient.createFile(await this.getOrCreateFolderId(file.getParentFolder()), file.getFilename())
             .then(result => {
-                return this.updateFileInLeekwars(result?.id ?? 0, file.code);
+                return this.updateFileInLeekwars(result.id ?? 0, file.code);
             })
     }
 
@@ -119,7 +119,7 @@ class LeekwarsSource extends LeekfileSource {
     }
 
     private getFolderName(dirname: string){
-        const withoutLeadingSlash = dirname.substring(dirname.length - 1);
+        const withoutLeadingSlash = dirname.substring(0, dirname.length - 1);
         return withoutLeadingSlash.substring(withoutLeadingSlash.lastIndexOf("/") + 1);
     }
 }

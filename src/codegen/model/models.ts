@@ -2,6 +2,7 @@ import localVarRequest from 'request';
 
 export * from './aicode';
 export * from './createFile200Response';
+export * from './createFile200ResponseAi';
 export * from './createFileRequest';
 export * from './createFolder200Response';
 export * from './createFolderRequest';
@@ -38,6 +39,7 @@ export type RequestFile = string | Buffer | fs.ReadStream | RequestDetailedFile;
 
 import { Aicode } from './aicode';
 import { CreateFile200Response } from './createFile200Response';
+import { CreateFile200ResponseAi } from './createFile200ResponseAi';
 import { CreateFileRequest } from './createFileRequest';
 import { CreateFolder200Response } from './createFolder200Response';
 import { CreateFolderRequest } from './createFolderRequest';
@@ -77,6 +79,7 @@ let enumsMap: {[index: string]: any} = {
 let typeMap: {[index: string]: any} = {
     "Aicode": Aicode,
     "CreateFile200Response": CreateFile200Response,
+    "CreateFile200ResponseAi": CreateFile200ResponseAi,
     "CreateFileRequest": CreateFileRequest,
     "CreateFolder200Response": CreateFolder200Response,
     "CreateFolderRequest": CreateFolderRequest,

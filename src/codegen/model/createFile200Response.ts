@@ -11,27 +11,22 @@
  */
 
 import { RequestFile } from './models';
+import { CreateFile200ResponseAi } from './createFile200ResponseAi';
 
-export class AiSaveRequest {
-    'aiId'?: number;
-    'code'?: string;
+export class CreateFile200Response {
+    'ai': CreateFile200ResponseAi;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "aiId",
-            "baseName": "ai_id",
-            "type": "number"
-        },
-        {
-            "name": "code",
-            "baseName": "code",
-            "type": "string"
+            "name": "ai",
+            "baseName": "ai",
+            "type": "CreateFile200ResponseAi"
         }    ];
 
     static getAttributeTypeMap() {
-        return AiSaveRequest.attributeTypeMap;
+        return CreateFile200Response.attributeTypeMap;
     }
 }
 

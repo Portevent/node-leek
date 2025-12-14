@@ -54,7 +54,7 @@ class NodeLeekClient {
 
     logFarmerInfos() {
         console.log("🤠 " + this.farmer.name + " (" + this.farmer.habs + " habs)");
-        Object.values(this.farmer.leeks).forEach(leek => console.log("🥬 " + leek.name + " niv." + leek.level + " - " + leek.talent + " talents" + (leek.capital > 0 ? " - ⚠️ " + leek.capital + " capitals to spend" : "")));
+        Object.values(this.farmer.leeks).forEach(leek => console.log("🥬 " + leek.name + " lvl." + leek.level + " - " + leek.talent + " talents" + (leek.capital > 0 ? " - ⚠️ " + leek.capital + " capitals to spend" : "")));
     }
 
     private registerFolder(folder: Folder) {
@@ -92,7 +92,7 @@ class NodeLeekClient {
         })
             .then(result => result.body)
             .catch(err => {
-                console.error("aiFetch(" + requests + ") -> [" + err.statusCode + "] " + err.body.error);
+                console.error("fetchFiles(" + requests + ") -> [" + err.statusCode + "] " + err.body.error);
                 return [];
             });
     }
@@ -103,7 +103,7 @@ class NodeLeekClient {
         return this.fetchFiles(request)
             .then(result => result[0])
             .catch(err => {
-                console.error("aiFetch -> [" + err.statusCode + "] " + err.body.error);
+                console.error("fetchFile -> [" + err.statusCode + "] " + err.body.error);
                 return new Aicode();
             });
     }
@@ -112,9 +112,12 @@ class NodeLeekClient {
         return this.apiClient.saveFile({
             aiId: ai_id,
             code: code
-        }).then(result => {
-            return result.body;
         })
+            .then(result => result.body)
+            .catch(err => {
+                console.error("saveFile " + ai_id + " (code is " + code.substring(0, 20) + ") -> [" + err.statusCode + "] " + err.body.error);
+                return new Aicode();
+            });
     }
 
     public async createFile(folder_id: number, name: string, version: number = 4) {
@@ -122,26 +125,46 @@ class NodeLeekClient {
             folderId: folder_id,
             name: name,
             version: version
-        }).then(result => result.body);
+        })
+            .then(result => result.body.ai)
+            .catch(err => {
+                console.error("createFile " + name + " (parent is " + folder_id + ") -> [" + err.statusCode + "] " + err.body.error);
+                return new Aicode();
+            });
     }
 
     public async createFolder(folder_id: number, name: string) {
         return this.apiClient.createFolder({
             folderId: folder_id,
             name: name
-        }).then(result => result.body);
+        })
+            .then(result => result.body)
+            .catch(err => {
+                console.error("createFolder " + name + " (parent is " + folder_id + ") -> [" + err.statusCode + "] " + err.body.error);
+                return new Aicode();
+            });
     }
 
     public async deleteFile(ai_id: number) {
         return this.apiClient.deleteFile({
             aiId: ai_id,
-        }).then(result => result.body);
+        })
+            .then(result => result.body)
+            .catch(err => {
+                console.error("deleteFile " + ai_id + " -> [" + err.statusCode + "] " + err.body.error);
+                return new Aicode();
+            });
     }
 
     public async deleteFolder(folder_id: number) {
         return this.apiClient.deleteFolder({
             folderId: folder_id,
-        }).then(result => result.body);
+        })
+            .then(result => result.body)
+            .catch(err => {
+                console.error("deleteFolder " + folder_id + " -> [" + err.statusCode + "] " + err.body.error);
+                return new Aicode();
+            });
     }
 }
 
