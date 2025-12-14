@@ -20,6 +20,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "debounce": "^3.0.0",
     "request": "^2.88.2",
     "watcher": "^2.3.1"
   }
