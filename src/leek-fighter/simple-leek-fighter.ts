@@ -20,22 +20,23 @@ class SimpleLeekFighter{
         console.log("🫵 Selecting " + this.leek.name + " to fight !")
     }
 
-    async doFight(count: number = 1){
-        console.log("Doing " + count + " fights");
+    async doFight(count: number = 1, fetchResult: boolean = false){
+        if (count > 1) console.log("Doing " + count + " fights");
         if (this.leek == undefined) return;
         for (let i = 1; i <= count; i++) {
             const [opponent, fightId] = await this.client.startRandomSoloFight(this.leek?.id);
             if(opponent == null) continue;
             if(fightId == -1) continue;
 
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 1000));
 
             console.log("⚔️ " + opponent.name + " lvl." + opponent.level + " (" + opponent.talent + " talents) : " + fightId);
 
-            this.client.getCompleteFight(fightId).then(result => {
-                if (result === undefined) return;
-                console.log(this.getWinner(result) + " VS " + result.leeks2[0].name + " !! ");
-            })
+            if (fetchResult)
+                this.client.getCompleteFight(fightId).then(result => {
+                    if (result === undefined) return;
+                    console.log(this.getWinner(result) + " VS " + result.leeks2[0].name + " !! ");
+                })
         }
     }
 

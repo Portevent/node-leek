@@ -186,6 +186,11 @@ class NodeLeekClient {
         })
             .then(result => result.body.fight)
             .catch(err => {
+                if(err.statusCode == 429){ // TOO MANY REQUEST
+                    return new Promise(resolve => setTimeout(resolve, 15000))
+                        .then(() => this.startSoloFight(leek_id, target_id))
+                }
+
                 console.error("startFight " + leek_id + " " + target_id + " -> [" + err.statusCode + "] " + err.body);
                 return -1;
             });
