@@ -33,6 +33,14 @@ class LeekFile{
         return this.name.substring(this.name.lastIndexOf("/") + 1);
     }
 
+    getFilenameWithoutExtension(): string{
+        const name = this.getFilename();
+        if (this.folder){
+            return name;
+        }
+        return name.substring(0, name.lastIndexOf("."));
+    }
+
     getParentFolder(): string{
         if (this.folder){
             const withoutLeadingSlash = this.name.substring(0, this.name.length - 1)

@@ -1,6 +1,4 @@
 import NodeLeekClient from "../node-leek-client/node-leek-client";
-import * as fs from "node:fs";
-import LeekFile from "./filelist/leekfile";
 import CachedFilelist from "./filelist/cached-filelist";
 import LeekfileSource from "./leekfile-source/leekfile-source";
 import LeekwarsSource from "./leekfile-source/leekwars-source";
@@ -22,7 +20,7 @@ class LeekSyncClient{
 
         this.leekwarsSource = new LeekwarsSource(new NodeLeekClient(login, password), this.leekwarsFilelist);
         this.localSource = new LocalfileSource(path, this.localFilelist);
-        console.log("Starting leeksync");
+        console.log("LeekSync starting ...");
         this.start();
     }
 
@@ -50,6 +48,7 @@ class LeekSyncClient{
         await this.localFilelist.save();
 
         this.localSource.startWatching(this.leekwarsSource);
+        console.log("LeekSync started !");
     }
 
     private askSourceToUse() {
