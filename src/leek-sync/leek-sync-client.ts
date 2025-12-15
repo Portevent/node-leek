@@ -5,7 +5,15 @@ import LeekwarsSource from "./leekfile-source/leekwars-source";
 import LocalfileSource from "./leekfile-source/localfile-source";
 import Filelist from "./filelist/filelist";
 
-class LeekSyncClient{
+const readline = require('readline');
+
+// Create an interface for input and output
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+class LeekSyncClient {
 
     leekwarsFilelist: Filelist
     localFilelist: Filelist
@@ -14,7 +22,7 @@ class LeekSyncClient{
     private localSource: LocalfileSource
 
 
-    constructor(login: string, password: string, path: string){
+    constructor(login: string, password: string, path: string) {
         this.leekwarsFilelist = new CachedFilelist(".local.leekwars.json");
         this.localFilelist = new CachedFilelist(".local.filesystem.json");
 
@@ -24,7 +32,7 @@ class LeekSyncClient{
         this.start();
     }
 
-    private async start(){
+    private async start() {
         // Fetch leekwars file to ensure our filesystem is up to date since last session
         await this.leekwarsSource.init();
         await this.localSource.init();
@@ -35,11 +43,11 @@ class LeekSyncClient{
         // Open watcher, push modifications to leekwars and update filestorage accordingly
 
         // If both doesn't match, ask which source to use
-        if (!this.leekwarsSource.compareWith(this.localSource)){
-            const choice = this.askSourceToUse()
-            if (choice){
+        if (!this.leekwarsSource.compareWith(this.localSource)) {
+            const choice = await this.askSourceToUse()
+            if (choice) {
                 await this.localSource.importFrom(this.leekwarsSource);
-            }else{
+            } else {
                 await this.leekwarsSource.importFrom(this.localSource);
             }
         }
@@ -51,8 +59,30 @@ class LeekSyncClient{
         console.log("LeekSync started !");
     }
 
-    private askSourceToUse() {
-        return true;
+    private async askSourceToUse() {
+
+        const askQuestion = (question: string) : Promise<string> => {
+            return new Promise((resolve) => {
+                rl.question(question, (answer : string) => {
+                    resolve(answer);
+                });
+            });
+        };
+
+        var choice = null;
+        var response = "";
+        console.log("Leekwars (" + this.leekwarsSource.getCount() + " files) and Local files (" + this.localSource.getCount() + " files) aren't sync");
+        if (!this.leekwarsSource.isPristine()) console.log("Leekwars has been updated since last session");
+        if (!this.localSource.isPristine()) console.log("Local files have been updated since last session");
+        do {
+            response = await askQuestion("From which one do you want to import files ?\nType leekwars or local : ");
+            if (response.toLowerCase() == "leekwars"){
+                choice = true;
+            }else if (response.toLowerCase() == "local"){
+                choice = false;
+            }
+        } while (choice == null)
+        return choice;
     }
 }
 

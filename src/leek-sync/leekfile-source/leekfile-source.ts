@@ -11,11 +11,11 @@ abstract class LeekfileSource {
     }
 
     async updateFile(file: LeekFile): Promise<void> {
-
+        this.filelist.set(file.name, file);
     }
 
     async deleteFile(file: LeekFile): Promise<void> {
-
+        this.filelist.remove(file.name);
     }
 
     abstract init(): void;
@@ -41,6 +41,14 @@ abstract class LeekfileSource {
 
     compareWith(otherSource: LeekfileSource): boolean {
         return this.filelist.compare(otherSource.filelist);
+    }
+
+    isPristine() : boolean{
+        return this.filelist.pristine;
+    }
+
+    getCount() : number{
+        return this.filelist.getCount();
     }
 }
 

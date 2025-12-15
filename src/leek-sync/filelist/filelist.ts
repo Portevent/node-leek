@@ -7,6 +7,7 @@ class Filelist {
      */
 
     protected fileList: {[file: string]: LeekFile}= {};
+    public pristine : boolean  = true;
 
     constructor() {
         this.fileList = {};
@@ -17,6 +18,7 @@ class Filelist {
     }
 
     set(name: string, leekFile: LeekFile) {
+        this.pristine = false;
         this.fileList[name] = leekFile;
     }
 
@@ -42,6 +44,7 @@ class Filelist {
     }
 
     remove(filename: string) {
+        this.pristine = false;
         delete this.fileList[filename];
     }
 

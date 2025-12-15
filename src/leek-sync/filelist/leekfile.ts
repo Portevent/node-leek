@@ -50,7 +50,7 @@ class LeekFile{
     }
 
     public isSimilar(file: LeekFile) : boolean {
-        return file.timestamp === this.timestamp || file.hash === this.hash;
+        return file.folder || file.timestamp === this.timestamp || file.hash === this.hash;
     }
 }
 

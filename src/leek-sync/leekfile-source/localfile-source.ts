@@ -19,18 +19,17 @@ class LocalfileSource extends LeekfileSource {
 
     async init(): Promise<void> {
 
-        // Get an updated list of leekwars files
+        // Get an updated list of local files
         const localFiles : Filelist = await this.exploreFiles();
 
         this.filelist.removeAllNotIn(localFiles.getFileNames());
 
         localFiles.getFiles().forEach(file => {
+            if(this.filelist.fileIsSimilar(file)) return;
             if (file.folder) {
-                this.createFolderInLocalFilesystem(file);
                 this.filelist.set(file.name , file);
             } else {
-                if(this.filelist.fileIsSimilar(file)) return;
-                console.log("File has been created/changed while LeekSync was off : " + file.name + " (" + this.filelist.get(file.name)?.timestamp + " / " + file?.timestamp + ")")
+//                console.log("File has been created/changed while LeekSync was off : " + file.name + " (" + this.filelist.get(file.name)?.timestamp + " / " + file?.timestamp + ")")
                 this.filelist.set(file.name, this.loadFile(file.name));
             }
         });
@@ -38,12 +37,20 @@ class LocalfileSource extends LeekfileSource {
 
     async deleteFile(file: LeekFile) {
         if (file.folder)
-            return fs.rmdir(this.path + file.name, (err) => {
-                console.log(err)
+            fs.rmdir(this.path + file.name, (err) => { // TODO add recursive option
+                if (err) {
+                    throw err
+                }else{
+                    return super.deleteFile(file);
+                }
             });
         else
-            return fs.unlink(this.path + file.name, (err) => {
-                console.log(err)
+            fs.unlink(this.path + file.name, (err) => {
+                if (err) {
+                    throw err
+                }else{
+                    return super.deleteFile(file);
+                }
             });
     }
 
@@ -107,7 +114,10 @@ class LocalfileSource extends LeekfileSource {
     }
 
     private async exploreFiles() : Promise<Filelist> {
-        const files = fs.readdirSync(this.path, {recursive: true, withFileTypes: true})
+        if(!fs.existsSync(this.path)){
+            fs.mkdirSync(this.path, { recursive: true });
+        }
+        const files = fs.readdirSync(this.path, {recursive: true, withFileTypes: true});
         const filelist: Filelist = new Filelist();
         filelist.set("/", LeekFile.Folder("/", 0))
 

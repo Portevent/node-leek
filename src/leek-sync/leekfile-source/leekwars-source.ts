@@ -24,17 +24,19 @@ class LeekwarsSource extends LeekfileSource {
         const filesToUpdate: [number, string][] = [];
         Object.entries(leekwarsFiles).forEach(([name, fileId]) => {
             if (this.isFolder(name)) {
-                this.filelist.set(name, LeekFile.Folder(name, fileId));
+                const newFolder = LeekFile.Folder(name, fileId);
+                if(!this.filelist.fileIsSimilar(newFolder))
+                    this.filelist.set(name, newFolder);
             } else {
                 filesToUpdate.push([fileId, name]);
             }
         });
 
         // Update all file in local filesystem with new code and timestamp
-        await this.updateFiles(filesToUpdate)
+        await this.fetchFiles(filesToUpdate)
     }
 
-    private async updateFiles(files: [number, string][]) {
+    private async fetchFiles(files: [number, string][]) {
         const aiNames: { [id: number]: string } = {};
         var fetchRequests: { [id: number]: number } = {};
 
@@ -60,9 +62,9 @@ class LeekwarsSource extends LeekfileSource {
     async deleteFile(file: LeekFile) {
         var leekwarsFile = this.filelist.get(file.name);
         if (leekwarsFile != null) {
-            if (leekwarsFile.folder) return this.nodeLeekClient.deleteFolder(leekwarsFile.id);
+            if (leekwarsFile.folder) return this.nodeLeekClient.deleteFolder(leekwarsFile.id).then(() => super.deleteFile(file));
 
-            return this.nodeLeekClient.deleteFile(leekwarsFile.id);
+            return this.nodeLeekClient.deleteFile(leekwarsFile.id).then(() => super.deleteFile(file));
         } else {
             console.error("Trying to delete on leekwars " + file.name + ". But this file doesn't exists")
         }
