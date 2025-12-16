@@ -20,7 +20,7 @@ class LocalfileSource extends LeekfileSource {
     async init(): Promise<void> {
 
         // Get an updated list of local files
-        const localFiles : Filelist = await this.exploreFiles();
+        const localFiles : Filelist = this.exploreFiles(this.path);
 
         this.filelist.removeAllNotIn(localFiles.getFileNames());
 
@@ -113,27 +113,40 @@ class LocalfileSource extends LeekfileSource {
         return fs.statSync(this.path + filename).mtime.getTime();
     }
 
-    private async exploreFiles() : Promise<Filelist> {
-        if(!fs.existsSync(this.path)){
-            fs.mkdirSync(this.path, { recursive: true });
+    private exploreFiles(from: string, filelist : Filelist | null = null) : Filelist {
+        if(filelist == null) {
+            filelist = new Filelist();
+            filelist.set("/", LeekFile.Folder("/", 0))
         }
-        const files = fs.readdirSync(this.path, {recursive: true, withFileTypes: true});
-        const filelist: Filelist = new Filelist();
-        filelist.set("/", LeekFile.Folder("/", 0))
 
-        files.forEach(file => {
+        if(!fs.existsSync(from)){
+            fs.mkdirSync(from, { recursive: true });
+        }
+
+        fs.readdirSync(from, {withFileTypes: true}).forEach(file => {
             const trueFileName = this.cleanupPath(file);
+
+            // Do process hidden files
+            if(file.name[0] == ".") return
+
             filelist.set(trueFileName, file.isDirectory() ?
                 new LeekFile(trueFileName, 0, "", 0, true)
                 : this.loadFile(trueFileName, true));
+
+            if (file.isDirectory()){
+                this.exploreFiles(from + "/" + file.name, filelist);
+            }
         })
         return filelist;
     }
 
     private cleanupPath(file: Dirent<string>) {
-        var parentPath = file.parentPath.startsWith("./") ? file.parentPath.substring(2) + "/" : file.parentPath;
+        var parentPath = file.parentPath.startsWith("./") ? file.parentPath.substring(1) : file.parentPath;
+        if (!parentPath.endsWith("/")){
+            parentPath = parentPath + "/"
+        }
         var parentName = parentPath.substring(this.path.length - 1);
-        return "/" + (parentName != "" ? parentName + "/" : "") + file.name + (file.isDirectory() ? "/" : "");
+        return parentName + file.name + (file.isDirectory() ? "/" : "");
     }
 
     private onChange(event: any, path: string, toPath: any) {

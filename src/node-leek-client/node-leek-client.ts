@@ -7,6 +7,7 @@ import {Aicode} from "../codegen/model/aicode";
 import {Opponent} from "../codegen/model/opponent";
 import {FightResult} from "../codegen/model/fightResult";
 import LeekSyncClient from "../leek-sync/leek-sync-client";
+import {CreateFile200ResponseAi} from "../codegen/model/createFile200ResponseAi";
 
 function randomIn(array: any[]){
     return array[Math.floor(Math.random() * array.length)];
@@ -79,10 +80,10 @@ class NodeLeekClient {
         return true;
     }
 
-    private registerFolders(folders: Array<Folder>) {
-        if (folders.length > 0) {
+    private registerFolders(folders: Array<Folder>, count: number = 0) {
+        if (folders.length > 0 && count < 50) {
             // Register all folders that haven't been registered on first try
-            this.registerFolders(folders.filter(folder => !this.registerFolder(folder)));
+            this.registerFolders(folders.filter(folder => !this.registerFolder(folder)), count + 1);
         }
     }
 
@@ -122,27 +123,28 @@ class NodeLeekClient {
             });
     }
 
-    public async saveFile(ai_id: number, code: string) {
-        if (!this.ready) return;
+    public async saveFile(ai_id: number, code: string) : Promise<number> {
+        if (!this.ready) return 0;
         if (this.readonly) {
             console.error("Readonly mode, can't save file");
-            return;
+            return 0;
         }
         return this.apiClient.saveFile({
             aiId: ai_id,
             code: code
         })
-            .then(result => result.body)
+            .then(result => result.body.modified)
             .catch(err => {
                 console.error("saveFile " + ai_id + " (code is " + code.substring(0, 20) + ") -> [" + err.statusCode + "] " + err.body.error);
+                return 0;
             });
     }
 
-    public async createFile(folder_id: number, name: string, version: number = 4) {
-        if (!this.ready) return;
+    public async createFile(folder_id: number, name: string, version: number = 4) : Promise<CreateFile200ResponseAi> {
+        if (!this.ready) return new CreateFile200ResponseAi();
         if (this.readonly) {
             console.error("Readonly mode, can't create file");
-            return;
+            return new CreateFile200ResponseAi();
         }
         return this.apiClient.createFile({
             folderId: folder_id,
@@ -152,22 +154,32 @@ class NodeLeekClient {
             .then(result => result.body.ai)
             .catch(err => {
                 console.error("createFile " + name + " (parent is " + folder_id + ") -> [" + err.statusCode + "] " + err.body.error);
+                return new CreateFile200ResponseAi();
             });
     }
 
-    public async createFolder(folder_id: number, name: string) {
-        if (!this.ready) return;
+    public async createFolder(folder_id: number, name: string) : Promise<number> {
+        if (!this.ready) return -1;
         if (this.readonly) {
             console.error("Readonly mode, can't create folder");
-            return;
+            return -1;
         }
+
+        console.log("Create folder " + name + " parent is " + folder_id);
+
         return this.apiClient.createFolder({
             folderId: folder_id,
             name: name
         })
-            .then(result => result.body)
+            .then(result => result.body.id)
             .catch(err => {
+                if(err.statusCode == 429){ // TOO MANY REQUEST
+                    return new Promise(resolve => setTimeout(resolve, 15000))
+                        .then(() => this.createFolder(folder_id, name))
+                }
+
                 console.error("createFolder " + name + " (parent is " + folder_id + ") -> [" + err.statusCode + "] " + err.body.error);
+                return -1;
             });
     }
 

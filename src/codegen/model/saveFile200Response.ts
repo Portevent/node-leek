@@ -16,7 +16,7 @@ export class SaveFile200Response {
     /**
     * timestamp
     */
-    'modified'?: number;
+    'modified': number;
 
     static discriminator: string | undefined = undefined;
 

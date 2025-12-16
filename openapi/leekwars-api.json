@@ -250,7 +250,8 @@
                       "type": "integer",
                       "description": "timestamp"
                     }
-                  }
+                  },
+                  "required": ["modified"]
                 }
               }
             }
