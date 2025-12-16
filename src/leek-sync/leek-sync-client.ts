@@ -5,7 +5,7 @@ import LeekwarsSource from "./leekfile-source/leekwars-source";
 import LocalfileSource from "./leekfile-source/localfile-source";
 import Filelist from "./filelist/filelist";
 
-const readline = require('readline');
+import readline from 'readline';
 
 // Create an interface for input and output
 const rl = readline.createInterface({
@@ -22,17 +22,15 @@ class LeekSyncClient {
     private localSource: LocalfileSource
 
 
-    constructor(login: string, password: string, path: string) {
+    constructor(nodeLeekClient: NodeLeekClient, path: string) {
         this.leekwarsFilelist = new CachedFilelist(".local.leekwars.json");
         this.localFilelist = new CachedFilelist(".local.filesystem.json");
 
-        this.leekwarsSource = new LeekwarsSource(new NodeLeekClient(login, password), this.leekwarsFilelist);
+        this.leekwarsSource = new LeekwarsSource(nodeLeekClient, this.leekwarsFilelist);
         this.localSource = new LocalfileSource(path, this.localFilelist);
-        console.log("LeekSync starting ...");
-        this.start();
     }
 
-    private async start() {
+    public async start(watch: boolean, choice: boolean | null = null) {
         // Fetch leekwars file to ensure our filesystem is up to date since last session
         await this.leekwarsSource.init();
         await this.localSource.init();
@@ -44,7 +42,7 @@ class LeekSyncClient {
 
         // If both doesn't match, ask which source to use
         if (!this.leekwarsSource.compareWith(this.localSource)) {
-            const choice = await this.askSourceToUse()
+            choice = await this.askSourceToUse(choice);
             if (choice) {
                 await this.localSource.importFrom(this.leekwarsSource);
             } else {
@@ -55,11 +53,16 @@ class LeekSyncClient {
         await this.leekwarsFilelist.save();
         await this.localFilelist.save();
 
-        this.localSource.startWatching(this.leekwarsSource);
-        console.log("LeekSync started !");
+        if(watch){
+            this.localSource.startWatching(this.leekwarsSource);
+            console.log("LeekSync is ready !");
+        }else{
+            console.log("LeekSync done !");
+        }
     }
 
-    private async askSourceToUse() {
+    private async askSourceToUse(choice : boolean | null) {
+        if (choice != null) return choice;
 
         const askQuestion = (question: string) : Promise<string> => {
             return new Promise((resolve) => {
@@ -69,7 +72,6 @@ class LeekSyncClient {
             });
         };
 
-        var choice = null;
         var response = "";
         console.log("Leekwars (" + this.leekwarsSource.getCount() + " files) and Local files (" + this.localSource.getCount() + " files) aren't sync");
         if (!this.leekwarsSource.isPristine()) console.log("Leekwars has been updated since last session");

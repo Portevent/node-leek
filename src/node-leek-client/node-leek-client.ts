@@ -6,6 +6,7 @@ import {Ia} from "../codegen/model/ia";
 import {Aicode} from "../codegen/model/aicode";
 import {Opponent} from "../codegen/model/opponent";
 import {FightResult} from "../codegen/model/fightResult";
+import LeekSyncClient from "../leek-sync/leek-sync-client";
 
 function randomIn(array: any[]){
     return array[Math.floor(Math.random() * array.length)];
@@ -20,6 +21,7 @@ class NodeLeekClient {
     private filesByName: { [name: string]: number } = {"/": 0}
     private username: string;
     private password: string;
+    private leekSyncClient: LeekSyncClient | null = null;
 
     public static async Create(username: string, password: string): Promise<NodeLeekClient> {
         var client = new NodeLeekClient(username, password);
@@ -226,6 +228,11 @@ class NodeLeekClient {
             return this.getCompleteFight(result.id);
         }
         return result;
+    }
+
+    public async syncWith(path: string, watch: boolean, choice: boolean | null = null){
+        this.leekSyncClient = new LeekSyncClient(this, path);
+        return this.leekSyncClient.start(watch, choice);
     }
 }
 

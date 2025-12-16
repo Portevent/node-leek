@@ -12,8 +12,6 @@ class LeekwarsSource extends LeekfileSource {
     }
 
     async init() {
-        await this.nodeLeekClient.login();
-
         // Get an updated list of leekwars files
         const leekwarsFiles = this.nodeLeekClient.getFiles();
 
