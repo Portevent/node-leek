@@ -6,6 +6,7 @@
   "scripts": {
     "build": "npx tsc -w",
     "start": "npx tsc; node build/app.js",
+    "leeksync": "npx tsc; node build/leeksync.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -21,6 +22,7 @@
   },
   "dependencies": {
     "debounce": "^3.0.0",
+    "minimist": "^1.2.8",
     "request": "^2.88.2",
     "watcher": "^2.3.1"
   }

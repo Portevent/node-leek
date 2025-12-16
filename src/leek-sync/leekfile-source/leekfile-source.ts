@@ -48,7 +48,7 @@ abstract class LeekfileSource {
     }
 
     getCount() : number{
-        return this.filelist.getCount();
+        return this.filelist.getCount() - 1; // Minus 1 because we don't count root folder
     }
 }
 

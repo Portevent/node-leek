@@ -30,7 +30,7 @@ class LeekSyncClient {
         this.localSource = new LocalfileSource(path, this.localFilelist);
     }
 
-    public async start(watch: boolean, choice: boolean | null = null) {
+    public async start(watch: boolean, choice: string) {
         // Fetch leekwars file to ensure our filesystem is up to date since last session
         await this.leekwarsSource.init();
         await this.localSource.init();
@@ -42,11 +42,13 @@ class LeekSyncClient {
 
         // If both doesn't match, ask which source to use
         if (!this.leekwarsSource.compareWith(this.localSource)) {
-            choice = await this.askSourceToUse(choice);
-            if (choice) {
+            const source: number = await this.askSourceToUse(choice);
+            if (source == 1) {
                 await this.localSource.importFrom(this.leekwarsSource);
-            } else {
+            } else if (source == 2) {
                 await this.leekwarsSource.importFrom(this.localSource);
+            } else {
+                console.error("Invalid choice, please report this bug");
             }
         }
 
@@ -61,8 +63,8 @@ class LeekSyncClient {
         }
     }
 
-    private async askSourceToUse(choice : boolean | null) {
-        if (choice != null) return choice;
+    private async askSourceToUse(choice : string) : Promise<number> {
+        var source = this.processChoice(choice);
 
         const askQuestion = (question: string) : Promise<string> => {
             return new Promise((resolve) => {
@@ -76,15 +78,20 @@ class LeekSyncClient {
         console.log("Leekwars (" + this.leekwarsSource.getCount() + " files) and Local files (" + this.localSource.getCount() + " files) aren't sync");
         if (!this.leekwarsSource.isPristine()) console.log("Leekwars has been updated since last session");
         if (!this.localSource.isPristine()) console.log("Local files have been updated since last session");
-        do {
-            response = await askQuestion("From which one do you want to import files ?\nType leekwars or local : ");
-            if (response.toLowerCase() == "leekwars"){
-                choice = true;
-            }else if (response.toLowerCase() == "local"){
-                choice = false;
-            }
-        } while (choice == null)
-        return choice;
+        while (source == null) {
+            choice = await askQuestion("From which one do you want to import files ?\nType leekwars or local : ");
+            source = this.processChoice(choice);
+        }
+        return source;
+    }
+
+    private processChoice(response: string) {
+        if (response.toLowerCase() == "leekwars") {
+            return 1;
+        } else if (response.toLowerCase() == "local") {
+            return 2;
+        }
+        return null;
     }
 }
 

@@ -22,13 +22,15 @@ class NodeLeekClient {
     private username: string;
     private password: string;
     private leekSyncClient: LeekSyncClient | null = null;
+    private readonly: boolean;
 
     public static async Create(username: string, password: string): Promise<NodeLeekClient> {
         var client = new NodeLeekClient(username, password);
         return client.login().then(nodeLeek => client);
     }
 
-    constructor(username: string, password: string) {
+    constructor(username: string, password: string, readonly: boolean = false) {
+        this.readonly = readonly;
         this.username = username;
         this.password = password;
         this.apiClient = new DefaultApi();
@@ -97,6 +99,7 @@ class NodeLeekClient {
     }
 
     public async fetchFiles(requests: { [ai: number]: number }): Promise<Array<Aicode>> {
+        if (!this.ready) return [new Aicode()];
         return this.apiClient.getFilesContent({
             ais: JSON.stringify(requests)
         })
@@ -108,6 +111,7 @@ class NodeLeekClient {
     }
 
     public async fetchFile(ai: number, timestamp: number): Promise<Aicode> {
+        if (!this.ready) return new Aicode();
         const request: { [ai: number]: number } = {}
         request[ai] = timestamp;
         return this.fetchFiles(request)
@@ -119,6 +123,11 @@ class NodeLeekClient {
     }
 
     public async saveFile(ai_id: number, code: string) {
+        if (!this.ready) return;
+        if (this.readonly) {
+            console.error("Readonly mode, can't save file");
+            return;
+        }
         return this.apiClient.saveFile({
             aiId: ai_id,
             code: code
@@ -130,6 +139,11 @@ class NodeLeekClient {
     }
 
     public async createFile(folder_id: number, name: string, version: number = 4) {
+        if (!this.ready) return;
+        if (this.readonly) {
+            console.error("Readonly mode, can't create file");
+            return;
+        }
         return this.apiClient.createFile({
             folderId: folder_id,
             name: name,
@@ -142,6 +156,11 @@ class NodeLeekClient {
     }
 
     public async createFolder(folder_id: number, name: string) {
+        if (!this.ready) return;
+        if (this.readonly) {
+            console.error("Readonly mode, can't create folder");
+            return;
+        }
         return this.apiClient.createFolder({
             folderId: folder_id,
             name: name
@@ -153,6 +172,11 @@ class NodeLeekClient {
     }
 
     public async deleteFile(ai_id: number) {
+        if (!this.ready) return;
+        if (this.readonly) {
+            console.error("Readonly mode, can't delete file");
+            return;
+        }
         return this.apiClient.deleteFile({
             aiId: ai_id,
         })
@@ -163,6 +187,11 @@ class NodeLeekClient {
     }
 
     public async deleteFolder(folder_id: number) {
+        if (!this.ready) return;
+        if (this.readonly) {
+            console.error("Readonly mode, can't delete folder");
+            return;
+        }
         return this.apiClient.deleteFolder({
             folderId: folder_id,
         })
@@ -182,6 +211,11 @@ class NodeLeekClient {
     }
 
     private async startSoloFight(leek_id: number, target_id: number) : Promise<number> {
+        if (!this.ready) return -1;
+        if (this.readonly) {
+            console.error("Readonly mode, can't start fight");
+            return -1;
+        }
         return this.apiClient.startSoloFight({
             leekId: leek_id,
             targetId: target_id
@@ -230,7 +264,8 @@ class NodeLeekClient {
         return result;
     }
 
-    public async syncWith(path: string, watch: boolean, choice: boolean | null = null){
+    public async syncWith(path: string, watch: boolean, choice: string = ""){
+        if (!this.ready) return;
         this.leekSyncClient = new LeekSyncClient(this, path);
         return this.leekSyncClient.start(watch, choice);
     }
