@@ -100,24 +100,20 @@ class LeekwarsSource extends LeekfileSource {
     }
 
     private async createFolderInLeekwars(file: LeekFile): Promise<number> {
-        console.log("createFolderInLeekwars " + file.name);
         return this.getOrCreateFolderId(file.name);
     }
 
     private async getOrCreateFolderId(dirname: string): Promise<number> {
         if (this.filelist.contains(dirname)) {
-            console.log("getOrCreateFolderId exist " + dirname + " = " + this.filelist.get(dirname).id);
             return this.filelist.get(dirname).id
         }
 
-        console.log("getOrCreateFolderId don't exist " + dirname);
 
         const id = await this.nodeLeekClient.createFolder(
             await this.getOrCreateFolderId(this.getFolderParentPath(dirname)),
             this.getFolderName(dirname)
         );
         this.filelist.set(dirname, LeekFile.Folder(dirname, id));
-        console.log("GetOrCreateFolder " + dirname + " = " + id);
         return id;
     }
 
