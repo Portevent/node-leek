@@ -22,21 +22,17 @@ abstract class LeekfileSource {
 
     async importFrom(otherSource: LeekfileSource): Promise<void> {
         // Remove file not present in the otherSource
-        await Promise.all(
-            this.filelist.getFiles()
-                .filter((file: LeekFile) => !otherSource.filelist.contains(file.name))
-                .map((file: LeekFile) => this.deleteFile(file))
-        );
+        this.filelist.getFiles()
+            .filter((file: LeekFile) => !otherSource.filelist.contains(file.name))
+            .map((file: LeekFile) => await this.deleteFile(file))
 
         // Update files
-        await Promise.all(
-            otherSource.filelist.getFiles()
-                .filter((file: LeekFile) => !this.filelist.fileIsSimilar(file))
-                .map((file: LeekFile) => {
-                    console.log("Updating out of sync : " + file.name);
-                    this.updateFile(file)
-            })
-        );
+        otherSource.filelist.getFiles()
+            .filter((file: LeekFile) => !this.filelist.fileIsSimilar(file))
+            .map((file: LeekFile) => {
+                console.log("Updating out of sync : " + file.name);
+                await this.updateFile(file)
+        })
     }
 
     compareWith(otherSource: LeekfileSource): boolean {
