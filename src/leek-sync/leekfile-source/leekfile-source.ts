@@ -22,28 +22,28 @@ abstract class LeekfileSource {
 
     async importFrom(otherSource: LeekfileSource): Promise<void> {
         // Remove file not present in the otherSource
-        this.filelist.getFiles()
-            .filter((file: LeekFile) => !otherSource.filelist.contains(file.name))
-            .map((file: LeekFile) => await this.deleteFile(file))
+        for (const file of this.filelist.getFiles()
+            .filter((file: LeekFile) => !otherSource.filelist.contains(file.name))) {
+            await this.deleteFile(file)
+        }
 
         // Update files
-        otherSource.filelist.getFiles()
-            .filter((file: LeekFile) => !this.filelist.fileIsSimilar(file))
-            .map((file: LeekFile) => {
-                console.log("Updating out of sync : " + file.name);
-                await this.updateFile(file)
-        })
+        for (const file of otherSource.filelist.getFiles()
+            .filter((file: LeekFile) => !this.filelist.fileIsSimilar(file))) {
+            console.log("Updating out of sync : " + file.name);
+            await this.updateFile(file)
+        }
     }
 
     compareWith(otherSource: LeekfileSource): boolean {
         return this.filelist.compare(otherSource.filelist);
     }
 
-    isPristine() : boolean{
+    isPristine(): boolean {
         return this.filelist.pristine;
     }
 
-    getCount() : number{
+    getCount(): number {
         return this.filelist.getCount() - 1; // Minus 1 because we don't count root folder
     }
 }

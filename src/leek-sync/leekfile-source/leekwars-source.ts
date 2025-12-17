@@ -23,14 +23,13 @@ class LeekwarsSource extends LeekfileSource {
         Object.entries(leekwarsFiles).forEach(([name, fileId]) => {
             if (this.isFolder(name)) {
                 const newFolder = LeekFile.Folder(name, fileId);
-                if(!this.filelist.fileIsSimilar(newFolder))
-                    console.log("CHANGE IN " + name);
+                if(!this.filelist.fileIsSimilar(newFolder)) {
                     this.filelist.set(name, newFolder);
+                }
             } else {
                 filesToUpdate.push([fileId, name]);
             }
         });
-
         // Update all file in local filesystem with new code and timestamp
         await this.fetchFiles(filesToUpdate)
     }
@@ -84,7 +83,7 @@ class LeekwarsSource extends LeekfileSource {
         if(file.folder) return;
         return this.nodeLeekClient.saveFile(file.id, code)
             .then((timestamp) => {
-                this.filelist.get(file.name).code = file.code;
+                this.filelist.get(file.name).setCode(file.code);
                 this.filelist.get(file.name).timestamp = timestamp;
             })
     }

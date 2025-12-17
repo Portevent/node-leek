@@ -52,6 +52,11 @@ class LeekFile{
     public isSimilar(file: LeekFile) : boolean {
         return file.folder || file.timestamp === this.timestamp || file.hash === this.hash;
     }
+
+    setCode(code: string) {
+        this.code = code;
+        this.hash = this.getHash(code);
+    }
 }
 
 export default LeekFile;

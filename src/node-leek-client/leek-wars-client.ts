@@ -119,8 +119,6 @@ class LeekWarsClient {
             return -1;
         }
 
-        console.log("Create folder " + name + " parent is " + folder_id);
-
         return this.apiClient.createFolder({
             folderId: folder_id,
             name: name
