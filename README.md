@@ -49,12 +49,12 @@ npm update
 npm install
 ```
 
-## 🔄 LeekSync (WIP)
+# 🔄 LeekSync (WIP)
 LeekSync allows you to clone your LeekWars file on your local computer and sync them with a file watcher.  
 Open your favorite local IDE, edit some files and they get upload to LeekWars seamlessly.  
 If you happen to change your file locally while LeekSync is not running, or you edited file through LeekWars editor, LeekSync will ask you which source to use and update the other to be on the same page
 
-### Download your code
+### Download your leekscripts
 ```typescript
 npm run leeksync -- --readonly
 ```
@@ -72,16 +72,16 @@ You should see your own code in leekscripts folder. Here is an example :
 ├── MyFirstIa.leek  
 └── Test.leek  
 
-### Upload your code
+### Upload your leekscripts
 **We strongly recommend to save your code, copying it or upload it to a Git repository**  
 **Uploading an empty folder will result in your leekwars account being just an empty folder.  
 Use LeekSync with care, and have a backup**
 
-First, we need to remove the ` --readonly` option to actually edit our leekwars account.
+First, we need to remove the ` --readonly` option to actually edit our leekwars account.  
 You can use the `--watch` option to activate the watcher. It will listen to any modification done, and will automaticly push them to Leekwars.
 
 ```typescript
-npm run leeksync -- --readonly --watch
+npm run leeksync -- --watch --readonly
 ```
 
 Edit your file and refresh Leekwars to see the updated files :
