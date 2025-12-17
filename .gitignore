@@ -2,6 +2,6 @@
 /build
 /node_modules
 
-/out
+/leekscripts
 .local.filesystem.json
 .local.leekwars.json
