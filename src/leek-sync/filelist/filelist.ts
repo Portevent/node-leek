@@ -1,28 +1,35 @@
 import LeekFile from "./leekfile";
 
+
 class Filelist {
     /*
         Filelist represent some LeekFile mapped by their path
         You can add or remove file
      */
 
-    protected fileList: {[file: string]: LeekFile}= {};
-    public pristine : boolean  = true;
+    protected fileList: { [file: string]: LeekFile } = {};
+    public pristine: boolean = true;
+    public logs: string = ""
 
     constructor() {
         this.fileList = {};
     }
 
-    get(name: string) : LeekFile {
+    addLog(log: string) {
+        this.pristine = false;
+        this.logs += log + "\n"
+    }
+
+    get(name: string): LeekFile {
         return this.fileList[name];
     }
 
     set(name: string, leekFile: LeekFile) {
-        this.pristine = false;
+        this.addLog("+ " + name);
         this.fileList[name] = leekFile;
     }
 
-    contains(name: string) : boolean {
+    contains(name: string): boolean {
         return name in this.fileList;
     }
 
@@ -30,7 +37,7 @@ class Filelist {
         return Object.keys(this.fileList).length;
     }
 
-    getTimestamp(name: string) : number {
+    getTimestamp(name: string): number {
         if (!this.contains(name)) return 0;
         return this.get(name).timestamp;
     }
@@ -44,7 +51,7 @@ class Filelist {
     }
 
     remove(filename: string) {
-        this.pristine = false;
+        this.addLog("- " + filename);
         delete this.fileList[filename];
     }
 
@@ -55,9 +62,9 @@ class Filelist {
         })
     }
 
-    compare(filelist: Filelist) : boolean {
+    compare(filelist: Filelist): boolean {
         // Check file count match
-        if(filelist.getCount() != this.getCount()) return false;
+        if (filelist.getCount() != this.getCount()) return false;
 
         // Check other files all exists in this filelist
         for (let file of filelist.getFiles()) {
@@ -77,7 +84,7 @@ class Filelist {
         // DO NOTHING
     }
 
-    fileIsSimilar(file: LeekFile) : boolean {
+    fileIsSimilar(file: LeekFile): boolean {
         return this.contains(file.name) && this.get(file.name).isSimilar(file);
     }
 }

@@ -76,8 +76,8 @@ class LeekSyncClient {
 
         var response = "";
         console.log("Leekwars (" + this.leekwarsSource.getCount() + " files) and Local files (" + this.localSource.getCount() + " files) aren't sync");
-        if (!this.leekwarsSource.isPristine()) console.log("Leekwars has been updated since last session");
-        if (!this.localSource.isPristine()) console.log("Local files have been updated since last session");
+        if (!this.leekwarsSource.isPristine()) console.log("Leekwars has been updated since last session : \n" + this.leekwarsFilelist.logs);
+        if (!this.localSource.isPristine()) console.log("Local files have been updated since last session : \n" + this.localFilelist.logs);
         while (source == null) {
             choice = await askQuestion("From which one do you want to import files ?\nType leekwars or local : ");
             source = this.processChoice(choice);
