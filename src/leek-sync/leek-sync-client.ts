@@ -7,6 +7,9 @@ import Filelist from "./filelist/filelist";
 
 import readline from 'readline';
 
+const CHOICE_LEEKWARS = 1;
+const CHOICE_LOCAL = 2;
+
 // Create an interface for input and output
 const rl = readline.createInterface({
     input: process.stdin,
@@ -43,9 +46,9 @@ class LeekSyncClient {
         // If both doesn't match, ask which source to use
         if (!this.leekwarsSource.compareWith(this.localSource)) {
             const source: number = await this.askSourceToUse(choice);
-            if (source == 1) {
+            if (source == CHOICE_LEEKWARS) {
                 await this.localSource.importFrom(this.leekwarsSource);
-            } else if (source == 2) {
+            } else if (source == CHOICE_LOCAL) {
                 await this.leekwarsSource.importFrom(this.localSource);
             } else {
                 console.error("Invalid choice, please report this bug");
@@ -76,8 +79,14 @@ class LeekSyncClient {
 
         var response = "";
         console.log("Leekwars (" + this.leekwarsSource.getCount() + " files) and Local files (" + this.localSource.getCount() + " files) aren't sync");
-        if (!this.leekwarsSource.isPristine()) console.log("Leekwars has been updated since last session : \n" + this.leekwarsFilelist.logs);
-        if (!this.localSource.isPristine()) console.log("Local files have been updated since last session : \n" + this.localFilelist.logs);
+
+        if (this.leekwarsSource.getCount() == 0) source = CHOICE_LOCAL // Automatically choose the other source
+        else if (!this.leekwarsSource.isPristine()) console.log("Leekwars has been updated since last session : \n" + this.leekwarsFilelist.logs);
+
+        if (this.localSource.getCount() == 0) source = CHOICE_LEEKWARS // Automatically choose the other source
+        else if (!this.localSource.isPristine()) console.log("Local files have been updated since last session : \n" + this.localFilelist.logs);
+
+
         while (source == null) {
             choice = await askQuestion("From which one do you want to import files ?\nType leekwars or local : ");
             source = this.processChoice(choice);
@@ -87,9 +96,9 @@ class LeekSyncClient {
 
     private processChoice(response: string) {
         if (response.toLowerCase() == "leekwars") {
-            return 1;
+            return CHOICE_LEEKWARS;
         } else if (response.toLowerCase() == "local") {
-            return 2;
+            return CHOICE_LOCAL;
         }
         return null;
     }
