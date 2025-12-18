@@ -28,7 +28,7 @@ class NodeLeekClient extends LeekWarsClient{
             this.initClient(farmer);
         }).catch(err => {
             if (err?.response?.statusCode == 401 && err.body.error == "invalid") {
-                console.error("🛑 Failed to start NodeLeek : invalid credentials.");
+                console.error("🛑 Failed to start NodeLeek : invalid credentials. Check credentials.json");
             } else {
                 console.error(err);
             }
