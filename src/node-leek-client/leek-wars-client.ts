@@ -206,7 +206,42 @@ class LeekWarsClient {
                         .then(() => this.startSoloFight(leek_id, target_id))
                 }
 
-                console.error("startFight " + leek_id + " " + target_id + " -> [" + err.statusCode + "] " + err.body);
+                console.error("startSoloFight " + leek_id + " vs " + target_id + " -> [" + err.statusCode + "] " + err.body);
+                return -1;
+            });
+    }
+
+    protected async getFarmerOpponents(): Promise<FarmerOpponent[]> {
+        return this.apiClient.getFarmerOpponents()
+            .then(result => result.body.opponents)
+            .catch(err => {
+                if (err.statusCode == 429) { // TOO MANY REQUEST
+                    return new Promise(resolve => setTimeout(resolve, 15000))
+                        .then(() => this.getFarmerOpponents())
+                }
+
+                console.error("getFarmerOpponents -> [" + err.statusCode + "] " + err.body.error);
+                return [];
+            });
+    }
+
+    protected async startFarmerFight(target_id: number): Promise<number> {
+        if (!this.ready) return -1;
+        if (this.readonly) {
+            console.error("Readonly mode, can't start fight");
+            return -1;
+        }
+        return this.apiClient.startFarmerFight({
+            targetId: target_id
+        })
+            .then(result => result.body.fight)
+            .catch(err => {
+                if (err.statusCode == 429) { // TOO MANY REQUEST
+                    return new Promise(resolve => setTimeout(resolve, 15000))
+                        .then(() => this.startFarmerFight(target_id))
+                }
+
+                console.error("startFarmerFight vs " + target_id + " -> [" + err.statusCode + "] " + err.body);
                 return -1;
             });
     }

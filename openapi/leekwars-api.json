@@ -83,9 +83,49 @@
         }
       }
     },
+    "/garden/start-farmer-fight": {
+      "post": {
+        "description": "Start a farmer fight",
+        "operationId": "startFarmerFight",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "target_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Fight started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "fight": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "fight"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/garden/get-leek-opponents/{leekId}": {
       "get": {
-        "description": "Start a solo fight",
+        "description": "Get solo fight opponents",
         "operationId": "getSoloOpponents",
         "parameters": [
           {
@@ -110,6 +150,33 @@
                       "type": "array",
                       "items": {
                         "$ref": "#/components/schemas/opponent"
+                      }
+                    }
+                  },
+                  "required": ["opponents"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/garden/get-farmer-opponents/": {
+      "get": {
+        "description": "Get a farmer opponent",
+        "operationId": "getFarmerOpponents",
+        "responses": {
+          "200": {
+            "description": "Fight started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "opponents": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/farmerOpponent"
                       }
                     }
                   },
@@ -477,6 +544,42 @@
           "emblem_changed",
           "chat",
           "member_level"
+        ]
+      },
+      "farmerOpponent": {
+        "description": "Farmer opponent",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatar_changed": {
+            "type": "integer"
+          },
+          "talent": {
+            "type": "integer"
+          },
+          "total_level": {
+            "type": "integer"
+          },
+          "leek_count": {
+            "type": "integer"
+          },
+          "country": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "avatar_changed",
+          "talent",
+          "total_level",
+          "leek_count",
+          "country"
         ]
       },
       "ia": {

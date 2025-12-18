@@ -90,6 +90,34 @@ class NodeLeekClient extends LeekWarsClient{
             });
     }
 
+    public async startRandomFarmerFight() : Promise<[Opponent, number]> {
+        return this.getFarmerOpponents()
+            .then((opponents) => {
+                if (opponents.length == 0) {
+                    console.error("Can't find farmer opponents");
+                    return [null, -1];
+                }
+
+                const opponent = randomIn(opponents);
+                return this.startFarmerFight(opponent.id)
+                    .then((fightId) => [opponent, fightId]);
+            });
+    }
+
+    public async startRandomTeamFight(leek_id: number) : Promise<[Opponent, number]> {
+        return this.getSoloOpponents(leek_id)
+            .then((opponents) => {
+                if (opponents.length == 0) {
+                    console.error("Can't find opponent for " + leek_id);
+                    return [null, -1];
+                }
+
+                const opponent = randomIn(opponents);
+                return this.startSoloFight(leek_id, opponent.id)
+                    .then((fightId) => [opponent, fightId]);
+            });
+    }
+
     public async getCompleteFight(fight_id: number) : Promise<FightResult | void> {
         var result = await this.getFight(fight_id);
         if (result == null) return;
