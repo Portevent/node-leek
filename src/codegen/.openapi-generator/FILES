@@ -13,12 +13,14 @@ model/credentials.ts
 model/deleteFileRequest.ts
 model/deleteFolderRequest.ts
 model/farmer.ts
+model/farmerOpponent.ts
 model/fightResult.ts
 model/folder.ts
 model/garden.ts
 model/gardenGarden.ts
 model/gardenGardenMyCompositionsInner.ts
 model/gardenGardenMyTeam.ts
+model/getFarmerOpponents200Response.ts
 model/getFilesContentRequest.ts
 model/getSoloOpponents200Response.ts
 model/ia.ts
@@ -29,6 +31,7 @@ model/models.ts
 model/opponent.ts
 model/saveFile200Response.ts
 model/saveFileRequest.ts
+model/startFarmerFightRequest.ts
 model/startSoloFight200Response.ts
 model/startSoloFightRequest.ts
 model/team.ts

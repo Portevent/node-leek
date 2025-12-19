@@ -2,19 +2,21 @@ import NodeLeekClient from "./node-leek-client/node-leek-client";
 import {Credentials, CredentialsManager} from "./credentials/credentials-manager";
 
 const args = require('minimist')(process.argv.slice(2));
-const path = args['path'] ?? args['p'] ?? "./leekscripts";
-const watch = (args['watch'] ?? args['w']) != null;
-const choice = args['choice'] ?? args['c'];
 const readonly = (args['readonly'] ?? args['r']) != null;
 
-async function leekSync(credentials : Credentials) {
+async function autoFighter(credentials : Credentials) {
    const client = new NodeLeekClient(credentials.username, credentials.password, readonly);
 
    await client.login();
-   await client.syncWith(path, watch, choice);
+
+   const leekId : number = Number(Object.keys(client.farmer.leeks)[0]);
+   for (let i = 0; i < client.farmer.fights; i++) {
+       console.log("Starting fight " + i);
+       await client.startRandomSoloFight(leekId);
+   }
 }
 
 // LeekSync on each account
 new CredentialsManager(args['credentials'] ?? "credentials.json")
-    .forEachAccount(leekSync)
-    .then(() => console.log("LeekSync closed"));
+    .forEachAccount(autoFighter)
+    .then(() => console.log("AutoFighter closed"));
