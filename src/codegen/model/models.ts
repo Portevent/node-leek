@@ -10,12 +10,14 @@ export * from './credentials';
 export * from './deleteFileRequest';
 export * from './deleteFolderRequest';
 export * from './farmer';
+export * from './farmerOpponent';
 export * from './fightResult';
 export * from './folder';
 export * from './garden';
 export * from './gardenGarden';
 export * from './gardenGardenMyCompositionsInner';
 export * from './gardenGardenMyTeam';
+export * from './getFarmerOpponents200Response';
 export * from './getFilesContentRequest';
 export * from './getSoloOpponents200Response';
 export * from './ia';
@@ -25,6 +27,7 @@ export * from './logindump';
 export * from './opponent';
 export * from './saveFile200Response';
 export * from './saveFileRequest';
+export * from './startFarmerFightRequest';
 export * from './startSoloFight200Response';
 export * from './startSoloFightRequest';
 export * from './team';
@@ -52,12 +55,14 @@ import { Credentials } from './credentials';
 import { DeleteFileRequest } from './deleteFileRequest';
 import { DeleteFolderRequest } from './deleteFolderRequest';
 import { Farmer } from './farmer';
+import { FarmerOpponent } from './farmerOpponent';
 import { FightResult } from './fightResult';
 import { Folder } from './folder';
 import { Garden } from './garden';
 import { GardenGarden } from './gardenGarden';
 import { GardenGardenMyCompositionsInner } from './gardenGardenMyCompositionsInner';
 import { GardenGardenMyTeam } from './gardenGardenMyTeam';
+import { GetFarmerOpponents200Response } from './getFarmerOpponents200Response';
 import { GetFilesContentRequest } from './getFilesContentRequest';
 import { GetSoloOpponents200Response } from './getSoloOpponents200Response';
 import { Ia } from './ia';
@@ -67,6 +72,7 @@ import { Logindump } from './logindump';
 import { Opponent } from './opponent';
 import { SaveFile200Response } from './saveFile200Response';
 import { SaveFileRequest } from './saveFileRequest';
+import { StartFarmerFightRequest } from './startFarmerFightRequest';
 import { StartSoloFight200Response } from './startSoloFight200Response';
 import { StartSoloFightRequest } from './startSoloFightRequest';
 import { Team } from './team';
@@ -97,12 +103,14 @@ let typeMap: {[index: string]: any} = {
     "DeleteFileRequest": DeleteFileRequest,
     "DeleteFolderRequest": DeleteFolderRequest,
     "Farmer": Farmer,
+    "FarmerOpponent": FarmerOpponent,
     "FightResult": FightResult,
     "Folder": Folder,
     "Garden": Garden,
     "GardenGarden": GardenGarden,
     "GardenGardenMyCompositionsInner": GardenGardenMyCompositionsInner,
     "GardenGardenMyTeam": GardenGardenMyTeam,
+    "GetFarmerOpponents200Response": GetFarmerOpponents200Response,
     "GetFilesContentRequest": GetFilesContentRequest,
     "GetSoloOpponents200Response": GetSoloOpponents200Response,
     "Ia": Ia,
@@ -112,6 +120,7 @@ let typeMap: {[index: string]: any} = {
     "Opponent": Opponent,
     "SaveFile200Response": SaveFile200Response,
     "SaveFileRequest": SaveFileRequest,
+    "StartFarmerFightRequest": StartFarmerFightRequest,
     "StartSoloFight200Response": StartSoloFight200Response,
     "StartSoloFightRequest": StartSoloFightRequest,
     "Team": Team,

@@ -22,7 +22,8 @@ export class CredentialsManager{
     }
 
     public async forEachAccount(input: any) {
-        for (const credential in this.credentials) {
+        for (const credential of this.credentials) {
+            console.log("");
             await input(credential);
         }
     }

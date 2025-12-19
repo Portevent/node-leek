@@ -5,6 +5,7 @@ import {Aicode} from "../codegen/model/aicode";
 import {Opponent} from "../codegen/model/opponent";
 import {FightResult} from "../codegen/model/fightResult";
 import {CreateFile200ResponseAi} from "../codegen/model/createFile200ResponseAi";
+import {FarmerOpponent} from "../codegen/model/farmerOpponent";
 
 function randomIn(array: any[]) {
     return array[Math.floor(Math.random() * array.length)];
@@ -211,7 +212,8 @@ class LeekWarsClient {
             });
     }
 
-    protected async getFarmerOpponents(): Promise<FarmerOpponent[]> {
+    protected async getFarmerOpponents() : Promise<FarmerOpponent[]> {
+        if (!this.ready) return [];
         return this.apiClient.getFarmerOpponents()
             .then(result => result.body.opponents)
             .catch(err => {
