@@ -128,7 +128,6 @@ class LocalfileSource extends LeekfileSource {
 
         fs.readdirSync(from, {withFileTypes: true}).forEach(file => {
             const trueFileName = this.cleanupPath(file);
-            console.log(from + " -> " + trueFileName)
             // Do process hidden files
             if(file.name[0] == ".") return
 

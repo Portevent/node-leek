@@ -58,9 +58,15 @@ class NodeLeekClient extends LeekWarsClient{
     }
 
     private registerFolders(folders: Array<Folder>, count: number = 0) {
-        if (folders.length > 0 && count < 50) {
-            // Register all folders that haven't been registered on first try
-            this.registerFolders(folders.filter(folder => !this.registerFolder(folder)), count + 1);
+        if (folders.length > 0) {
+            if (count < 50){
+                // Register all folders that haven't been registered on first try
+                this.registerFolders(folders.filter(folder => !this.registerFolder(folder)), count + 1);
+            }
+            else{
+                console.log("Theses folder can't be registered. Their parent are either bugged or they are more than 50 level deep in folder hierarchy :");
+                console.log(folders);
+            }
         }
     }
 
@@ -69,7 +75,9 @@ class NodeLeekClient extends LeekWarsClient{
     }
 
     private registerAi(ai: Ia) {
-        this.filesByName[this.foldersById[ai.folder] + ai.name + ".leek"] = ai.id
+        if (this.foldersById[ai.folder] != undefined) {
+            this.filesByName[(this.foldersById[ai.folder] ?? "/") + ai.name + ".leek"] = ai.id
+        }
     }
 
     public getFiles(): { [name: string]: number } {
