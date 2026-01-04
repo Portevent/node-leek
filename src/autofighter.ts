@@ -1,5 +1,6 @@
 import NodeLeekClient from "./node-leek-client/node-leek-client";
 import {Credentials, CredentialsManager} from "./credentials/credentials-manager";
+import {PublicLeek} from "./codegen/model/publicLeek";
 
 const args = require('minimist')(process.argv.slice(2));
 const readonly = (args['readonly'] ?? args['r']) != null;
@@ -12,14 +13,19 @@ async function autoFighter(credentials: Credentials) {
     const client = new NodeLeekClient(credentials.username, credentials.password, readonly);
 
     await client.login();
-
-    const leekId: number = Number(Object.keys(client.farmer.leeks)[0]);
-    console.log("Doing " + client.farmer.fights + " fights");
+    var selectedLeek : PublicLeek = client.leeks[0];
+    client.leeks.forEach((leek) => {
+        if(leek.xpBlocked) return;
+        if(leek.level <= selectedLeek.level) {
+            selectedLeek = leek;
+        }
+    })
+    console.log("Doing " + client.farmer.fights + " fights with " + selectedLeek.name);
 
     for (let i = 0; i < client.farmer.fights; i++) {
         console.log("Starting fight " + i);
         await sleep(1000);
-        await client.startRandomSoloFight(leekId);
+        await client.startRandomSoloFight(selectedLeek.id);
     }
 }
 

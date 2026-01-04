@@ -40,6 +40,35 @@
         }
       }
     },
+    "/leek/get/{leekId}": {
+      "get": {
+        "description": "Get a leek detail",
+        "operationId": "getLeek",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "leekId",
+            "description": "ID of the leek",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Leek detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/publicLeek"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/garden/start-solo-fight": {
       "post": {
         "description": "Start a solo fight",
@@ -1066,7 +1095,7 @@
           },
           "capital": {
             "type": "integer",
-            "description": "???"
+            "description": "Capital point to spend"
           },
           "level": {
             "type": "integer",
@@ -1279,6 +1308,522 @@
           "total_ram": 10,
           "total_tp": 17,
           "total_mp": 5
+        }
+      },
+      "publicLeek": {
+        "description": "Leek public characteristics",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unique character identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Character name"
+          },
+          "talent": {
+            "type": "integer",
+            "description": "Talent points"
+          },
+          "talent_more": {
+            "type": "integer",
+            "description": "Talent points above average"
+          },
+          "level": {
+            "type": "integer",
+            "description": "Leek level"
+          },
+          "xp": {
+            "type": "integer",
+            "description": "Leek xp"
+          },
+          "up_xp": {
+            "type": "integer",
+            "description": "Total xp required for next level"
+          },
+          "down_xp": {
+            "type": "integer",
+            "description": "Total xp from previous level"
+          },
+          "remaining_xp": {
+            "type": "integer",
+            "description": "Remaining xp needed to level up"
+          },
+          "xp_blocked": {
+            "type": "boolean",
+            "description": "Is xp locked"
+          },
+          "skin": {
+            "type": "integer",
+            "description": "Skin id"
+          },
+          "hat": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Hat id (nullable if none)"
+          },
+          "title": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of titles"
+          },
+          "metal": {
+            "type": "boolean",
+            "description": "Metallic cosmetic perk"
+          },
+          "face": {
+            "type": "integer",
+            "description": "Face variant id (0 neutral, 1 happy, other not documented yet)"
+          },
+          "life": {
+            "type": "integer",
+            "description": "Base life"
+          },
+          "strength": {
+            "type": "integer",
+            "description": "Base strength"
+          },
+          "wisdom": {
+            "type": "integer",
+            "description": "Base wisdom"
+          },
+          "agility": {
+            "type": "integer",
+            "description": "Base agility"
+          },
+          "resistance": {
+            "type": "integer",
+            "description": "Base resistance"
+          },
+          "science": {
+            "type": "integer",
+            "description": "Base science"
+          },
+          "magic": {
+            "type": "integer",
+            "description": "Base magic"
+          },
+          "frequency": {
+            "type": "integer",
+            "description": "Base frequency"
+          },
+          "cores": {
+            "type": "integer",
+            "description": "Number of cores"
+          },
+          "ram": {
+            "type": "integer",
+            "description": "RAM value"
+          },
+          "tp": {
+            "type": "integer",
+            "description": "TP stat"
+          },
+          "mp": {
+            "type": "integer",
+            "description": "MP stat"
+          },
+          "total_life": {
+            "type": "integer",
+            "description": "Total life with components"
+          },
+          "total_strength": {
+            "type": "integer",
+            "description": "Total strength with components"
+          },
+          "total_wisdom": {
+            "type": "integer",
+            "description": "Total wisdom with components"
+          },
+          "total_agility": {
+            "type": "integer",
+            "description": "Total agility with components"
+          },
+          "total_resistance": {
+            "type": "integer",
+            "description": "Total resistance with components"
+          },
+          "total_science": {
+            "type": "integer",
+            "description": "Total science with components"
+          },
+          "total_magic": {
+            "type": "integer",
+            "description": "Total magic with components"
+          },
+          "total_frequency": {
+            "type": "integer",
+            "description": "Total frequency with components"
+          },
+          "total_cores": {
+            "type": "integer",
+            "description": "Total cores with components"
+          },
+          "total_ram": {
+            "type": "integer",
+            "description": "Total RAM with components"
+          },
+          "total_tp": {
+            "type": "integer",
+            "description": "Total TP with components"
+          },
+          "total_mp": {
+            "type": "integer",
+            "description": "Total MP with components"
+          },
+          "weapon": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Displayed weapon id (cosmetic perk)"
+          },
+          "victories": {
+            "type": "integer",
+            "description": "Victory count"
+          },
+          "draws": {
+            "type": "integer",
+            "description": "Draw count"
+          },
+          "defeats": {
+            "type": "integer",
+            "description": "Defeat count"
+          },
+          "ratio": {
+            "type": "float",
+            "description": "Victory/Defeat ratio"
+          },
+          "chips": {
+            "type": "array",
+            "description": "Chips equipped",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "template": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "weapons": {
+            "type": "array",
+            "description": "Weapon equipped",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "template": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "ai": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "level": {
+                "type": "integer"
+              },
+              "valid": {
+                "type": "boolean"
+              },
+              "version": {
+                "type": "integer"
+              }
+            }
+          },
+          "max_weapons": {
+            "type": "integer"
+          },
+          "max_chips": {
+            "type": "integer"
+          },
+          "in_garden": {
+            "type": "boolean"
+          },
+          "ranking": {
+            "type": "integer"
+          },
+          "talent_history": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "fights": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/fight_resume"
+            }
+          },
+          "tournaments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/tournament_resume"
+            }
+          },
+          "components": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "template": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+
+        },
+        "required": [
+          "id",
+          "name",
+          "talent",
+          "talent_more",
+          "level",
+          "xp",
+          "up_xp",
+          "down_xp",
+          "remaining_xp",
+          "xp_blocked",
+          "skin",
+          "title",
+          "metal",
+          "face",
+          "life",
+          "strength",
+          "wisdom",
+          "agility",
+          "resistance",
+          "science",
+          "magic",
+          "frequency",
+          "cores",
+          "ram",
+          "tp",
+          "mp",
+          "victories",
+          "draws",
+          "defeats",
+          "ratio",
+          "chips",
+          "weapons",
+          "ai",
+          "max_weapons",
+          "max_chips",
+          "in_garden",
+          "fights",
+          "talent_history",
+          "tournaments",
+          "ranking",
+          "components",
+          "total_life",
+          "total_strength",
+          "total_wisdom",
+          "total_agility",
+          "total_resistance",
+          "total_science",
+          "total_magic",
+          "total_frequency",
+          "total_cores",
+          "total_ram",
+          "total_tp",
+          "total_mp"
+        ],
+        "example": {
+          "id": 103247,
+          "name": "Poplouf",
+          "capital": 174,
+          "level": 162,
+          "talent": 575,
+          "skin": 7,
+          "hat": null,
+          "ai": 397088,
+          "weapon": null,
+          "title": [],
+          "metal": false,
+          "face": 0,
+          "life": 1583,
+          "strength": 200,
+          "wisdom": 200,
+          "agility": 0,
+          "resistance": 2,
+          "science": 0,
+          "magic": 0,
+          "frequency": 100,
+          "cores": 1,
+          "ram": 6,
+          "tp": 16,
+          "mp": 4,
+          "total_life": 1773,
+          "total_strength": 260,
+          "total_wisdom": 270,
+          "total_agility": 60,
+          "total_resistance": -18,
+          "total_science": 0,
+          "total_magic": 40,
+          "total_frequency": 110,
+          "total_cores": 1,
+          "total_ram": 10,
+          "total_tp": 17,
+          "total_mp": 5
+        }
+      },
+      "fight_resume": {
+        "description": "TODO",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Fight id"
+          },
+          "leeks1": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "leeks2": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "winner": {
+            "type": "integer",
+            "description": "Winner side"
+          },
+          "status": {
+            "type": "integer",
+            "description": "Fight status (2  = finished)"
+          },
+          "date": {
+            "type": "integer",
+            "description": "Fight date"
+          },
+          "context": {
+            "type": "integer",
+            "description": "Context type"
+          },
+          "type": {
+            "type": "integer",
+            "description": "Fight type"
+          },
+          "farmer1": {
+            "type": "integer",
+            "description": "Fight farmer1"
+          },
+          "farmer2": {
+            "type": "integer",
+            "description": "Fight farmer2"
+          },
+          "team1": {
+            "type": "integer",
+            "description": "Fight team1"
+          },
+          "team2": {
+            "type": "integer",
+            "description": "Fight team2"
+          },
+          "chests": {
+            "type": "integer",
+            "description": "Fight chests"
+          },
+          "comments": {
+            "type": "integer",
+            "description": "Fight comments"
+          },
+          "trophies": {
+            "type": "integer",
+            "description": "Fight unlocked trophies"
+          },
+          "levelups": {
+            "type": "integer",
+            "description": "Fight level up"
+          },
+          "rareloot": {
+            "type": "integer",
+            "description": "Fight rare loot"
+          },
+          "result": {
+            "type": "string",
+            "description": "Fight result"
+          }
+        },
+        "required": [
+          "id",
+          "leeks1",
+          "leeks2",
+          "winner",
+          "status",
+          "date",
+          "context",
+          "farmer1",
+          "farmer2",
+          "team1",
+          "team2",
+          "chests",
+          "comments",
+          "trophies",
+          "levelups",
+          "rareloot",
+          "result"
+        ]
+      },
+      "tournament_resume": {
+        "description": "Tournament resume",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "date": {
+            "type": "integer"
+          },
+          "rounds": {
+            "type": "object",
+            "description": "Rounds by id",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "description": "-1 for a loss, 1 for a win"
+              }
+            }
+          }
         }
       },
       "logindump": {

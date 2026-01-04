@@ -6,6 +6,7 @@ import {Opponent} from "../codegen/model/opponent";
 import {FightResult} from "../codegen/model/fightResult";
 import {CreateFile200ResponseAi} from "../codegen/model/createFile200ResponseAi";
 import {FarmerOpponent} from "../codegen/model/farmerOpponent";
+import {PublicLeek} from "../codegen/model/publicLeek";
 
 function randomIn(array: any[]) {
     return array[Math.floor(Math.random() * array.length)];
@@ -37,6 +38,23 @@ class LeekWarsClient {
             this.apiClient.setApiKey(DefaultApiApiKeys.phpsessid, getPhpsessidToken(r.response.headers["set-cookie"]))
             return r.body.farmer;
         });
+    }
+
+    public async getLeek(leek_id: number) : Promise<PublicLeek | null> {
+        if (!this.ready) return null;
+        return this.apiClient.getLeek(leek_id)
+            .then(result => {
+                return result.body;
+            })
+            .catch(err => {
+                if (err.statusCode == 429) { // TOO MANY REQUEST
+                    return new Promise(resolve => setTimeout(resolve, 15000))
+                        .then(() => this.getLeek(leek_id))
+                }
+
+                console.error("Can't get Leek " + leek_id + " -> [" + err.statusCode + "] " + err.body.error);
+                return null;
+            });
     }
 
     public async fetchFiles(requests: { [ai: number]: number }): Promise<Array<Aicode>> {

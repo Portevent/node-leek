@@ -5,6 +5,8 @@ import {Opponent} from "../codegen/model/opponent";
 import {FightResult} from "../codegen/model/fightResult";
 import LeekSyncClient from "../leek-sync/leek-sync-client";
 import LeekWarsClient from "./leek-wars-client";
+import {PublicLeek} from "../codegen/model/publicLeek";
+import {FightResume} from "../codegen/model/fightResume";
 
 function randomIn(array: any[]){
     return array[Math.floor(Math.random() * array.length)];
@@ -13,6 +15,7 @@ function randomIn(array: any[]){
 class NodeLeekClient extends LeekWarsClient{
 
     public farmer: Farmer = new Farmer();
+    public leeks: PublicLeek[] = [];
     private foldersById: { [id: number]: string } = {0: "/"}
     private filesByName: { [name: string]: number } = {"/": 0}
     private leekSyncClient: LeekSyncClient | null = null;
@@ -25,7 +28,7 @@ class NodeLeekClient extends LeekWarsClient{
     public async login() {
         return this.loginOnLeekwars().then(farmer => {
             console.log("💚 NodeLeek connected !");
-            this.initClient(farmer);
+            return this.initClient(farmer);
         }).catch(err => {
             if (err?.response?.statusCode == 401 && err.body.error == "invalid") {
                 console.error("🛑 Failed to start NodeLeek : invalid credentials. Check credentials.json");
@@ -35,16 +38,81 @@ class NodeLeekClient extends LeekWarsClient{
         });
     }
 
-    private initClient(farmer: Farmer): void {
+    private async initClient(farmer: Farmer): Promise<void> {
         this.farmer = farmer;
         this.logFarmerInfos();
         this.registerFolders(this.farmer.folders);
         this.registerAis(this.farmer.ais);
+        for (const id of Object.keys(this.farmer.leeks)) {
+            await this.registerOwnLeek(Number(id));
+        }
+        this.leeks.forEach(leek => this.logLeekInfos(leek));
     }
 
-    logFarmerInfos() {
+    public logFarmerInfos() {
         console.log("🤠 " + this.farmer.name + " (" + this.farmer.habs + " habs)");
         Object.values(this.farmer.leeks).forEach(leek => console.log("🥬 " + leek.name + " lvl." + leek.level + " - " + leek.talent + " talents" + (leek.capital > 0 ? " - ⚠️ " + leek.capital + " capitals to spend" : "")));
+    }
+
+    private logLeekInfos(leek: PublicLeek): void {
+        console.log("\n/--- 🥬 " + leek.name + " lvl." + leek.level + " (" + Math.floor(100 * (leek.xp - leek.downXp) / (leek.upXp - leek.downXp)) + "%) " + leek.talent + " talents (" + (leek.talentMore>0?"+":"") + leek.talentMore + ") #" + leek.ranking);
+        console.log("/- 🏅" + leek.victories + " wins / " + leek.draws + " draws / " + leek.defeats + " defeats");
+        console.log("/- ❤️" + leek.totalLife + " ⭐️" + leek.totalTp + " 👢" + leek.totalMp + this.getImportantStats(leek));
+        console.log("/- Fights : " + leek.fights.map(fight => this.fightToString(fight)).join(" "));
+    }
+
+    private getImportantStats(leek: PublicLeek): string {
+        const stats : { [name: string]: number } = {
+            " 🤎" : leek.totalStrength,
+            " 💚" : leek.totalWisdom,
+            " 🩵" : leek.totalAgility,
+            " 🧡" : leek.totalResistance,
+            " 💙" : leek.totalScience,
+            " 💜" : leek.totalMagic
+        }
+        let maxValue : number = 0;
+        Object.values(stats).forEach((value) => {
+            if(value > maxValue){
+                maxValue = value;
+            }
+        })
+
+        let result = "";
+        Object.entries(stats).forEach(([key, value]) => {
+            if(value > (maxValue/2) && value > 0){
+                result += key + value;
+            }
+        })
+
+        return result;
+    }
+
+    private fightToString(fight: FightResume) : string {
+
+        return "[" + {
+                "win": "💚",
+                "defeat": "🔴",
+                "draw": "⬜️"
+            }[fight.result]
+            + "⬆".repeat(fight.levelups)
+            + "☘".repeat(fight.rareloot)
+            + "⛤".repeat(fight.trophies)
+            + "]";
+    }
+
+    private fightToBigString(fight: FightResume) : string {
+        return "[ "
+            + fight.leeks1.map(leek => leek.name).join(" ")
+            + " VS "
+            + fight.leeks2.map(leek => leek.name).join(" ")
+            + " ]";
+    }
+
+    private async registerOwnLeek(id: number) {
+        return this.getLeek(id).then(leek => {
+            if(leek == null) return;
+            this.leeks.push(leek);
+        })
     }
 
     private registerFolder(folder: Folder) {

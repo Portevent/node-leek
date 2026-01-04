@@ -12,6 +12,8 @@ export * from './deleteFolderRequest';
 export * from './farmer';
 export * from './farmerOpponent';
 export * from './fightResult';
+export * from './fightResume';
+export * from './fightResumeLeeks1Inner';
 export * from './folder';
 export * from './garden';
 export * from './gardenGarden';
@@ -25,12 +27,16 @@ export * from './item';
 export * from './leek';
 export * from './logindump';
 export * from './opponent';
+export * from './publicLeek';
+export * from './publicLeekAi';
+export * from './publicLeekChipsInner';
 export * from './saveFile200Response';
 export * from './saveFileRequest';
 export * from './startFarmerFightRequest';
 export * from './startSoloFight200Response';
 export * from './startSoloFightRequest';
 export * from './team';
+export * from './tournamentResume';
 
 import * as fs from 'fs';
 
@@ -57,6 +63,8 @@ import { DeleteFolderRequest } from './deleteFolderRequest';
 import { Farmer } from './farmer';
 import { FarmerOpponent } from './farmerOpponent';
 import { FightResult } from './fightResult';
+import { FightResume } from './fightResume';
+import { FightResumeLeeks1Inner } from './fightResumeLeeks1Inner';
 import { Folder } from './folder';
 import { Garden } from './garden';
 import { GardenGarden } from './gardenGarden';
@@ -70,12 +78,16 @@ import { Item } from './item';
 import { Leek } from './leek';
 import { Logindump } from './logindump';
 import { Opponent } from './opponent';
+import { PublicLeek } from './publicLeek';
+import { PublicLeekAi } from './publicLeekAi';
+import { PublicLeekChipsInner } from './publicLeekChipsInner';
 import { SaveFile200Response } from './saveFile200Response';
 import { SaveFileRequest } from './saveFileRequest';
 import { StartFarmerFightRequest } from './startFarmerFightRequest';
 import { StartSoloFight200Response } from './startSoloFight200Response';
 import { StartSoloFightRequest } from './startSoloFightRequest';
 import { Team } from './team';
+import { TournamentResume } from './tournamentResume';
 
 /* tslint:disable:no-unused-variable */
 let primitives = [
@@ -105,6 +117,8 @@ let typeMap: {[index: string]: any} = {
     "Farmer": Farmer,
     "FarmerOpponent": FarmerOpponent,
     "FightResult": FightResult,
+    "FightResume": FightResume,
+    "FightResumeLeeks1Inner": FightResumeLeeks1Inner,
     "Folder": Folder,
     "Garden": Garden,
     "GardenGarden": GardenGarden,
@@ -118,12 +132,16 @@ let typeMap: {[index: string]: any} = {
     "Leek": Leek,
     "Logindump": Logindump,
     "Opponent": Opponent,
+    "PublicLeek": PublicLeek,
+    "PublicLeekAi": PublicLeekAi,
+    "PublicLeekChipsInner": PublicLeekChipsInner,
     "SaveFile200Response": SaveFile200Response,
     "SaveFileRequest": SaveFileRequest,
     "StartFarmerFightRequest": StartFarmerFightRequest,
     "StartSoloFight200Response": StartSoloFight200Response,
     "StartSoloFightRequest": StartSoloFightRequest,
     "Team": Team,
+    "TournamentResume": TournamentResume,
 }
 
 export class ObjectSerializer {

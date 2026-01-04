@@ -15,6 +15,8 @@ model/deleteFolderRequest.ts
 model/farmer.ts
 model/farmerOpponent.ts
 model/fightResult.ts
+model/fightResume.ts
+model/fightResumeLeeks1Inner.ts
 model/folder.ts
 model/garden.ts
 model/gardenGarden.ts
@@ -29,9 +31,13 @@ model/leek.ts
 model/logindump.ts
 model/models.ts
 model/opponent.ts
+model/publicLeek.ts
+model/publicLeekAi.ts
+model/publicLeekChipsInner.ts
 model/saveFile200Response.ts
 model/saveFileRequest.ts
 model/startFarmerFightRequest.ts
 model/startSoloFight200Response.ts
 model/startSoloFightRequest.ts
 model/team.ts
+model/tournamentResume.ts

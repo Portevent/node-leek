@@ -7,6 +7,8 @@
     "build": "npx tsc -w",
     "start": "npx tsc; node build/app.js",
     "leeksync": "npx tsc; node build/leeksync.js",
+    "login": "npx tsc; node build/login.js",
+    "autofighter": "npx tsc; node build/autofighter.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
