@@ -50,25 +50,25 @@ class NodeLeekClient extends LeekWarsClient{
     }
 
     public logFarmerInfos() {
-        console.log("🤠 " + this.farmer.name + " (" + this.farmer.habs + " habs)");
-        Object.values(this.farmer.leeks).forEach(leek => console.log("🥬 " + leek.name + " lvl." + leek.level + " - " + leek.talent + " talents" + (leek.capital > 0 ? " - ⚠️ " + leek.capital + " capitals to spend" : "")));
+        console.log("🤠 " + this.farmer.name + " (" + this.farmer.habs + " habs) " + this.farmer.fights + " fights");
+        //Object.values(this.farmer.leeks).forEach(leek => console.log("🥬 " + leek.name + " lvl." + leek.level + " - " + leek.talent + " talents" + (leek.capital > 0 ? " - ⚠️ " + leek.capital + " capitals to spend" : "")));
     }
 
     private logLeekInfos(leek: PublicLeek): void {
         console.log("\n/--- 🥬 " + leek.name + " lvl." + leek.level + " (" + Math.floor(100 * (leek.xp - leek.downXp) / (leek.upXp - leek.downXp)) + "%) " + leek.talent + " talents (" + (leek.talentMore>0?"+":"") + leek.talentMore + ") #" + leek.ranking);
-        console.log("/- 🏅" + leek.victories + " wins / " + leek.draws + " draws / " + leek.defeats + " defeats");
-        console.log("/- ❤️" + leek.totalLife + " ⭐️" + leek.totalTp + " 👢" + leek.totalMp + this.getImportantStats(leek));
+        console.log("/- 🏅 " + leek.victories + " wins / " + leek.draws + " draws / " + leek.defeats + " defeats");
+        console.log("/- ❤️ " + leek.totalLife + " ⭐️ " + leek.totalTp + " 👢 " + leek.totalMp + this.getImportantStats(leek));
         console.log("/- Fights : " + leek.fights.map(fight => this.fightToString(fight)).join(" "));
     }
 
     private getImportantStats(leek: PublicLeek): string {
         const stats : { [name: string]: number } = {
-            " 🤎" : leek.totalStrength,
-            " 💚" : leek.totalWisdom,
-            " 🩵" : leek.totalAgility,
-            " 🧡" : leek.totalResistance,
-            " 💙" : leek.totalScience,
-            " 💜" : leek.totalMagic
+            " 🤎 " : leek.totalStrength,
+            " 💚 " : leek.totalWisdom,
+            " 🩵 " : leek.totalAgility,
+            " 🧡 " : leek.totalResistance,
+            " 💙 " : leek.totalScience,
+            " 💜 " : leek.totalMagic
         }
         let maxValue : number = 0;
         Object.values(stats).forEach((value) => {
@@ -90,9 +90,10 @@ class NodeLeekClient extends LeekWarsClient{
     private fightToString(fight: FightResume) : string {
 
         return "[" + {
-                "win": "💚",
-                "defeat": "🔴",
-                "draw": "⬜️"
+                "win": "💚 ",
+                "defeat": "🔴 ",
+                "draw": "⬜️ ",
+                "?": "wait "
             }[fight.result]
             + "⬆".repeat(fight.levelups)
             + "☘".repeat(fight.rareloot)
@@ -132,8 +133,8 @@ class NodeLeekClient extends LeekWarsClient{
                 this.registerFolders(folders.filter(folder => !this.registerFolder(folder)), count + 1);
             }
             else{
-                console.log("Theses folder can't be registered. Their parent are either bugged or they are more than 50 level deep in folder hierarchy :");
-                console.log(folders);
+                // console.log("Theses folder can't be registered. Their parent are either bugged or they are more than 50 level deep in folder hierarchy :");
+                // console.log(folders);
             }
         }
     }

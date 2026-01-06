@@ -8,6 +8,7 @@ async function leekSync(credentials : Credentials) {
    const client = new NodeLeekClient(credentials.username, credentials.password, readonly);
 
    await client.login();
+   await client.buy("50fights", 20);
 }
 
 // LeekSync on each account

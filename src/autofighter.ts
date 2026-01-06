@@ -13,7 +13,10 @@ async function autoFighter(credentials: Credentials) {
     const client = new NodeLeekClient(credentials.username, credentials.password, readonly);
 
     await client.login();
+    await client.buy("50fights", 20);
     var selectedLeek : PublicLeek = client.leeks[0];
+
+    // Select lowest level leek to xp
     client.leeks.forEach((leek) => {
         if(leek.xpBlocked) return;
         if(leek.level <= selectedLeek.level) {
