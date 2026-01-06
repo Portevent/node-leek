@@ -7,6 +7,7 @@ import {FightResult} from "../codegen/model/fightResult";
 import {CreateFile200ResponseAi} from "../codegen/model/createFile200ResponseAi";
 import {FarmerOpponent} from "../codegen/model/farmerOpponent";
 import {PublicLeek} from "../codegen/model/publicLeek";
+import {Buy200Response} from "../codegen/model/buy200Response";
 
 function randomIn(array: any[]) {
     return array[Math.floor(Math.random() * array.length)];
@@ -53,6 +54,30 @@ class LeekWarsClient {
                 }
 
                 console.error("Can't get Leek " + leek_id + " -> [" + err.statusCode + "] " + err.body.error);
+                return null;
+            });
+    }
+
+    public async buy(item_id: string, quantity: number) : Promise<Buy200Response | null> {
+        if (!this.ready) return null;
+        if (this.readonly) {
+            console.error("Readonly mode, can't buy items");
+            return null;
+        }
+        return this.apiClient.buy({
+                itemId: item_id,
+                quantity: quantity
+            })
+            .then(result => {
+                return result.body;
+            })
+            .catch(err => {
+                if (err.statusCode == 429) { // TOO MANY REQUEST
+                    return new Promise(resolve => setTimeout(resolve, 15000))
+                        .then(() => this.buy(item_id, quantity))
+                }
+
+                console.error("Can't buy " + item_id + " " + quantity + " times -> [" + err.statusCode + "] " + err.body.error);
                 return null;
             });
     }

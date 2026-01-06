@@ -16,6 +16,8 @@ import http from 'http';
 
 /* tslint:disable:no-unused-locals */
 import { Aicode } from '../model/aicode';
+import { Buy200Response } from '../model/buy200Response';
+import { BuyRequest } from '../model/buyRequest';
 import { CreateFile200Response } from '../model/createFile200Response';
 import { CreateFileRequest } from '../model/createFileRequest';
 import { CreateFolder200Response } from '../model/createFolder200Response';
@@ -110,6 +112,75 @@ export class DefaultApi {
         this.interceptors.push(interceptor);
     }
 
+    /**
+     * Buy something
+     * @param buyRequest 
+     */
+    public async buy (buyRequest?: BuyRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: Buy200Response;  }> {
+        const localVarPath = this.basePath + '/market/buy-habs-quantity';
+        let localVarQueryParameters: any = {};
+        let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
+        const produces = ['application/json'];
+        // give precedence to 'application/json'
+        if (produces.indexOf('application/json') >= 0) {
+            localVarHeaderParams.Accept = 'application/json';
+        } else {
+            localVarHeaderParams.Accept = produces.join(',');
+        }
+        let localVarFormParams: any = {};
+
+        (<any>Object).assign(localVarHeaderParams, options.headers);
+
+        let localVarUseFormData = false;
+
+        let localVarRequestOptions: localVarRequest.Options = {
+            method: 'POST',
+            qs: localVarQueryParameters,
+            headers: localVarHeaderParams,
+            uri: localVarPath,
+            useQuerystring: this._useQuerystring,
+            json: true,
+            body: ObjectSerializer.serialize(buyRequest, "BuyRequest")
+        };
+
+        let authenticationPromise = Promise.resolve();
+        if (this.authentications.phpsessid.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.phpsessid.applyToRequest(localVarRequestOptions));
+        }
+        if (this.authentications.cookieAuth.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.cookieAuth.applyToRequest(localVarRequestOptions));
+        }
+        authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
+
+        let interceptorPromise = authenticationPromise;
+        for (const interceptor of this.interceptors) {
+            interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
+        }
+
+        return interceptorPromise.then(() => {
+            if (Object.keys(localVarFormParams).length) {
+                if (localVarUseFormData) {
+                    (<any>localVarRequestOptions).formData = localVarFormParams;
+                } else {
+                    localVarRequestOptions.form = localVarFormParams;
+                }
+            }
+            return new Promise<{ response: http.IncomingMessage; body: Buy200Response;  }>((resolve, reject) => {
+                localVarRequest(localVarRequestOptions, (error, response, body) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
+                            body = ObjectSerializer.deserialize(body, "Buy200Response");
+                            resolve({ response: response, body: body });
+                        } else {
+                            reject(new HttpError(response, body, response.statusCode));
+                        }
+                    }
+                });
+            });
+        });
+    }
     /**
      * Create new ai code
      * @param createFileRequest 

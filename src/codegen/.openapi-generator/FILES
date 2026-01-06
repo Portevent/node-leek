@@ -4,6 +4,8 @@ api/apis.ts
 api/defaultApi.ts
 git_push.sh
 model/aicode.ts
+model/buy200Response.ts
+model/buyRequest.ts
 model/createFile200Response.ts
 model/createFile200ResponseAi.ts
 model/createFileRequest.ts

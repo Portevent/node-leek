@@ -112,6 +112,53 @@
         }
       }
     },
+    "/market/buy-habs-quantity": {
+      "post": {
+        "description": "Buy something",
+        "operationId": "buy",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "item_id": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item bought",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "fights": {
+                      "type": "integer"
+                    },
+                    "money": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "money",
+                    "fight"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/garden/start-farmer-fight": {
       "post": {
         "description": "Start a farmer fight",

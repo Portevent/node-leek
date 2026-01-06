@@ -1,6 +1,8 @@
 import localVarRequest from 'request';
 
 export * from './aicode';
+export * from './buy200Response';
+export * from './buyRequest';
 export * from './createFile200Response';
 export * from './createFile200ResponseAi';
 export * from './createFileRequest';
@@ -52,6 +54,8 @@ export type RequestFile = string | Buffer | fs.ReadStream | RequestDetailedFile;
 
 
 import { Aicode } from './aicode';
+import { Buy200Response } from './buy200Response';
+import { BuyRequest } from './buyRequest';
 import { CreateFile200Response } from './createFile200Response';
 import { CreateFile200ResponseAi } from './createFile200ResponseAi';
 import { CreateFileRequest } from './createFileRequest';
@@ -106,6 +110,8 @@ let enumsMap: {[index: string]: any} = {
 
 let typeMap: {[index: string]: any} = {
     "Aicode": Aicode,
+    "Buy200Response": Buy200Response,
+    "BuyRequest": BuyRequest,
     "CreateFile200Response": CreateFile200Response,
     "CreateFile200ResponseAi": CreateFile200ResponseAi,
     "CreateFileRequest": CreateFileRequest,
