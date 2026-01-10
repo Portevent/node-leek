@@ -1,17 +1,14 @@
 import NodeLeekClient from "./node-leek-client/node-leek-client";
-import {Credentials, CredentialsManager} from "./credentials/credentials-manager";
+import {CredentialsManager} from "./credentials/credentials-manager";
 
 const args = require('minimist')(process.argv.slice(2));
 const readonly = (args['readonly'] ?? args['r']) != null;
 
-async function leekSync(credentials : Credentials) {
-   const client = new NodeLeekClient(credentials.username, credentials.password, readonly);
-
-   await client.login();
-   await client.buy("50fights", 20);
+async function login(client: NodeLeekClient, index: number) {
+    // await client.buy("50fights", 20);
 }
 
-// LeekSync on each account
+// Login on each account
 new CredentialsManager(args['credentials'] ?? "credentials.json")
-    .forEachAccount(leekSync)
+    .forEachAccount(login)
     .then(() => console.log("LeekSync closed"));

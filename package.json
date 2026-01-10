@@ -8,6 +8,7 @@
     "start": "npx tsc; node build/app.js",
     "leeksync": "npx tsc; node build/leeksync.js",
     "login": "npx tsc; node build/login.js",
+    "boss": "npx tsc; node build/boss_farming.js",
     "autofighter": "npx tsc; node build/autofighter.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

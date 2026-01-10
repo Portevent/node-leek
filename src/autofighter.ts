@@ -9,10 +9,7 @@ async function sleep(delay: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, delay));
 }
 
-async function autoFighter(credentials: Credentials) {
-    const client = new NodeLeekClient(credentials.username, credentials.password, readonly);
-
-    await client.login();
+async function autoFighter(client: NodeLeekClient, index: number) {
     await client.buy("50fights", 20);
     var selectedLeek : PublicLeek = client.leeks[0];
 

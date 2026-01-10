@@ -27,7 +27,7 @@ class NodeLeekClient extends LeekWarsClient{
 
     public async login() {
         return this.loginOnLeekwars().then(farmer => {
-            console.log("💚 NodeLeek connected !");
+            console.log("\n\n\n📯 NodeLeek connected !");
             return this.initClient(farmer);
         }).catch(err => {
             if (err?.response?.statusCode == 401 && err.body.error == "invalid") {
@@ -208,6 +208,21 @@ class NodeLeekClient extends LeekWarsClient{
     public async syncWith(path: string, watch: boolean, choice: string = ""){
         this.leekSyncClient = new LeekSyncClient(this, path);
         return this.leekSyncClient.start(watch, choice);
+    }
+
+    public async createRoom(bossId: number, locked: boolean = false) : Promise<string>{
+        if (this.farmer.fights == 0) return "";
+        this.currentRoom = "";
+        await this.createBossRoom(bossId, locked, Object.keys(this.farmer.leeks).map(id => Number(id)));
+        while(this.currentRoom == ""){
+            await new Promise(resolve => setTimeout(resolve, 10));
+        }
+        return this.currentRoom;
+    }
+
+    public async joinRoom(roomId: string) : Promise<number>{
+        await this.joinBossRoom(roomId, Object.keys(this.farmer.leeks).map(id => Number(id)));
+        return 1;
     }
 }
 

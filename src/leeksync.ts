@@ -7,14 +7,11 @@ const watch = (args['watch'] ?? args['w']) != null;
 const choice = args['choice'] ?? args['c'];
 const readonly = (args['readonly'] ?? args['r']) != null;
 
-async function leekSync(credentials : Credentials) {
-   const client = new NodeLeekClient(credentials.username, credentials.password, readonly);
-
-   await client.login();
+async function leekSync(client: NodeLeekClient, index: number) {
    await client.syncWith(path, watch, choice);
 }
 
 // LeekSync on each account
 new CredentialsManager(args['credentials'] ?? "credentials.json")
-    .forEachAccount(leekSync)
+    .forEachAccount(leekSync, readonly)
     .then(() => console.log("LeekSync closed"));

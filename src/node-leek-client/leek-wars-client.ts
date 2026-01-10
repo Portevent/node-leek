@@ -8,6 +8,9 @@ import {CreateFile200ResponseAi} from "../codegen/model/createFile200ResponseAi"
 import {FarmerOpponent} from "../codegen/model/farmerOpponent";
 import {PublicLeek} from "../codegen/model/publicLeek";
 import {Buy200Response} from "../codegen/model/buy200Response";
+import {SocketMessage} from "./leekwars-frontend/SocketMessage";
+import {NotificationType} from "./leekwars-frontend/Notification";
+import {ITEMS} from "./leekwars-frontend/Items";
 
 function randomIn(array: any[]) {
     return array[Math.floor(Math.random() * array.length)];
@@ -21,10 +24,17 @@ class LeekWarsClient {
     private password: string;
     private readonly: boolean;
 
+    private socket: WebSocket | null;
+    private token: string = "";
+    private phpsessid: string = "";
+
+    protected currentRoom: string = "";
+
     constructor(username: string, password: string, readonly: boolean = false) {
         this.readonly = readonly;
         this.username = username;
         this.password = password;
+        this.socket = null;
         this.apiClient = new DefaultApi();
     }
 
@@ -34,11 +44,21 @@ class LeekWarsClient {
             password: this.password,
             keepConnected: true
         }).then(r => {
+            this.token = getCookieToken(r.response.headers["set-cookie"])
+            this.phpsessid = getPhpsessidToken(r.response.headers["set-cookie"])
+
+            this.apiClient.setApiKey(DefaultApiApiKeys.cookieAuth, this.token)
+            this.apiClient.setApiKey(DefaultApiApiKeys.phpsessid, this.phpsessid)
+
             this.ready = true;
-            this.apiClient.setApiKey(DefaultApiApiKeys.cookieAuth, getCookieToken(r.response.headers["set-cookie"]))
-            this.apiClient.setApiKey(DefaultApiApiKeys.phpsessid, getPhpsessidToken(r.response.headers["set-cookie"]))
+            this.connectWebSocket();
+
             return r.body.farmer;
         });
+    }
+
+    public async close(){
+        this.socket?.close();
     }
 
     public async getLeek(leek_id: number) : Promise<PublicLeek | null> {
@@ -58,16 +78,16 @@ class LeekWarsClient {
             });
     }
 
-    public async buy(item_id: string, quantity: number) : Promise<Buy200Response | null> {
+    public async buy(item_id: string, quantity: number = 1) : Promise<Buy200Response | null> {
         if (!this.ready) return null;
         if (this.readonly) {
             console.error("Readonly mode, can't buy items");
             return null;
         }
         return this.apiClient.buy({
-                itemId: item_id,
-                quantity: quantity
-            })
+            itemId: item_id,
+            quantity: quantity
+        })
             .then(result => {
                 return result.body;
             })
@@ -291,7 +311,7 @@ class LeekWarsClient {
             });
     }
 
-    public async getFight(fight_id: number): Promise<FightResult> {
+    protected async getFight(fight_id: number): Promise<FightResult> {
         if (!this.ready) return new FightResult();
         return this.apiClient.getFight(fight_id)
             .then(result => result.body)
@@ -304,6 +324,212 @@ class LeekWarsClient {
                 console.error("getFight " + fight_id + " -> [" + err.statusCode + "] " + err.body.error);
                 return new FightResult();
             });
+    }
+
+    protected async createBossRoom(bossId: number = 1, locked: boolean = false, leeks: number[] = []){
+        const r = `[${SocketMessage.GARDEN_BOSS_CREATE_SQUAD}, ${bossId}, ${locked}, [${leeks}]]`;
+        this.socket?.send(r);
+        console.log("Create room : ", r);
+    }
+
+    protected async joinBossRoom(roomId: string, leeks: number[] = []){
+        const r = `[${SocketMessage.GARDEN_BOSS_JOIN_SQUAD}, "${roomId}", [${leeks}]]`;
+        this.socket?.send(r);
+        console.log("Join room : ", r);
+    }
+
+    public async startRoomFight(){
+        const r = `[${SocketMessage.GARDEN_BOSS_ATTACK}]`;
+        this.socket?.send(r);
+        console.log("Start room : ", r);
+    }
+
+    protected async recieveNotification(message: any){
+        switch (message.type) {
+            case NotificationType.TROPHY_UNLOCKED:
+                console.log("Trophy unlocked : " + message);
+                break;
+            case NotificationType.UP_LEVEL:
+                console.log("Level up : " + message);
+                break;
+            default:
+                console.log("Notification : " + message);
+                break;
+        }
+    }
+
+    protected async connectWebSocket(){
+        if (!this.ready) return;
+        this.socket = new WebSocket('wss://leekwars.com/ws', [
+            'leek-wars',
+            this.token
+        ]),
+        this.socket.onopen = () => {
+            console.log("Websocket connected !")
+            // o.M.commit('invalidate-chats'),
+            //     o.M.commit('wsconnected'),
+            //     this.retry_count = 10,
+            //     this.retry_delay = 1000;
+            // for (const e of this.queue) this.send(e);
+            // this.queue = [],
+            //     r.H.battleRoyale.init(),
+            //     r.H.bossSquads.init()
+        },
+            this.socket.onclose = () => {
+                console.log("Websocket closed ! ")
+                // if (
+                //     o.M.getters.admin ||
+                //     r.H.LOCAL ||
+                //     r.H.DEV ||
+                //     window.__FARMER__ &&
+                //     1 === window.__FARMER__.farmer.id
+                // ) {
+                //     const e = '[WS] fermée';
+                //     console.error(e)
+                // }
+                // o.M.commit('wsclose'),
+                //     this.retry()
+            },
+            this.socket.onerror = e => {
+                console.error('[WS] erreur', e)
+            },
+            this.socket.onmessage = msg => {
+                const json = JSON.parse(msg.data)
+                const id = json[0]
+                const data = json[1]
+                const request_id = json[2]
+
+                switch (id) {
+                    case SocketMessage.PONG: {
+                        console.log("[WS] recieved PONG", data);
+                        break
+                    }
+                    case SocketMessage.NOTIFICATION_RECEIVE : {
+                        this.recieveNotification({ id: data[0], type: data[1], parameters: data[2], new: true });
+                        break
+                    }
+                    case SocketMessage.LUCKY: {
+                        // NOTHING TO DO
+                        break
+                    }
+                    case SocketMessage.FAKE_LUCKY: {
+                        // CLICK ON LUCKY
+                        break
+                    }
+                    case SocketMessage.BATTLE_ROYALE_CHAT_NOTIF: {
+                        console.log("[WS] recieved BATTLE_ROYALE_CHAT_NOTIF", data);
+                        break
+                    }
+                    case SocketMessage.BATTLE_ROYALE_UPDATE: {
+                        console.log("[WS] recieved BATTLE_ROYALE_UPDATE", data);
+                        break
+                    }
+                    case SocketMessage.BATTLE_ROYALE_START: {
+                        console.log("[WS] recieved BATTLE_ROYALE_START", data);
+                        break
+                    }
+                    case SocketMessage.BATTLE_ROYALE_LEAVE: {
+                        console.log("[WS] recieved BATTLE_ROYALE_LEAVE", data);
+                        break
+                    }
+                    case SocketMessage.GARDEN_QUEUE: {
+                        console.log("[WS] recieved GARDEN_QUEUE", data);
+                        break
+                    }
+                    case SocketMessage.FIGHT_PROGRESS: {
+                        console.log("[WS] recieved FIGHT_PROGRESS", data);
+                        break
+                    }
+                    case SocketMessage.TOURNAMENT_UPDATE: {
+                        console.log("[WS] recieved TOURNAMENT_UPDATE", data);
+                        break
+                    }
+                    case SocketMessage.UPDATE_HABS: {
+                        console.log("+" + data[0] + " 🪙");
+                        break
+                    }
+                    case SocketMessage.UPDATE_LEEK_XP: {
+                        console.log("+" + data[1] + " xp");
+                        break
+                    }
+                    case SocketMessage.UPDATE_LEEK_TALENT: {
+                        console.log((data[1]>0?"+":"") + data[1] + " talents");
+                        break
+                    }
+                    case SocketMessage.UPDATE_FARMER_TALENT: {
+                        console.log((data[1]>0?"+":"") + data[1] + " farmer talents");
+                        break
+                    }
+                    case SocketMessage.UPDATE_TEAM_TALENT: {
+                        console.log((data[1]>0?"+":"") + data[1] + " team talents");
+                        break
+                    }
+                    case SocketMessage.ADD_RESOURCE: {
+                        // console.log("[WS] recieved ADD_RESOURCE", data);
+                        console.log("+" + (data[2]>1?data[2]:"") + " " + ITEMS[data[0]].name);
+                        // console.log("add resource", data)
+                        // const template = data[0]
+                        // const id = data[1]
+                        // const quantity = data[2]
+                        // const item = "" // TODO LeekWars.items[data[0]]
+                        // const time = data[3]
+                        // if (item) {
+                        //     //store.commit('add-inventory', { type: item.type, template, id, quantity, time })
+                        // }
+                        break
+                    }
+                    case SocketMessage.GARDEN_BOSS_SQUADS: {
+                        // console.log("[WS] recieved GARDEN_BOSS_SQUADS", data);
+                        break
+                    }
+                    case SocketMessage.GARDEN_BOSS_SQUAD_JOINED: {
+                        console.log("[WS] recieved GARDEN_BOSS_SQUAD_JOINED");
+                        this.currentRoom = data.id;
+                        break
+                    }
+                    case SocketMessage.GARDEN_BOSS_SQUAD: {
+                        // console.log("[WS] recieved GARDEN_BOSS_SQUAD", data);
+                        break
+                    }
+                    case SocketMessage.GARDEN_BOSS_NO_SUCH_SQUAD: {
+                        console.log("[WS] recieved GARDEN_BOSS_NO_SUCH_SQUAD", data);
+                        break
+                    }
+                    case SocketMessage.GARDEN_BOSS_STARTED: {
+                        console.log("[WS] recieved GARDEN_BOSS_STARTED");
+                        this.currentRoom = "";
+                        break
+                    }
+                    case SocketMessage.GARDEN_BOSS_LEFT: {
+                        console.log("[WS] recieved GARDEN_BOSS_LEFT", data);
+                        break
+                    }
+                    case SocketMessage.CONSOLE_RESULT: {
+                        console.log("[WS] recieved CONSOLE_RESULT", data);
+                        break
+                    }
+                    case SocketMessage.CONSOLE_ERROR: {
+                        console.log("[WS] recieved CONSOLE_ERROR", data);
+                        break
+                    }
+                    case SocketMessage.CONSOLE_LOG: {
+                        console.log("[WS] recieved CONSOLE_LOG", data);
+                        break
+                    }
+                    case SocketMessage.EDITOR_ANALYZE: {
+                        console.log("[WS] recieved EDITOR_ANALYZE", data);
+                        break
+                    }
+                    case SocketMessage.EDITOR_HOVER: {
+                        console.log("[WS] recieved EDITOR_HOVER", data);
+                        break
+                    }
+                    case SocketMessage.EDITOR_COMPLETE: {
+                        console.log("[WS] recieved EDITOR_COMPLETE", data);
+                        break
+                    }
+                }
+            }
     }
 }
 
