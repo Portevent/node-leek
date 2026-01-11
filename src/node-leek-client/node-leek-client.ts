@@ -220,9 +220,12 @@ class NodeLeekClient extends LeekWarsClient{
         return this.currentRoom;
     }
 
-    public async joinRoom(roomId: string) : Promise<number>{
+    public async joinRoom(roomId: string) : Promise<string>{
         await this.joinBossRoom(roomId, Object.keys(this.farmer.leeks).map(id => Number(id)));
-        return 1;
+        while(this.currentRoom == ""){
+            await this.sleep(10);
+        }
+        return this.currentRoom;
     }
 }
 
