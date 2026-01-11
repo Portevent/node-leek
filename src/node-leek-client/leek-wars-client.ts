@@ -54,7 +54,7 @@ class LeekWarsClient {
             await this.connectWebSocket();
 
             // Add on purpose delay to avoid TOO_MANY_REQUEST
-            await this.sleep(50);
+            await this.sleep(100);
             return r.body.farmer;
         });
     }
@@ -93,7 +93,9 @@ class LeekWarsClient {
             itemId: item_id,
             quantity: quantity
         })
-            .then(result => {
+            .then(async result => {
+                // Add on purpose delay to avoid TOO_MANY_REQUEST
+                await this.sleep(100);
                 return result.body;
             })
             .catch(err => {
@@ -270,7 +272,7 @@ class LeekWarsClient {
         })
             .then(async result => {
                 // Add on purpose delay to avoid TOO_MANY_REQUEST
-                await this.sleep(50);
+                await this.sleep(100);
                 return result.body.fight;
             })
             .catch(err => {
@@ -356,13 +358,13 @@ class LeekWarsClient {
     protected async recieveNotification(message: any){
         switch (message.type) {
             case NotificationType.TROPHY_UNLOCKED:
-                console.log("Trophy unlocked : " + message);
+                console.log("Trophy unlocked : ", message);
                 break;
             case NotificationType.UP_LEVEL:
-                console.log("Level up : " + message);
+                console.log("Level up : ", message);
                 break;
             default:
-                console.log("Notification : " + message);
+                console.log("Notification : ", message);
                 break;
         }
     }
