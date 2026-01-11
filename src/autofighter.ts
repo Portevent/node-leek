@@ -15,7 +15,7 @@ async function autoFighter(client: NodeLeekClient, index: number) {
         if(leek.level <= selectedLeek.level) {
             selectedLeek = leek;
         }
-    })
+    });
     console.log("Doing " + client.farmer.fights + " fights with " + selectedLeek.name);
 
     for (let i = 0; i < client.farmer.fights; i++) {

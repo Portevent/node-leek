@@ -56,6 +56,14 @@ class LeekWarsClient {
             // Add on purpose delay to avoid TOO_MANY_REQUEST
             await this.sleep(100);
             return r.body.farmer;
+        })
+        .catch(err => {
+            if (err.statusCode == 429) { // TOO MANY REQUEST
+                return this.sleep(15000).then(() => this.loginOnLeekwars())
+            }
+
+            console.error("Can't connect " + this.username + " -> [" + err.statusCode + "] " + err.body.error);
+            throw err;
         });
     }
 
