@@ -28,7 +28,7 @@ async function start(){
             });
 
             await client.startRoomFight();
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await client.sleep(50);
         });
     }
 

@@ -5,10 +5,6 @@ import {PublicLeek} from "./codegen/model/publicLeek";
 const args = require('minimist')(process.argv.slice(2));
 const readonly = (args['readonly'] ?? args['r']) != null;
 
-async function sleep(delay: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, delay));
-}
-
 async function autoFighter(client: NodeLeekClient, index: number) {
     await client.buy("50fights", 20);
     var selectedLeek : PublicLeek = client.leeks[0];
@@ -24,12 +20,12 @@ async function autoFighter(client: NodeLeekClient, index: number) {
 
     for (let i = 0; i < client.farmer.fights; i++) {
         console.log("Starting fight " + i);
-        await sleep(1000);
+        await client.sleep(1000);
         await client.startRandomSoloFight(selectedLeek.id);
     }
 }
 
 // LeekSync on each account
 new CredentialsManager(args['credentials'] ?? "credentials.json")
-    .forEachAccount(autoFighter)
+    .forEachAccount(autoFighter, readonly)
     .then(() => console.log("AutoFighter closed"));

@@ -43,7 +43,7 @@ class LeekWarsClient {
             login: this.username,
             password: this.password,
             keepConnected: true
-        }).then(r => {
+        }).then(async r => {
             this.token = getCookieToken(r.response.headers["set-cookie"])
             this.phpsessid = getPhpsessidToken(r.response.headers["set-cookie"])
 
@@ -51,14 +51,20 @@ class LeekWarsClient {
             this.apiClient.setApiKey(DefaultApiApiKeys.phpsessid, this.phpsessid)
 
             this.ready = true;
-            this.connectWebSocket();
+            await this.connectWebSocket();
 
+            // Add on purpose delay to avoid TOO_MANY_REQUEST
+            await this.sleep(50);
             return r.body.farmer;
         });
     }
 
     public async close(){
         this.socket?.close();
+    }
+    
+    public async sleep(delay: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, delay));
     }
 
     public async getLeek(leek_id: number) : Promise<PublicLeek | null> {
@@ -69,8 +75,7 @@ class LeekWarsClient {
             })
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
-                    return new Promise(resolve => setTimeout(resolve, 15000))
-                        .then(() => this.getLeek(leek_id))
+                    return this.sleep(15000).then(() => this.getLeek(leek_id))
                 }
 
                 console.error("Can't get Leek " + leek_id + " -> [" + err.statusCode + "] " + err.body.error);
@@ -93,7 +98,7 @@ class LeekWarsClient {
             })
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
-                    return new Promise(resolve => setTimeout(resolve, 15000))
+                    return this.sleep(15000)
                         .then(() => this.buy(item_id, quantity))
                 }
 
@@ -110,7 +115,7 @@ class LeekWarsClient {
             .then(result => result.body)
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
-                    return new Promise(resolve => setTimeout(resolve, 15000))
+                    return this.sleep(15000)
                         .then(() => this.fetchFiles(requests))
                 }
 
@@ -144,7 +149,7 @@ class LeekWarsClient {
             .then(result => result.body.modified)
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
-                    return new Promise(resolve => setTimeout(resolve, 15000))
+                    return this.sleep(15000)
                         .then(() => this.saveFile(ai_id, code))
                 }
 
@@ -167,7 +172,7 @@ class LeekWarsClient {
             .then(result => result.body.ai)
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
-                    return new Promise(resolve => setTimeout(resolve, 15000))
+                    return this.sleep(15000)
                         .then(() => this.createFile(folder_id, name, version))
                 }
 
@@ -190,7 +195,7 @@ class LeekWarsClient {
             .then(result => result.body.id)
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
-                    return new Promise(resolve => setTimeout(resolve, 15000))
+                    return this.sleep(15000)
                         .then(() => this.createFolder(folder_id, name))
                 }
 
@@ -211,7 +216,7 @@ class LeekWarsClient {
             .then(result => {})
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
-                    return new Promise(resolve => setTimeout(resolve, 15000))
+                    return this.sleep(15000)
                         .then(() => this.deleteFile(ai_id))
                 }
 
@@ -231,7 +236,7 @@ class LeekWarsClient {
             .then(result => result.body)
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
-                    return new Promise(resolve => setTimeout(resolve, 15000))
+                    return this.sleep(15000)
                         .then(() => this.deleteFolder(folder_id))
                 }
 
@@ -244,7 +249,7 @@ class LeekWarsClient {
             .then(result => result.body.opponents)
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
-                    return new Promise(resolve => setTimeout(resolve, 15000))
+                    return this.sleep(15000)
                         .then(() => this.getSoloOpponents(leek_id))
                 }
 
@@ -263,10 +268,14 @@ class LeekWarsClient {
             leekId: leek_id,
             targetId: target_id
         })
-            .then(result => result.body.fight)
+            .then(async result => {
+                // Add on purpose delay to avoid TOO_MANY_REQUEST
+                await this.sleep(50);
+                return result.body.fight;
+            })
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
-                    return new Promise(resolve => setTimeout(resolve, 15000))
+                    return this.sleep(15000)
                         .then(() => this.startSoloFight(leek_id, target_id))
                 }
 
@@ -281,7 +290,7 @@ class LeekWarsClient {
             .then(result => result.body.opponents)
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
-                    return new Promise(resolve => setTimeout(resolve, 15000))
+                    return this.sleep(15000)
                         .then(() => this.getFarmerOpponents())
                 }
 
@@ -302,7 +311,7 @@ class LeekWarsClient {
             .then(result => result.body.fight)
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
-                    return new Promise(resolve => setTimeout(resolve, 15000))
+                    return this.sleep(15000)
                         .then(() => this.startFarmerFight(target_id))
                 }
 
@@ -317,7 +326,7 @@ class LeekWarsClient {
             .then(result => result.body)
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
-                    return new Promise(resolve => setTimeout(resolve, 15000))
+                    return this.sleep(15000)
                         .then(() => this.getFight(fight_id))
                 }
 

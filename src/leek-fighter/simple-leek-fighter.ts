@@ -2,6 +2,7 @@ import NodeLeekClient from "../node-leek-client/node-leek-client";
 import {Leek} from "../codegen/model/leek";
 import {FightResult} from "../codegen/model/fightResult";
 
+// TODO : Move this somewhere else
 class SimpleLeekFighter{
     private client: NodeLeekClient;
     private leek: Leek | undefined;
@@ -28,7 +29,7 @@ class SimpleLeekFighter{
             if(opponent == null) continue;
             if(fightId == -1) continue;
 
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await this.client.sleep(1000);
 
             console.log("⚔️ " + opponent.name + " lvl." + opponent.level + " (" + opponent.talent + " talents) : " + fightId);
 

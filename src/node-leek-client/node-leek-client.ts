@@ -196,10 +196,10 @@ class NodeLeekClient extends LeekWarsClient{
     }
 
     public async getCompleteFight(fight_id: number) : Promise<FightResult | void> {
-        var result = await this.getFight(fight_id);
+        const result = await this.getFight(fight_id);
         if (result == null) return;
         if (result.status == 0) {
-            await new Promise(resolve => setTimeout(resolve, 5000));
+            await this.sleep(5000);
             return this.getCompleteFight(result.id);
         }
         return result;
@@ -215,7 +215,7 @@ class NodeLeekClient extends LeekWarsClient{
         this.currentRoom = "";
         await this.createBossRoom(bossId, locked, Object.keys(this.farmer.leeks).map(id => Number(id)));
         while(this.currentRoom == ""){
-            await new Promise(resolve => setTimeout(resolve, 10));
+            await this.sleep(10);
         }
         return this.currentRoom;
     }
