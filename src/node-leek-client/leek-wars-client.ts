@@ -20,9 +20,9 @@ class LeekWarsClient {
 
     private apiClient: DefaultApi;
     private ready: boolean = false;
-    private username: string;
-    private password: string;
-    private readonly: boolean;
+    private readonly username: string;
+    private readonly password: string;
+    private readonly readonly: boolean;
 
     private socket: WebSocket | null;
     private token: string = "";
@@ -369,16 +369,17 @@ class LeekWarsClient {
     protected async recieveNotification(message: any){
         switch (message.type) {
             case NotificationType.TROPHY_UNLOCKED:
-                console.log("Trophy unlocked : ", message);
+                console.log(`[WS ${this.username}] Trophy unlocked :`, message);
                 break;
             case NotificationType.UP_LEVEL:
+                console.log(`[WS ${this.username}] Leek ${message.parameters[0]} reached level ${message.parameters[1]} (${message.parameters[2]} capitals to spend)`, message);
                 this.on_level_up(message.parameters[0], message.parameters[1], message.parameters[2]);
                 break;
             case NotificationType.BOSS_STARTED:
-                // console.log("Boss started")
+                // console.log(`[WS ${this.username}] Boss fight started`);
                 break;
             default:
-                console.log("Notification : ", message);
+                console.log(`[WS ${this.username}] Notification :`, message);
                 break;
         }
     }
@@ -557,9 +558,8 @@ class LeekWarsClient {
             }
     }
 
-    private on_level_up(leekId: number, level: number, capitalToSpend: number): void {
-        console.log("Leek " + leekId + " reached level " + level + " (" + capitalToSpend + " capital to spend)");
-    }
+    // Make this an observable
+    public on_level_up: (leekId: number, level: number, capitalToSpend: number) => void = (_) => {};
 }
 
 export {LeekWarsClient as default};
