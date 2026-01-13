@@ -1,6 +1,6 @@
-import NodeLeekClient from "./node-leek-client/node-leek-client";
-import {Credentials, CredentialsManager} from "./credentials/credentials-manager";
-import {PublicLeek} from "./codegen/model/publicLeek";
+import NodeLeekClient from "./node-leek-client/node-leek-client.js";
+import {Credentials, CredentialsManager} from "./credentials/credentials-manager.js";
+import {PublicLeek} from "./codegen/model/publicLeek.js";
 
 const args = require('minimist')(process.argv.slice(2));
 const readonly = (args['readonly'] ?? args['r']) != null;

@@ -1,4 +1,4 @@
-import {ItemTemplate} from "./Item";
+import {ItemTemplate} from "./Item.js";
 
 export const ITEMS: { [key: string]: ItemTemplate } = Object.freeze({
     '1': {

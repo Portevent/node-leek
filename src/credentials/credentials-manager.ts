@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import NodeLeekClient from "../node-leek-client/node-leek-client";
+import NodeLeekClient from "../node-leek-client/node-leek-client.js";
 
 export class Credentials {
     public username: string = ""
@@ -32,8 +32,8 @@ export class CredentialsManager {
 
         if (this.clients[index] == null) {
             this.clients[index] = new NodeLeekClient(
-                this.credentials[index].username,
-                this.credentials[index].password,
+                this.credentials[index]!.username,
+                this.credentials[index]!.password,
                 readonly
             )
             await this.clients[index]?.login();

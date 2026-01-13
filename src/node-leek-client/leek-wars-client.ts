@@ -1,16 +1,16 @@
-import {DefaultApi, DefaultApiApiKeys} from "../codegen/api/defaultApi";
-import {getCookieToken, getPhpsessidToken} from "./token-parsing";
-import {Farmer} from "../codegen/model/farmer";
-import {Aicode} from "../codegen/model/aicode";
-import {Opponent} from "../codegen/model/opponent";
-import {FightResult} from "../codegen/model/fightResult";
-import {CreateFile200ResponseAi} from "../codegen/model/createFile200ResponseAi";
-import {FarmerOpponent} from "../codegen/model/farmerOpponent";
-import {PublicLeek} from "../codegen/model/publicLeek";
-import {Buy200Response} from "../codegen/model/buy200Response";
-import {SocketMessage} from "./leekwars-frontend/SocketMessage";
-import {NotificationType} from "./leekwars-frontend/Notification";
-import {ITEMS} from "./leekwars-frontend/Items";
+import {DefaultApi, DefaultApiApiKeys} from "../codegen/api/defaultApi.js";
+import {getCookieToken, getPhpsessidToken} from "./token-parsing.js";
+import {Farmer} from "../codegen/model/farmer.js";
+import {Aicode} from "../codegen/model/aicode.js";
+import {Opponent} from "../codegen/model/opponent.js";
+import {FightResult} from "../codegen/model/fightResult.js";
+import {CreateFile200ResponseAi} from "../codegen/model/createFile200ResponseAi.js";
+import {FarmerOpponent} from "../codegen/model/farmerOpponent.js";
+import {PublicLeek} from "../codegen/model/publicLeek.js";
+import {Buy200Response} from "../codegen/model/buy200Response.js";
+import {SocketMessage} from "./leekwars-frontend/SocketMessage.js";
+import {NotificationType} from "./leekwars-frontend/Notification.js";
+import {ITEMS} from "./leekwars-frontend/Items.js";
 
 function randomIn(array: any[]) {
     return array[Math.floor(Math.random() * array.length)];
@@ -134,7 +134,7 @@ class LeekWarsClient {
             });
     }
 
-    public async fetchFile(ai: number, timestamp: number): Promise<Aicode> {
+    public async fetchFile(ai: number, timestamp: number): Promise<Aicode | void> {
         if (!this.ready) return new Aicode();
         const request: { [ai: number]: number } = {}
         request[ai] = timestamp;
@@ -492,7 +492,7 @@ class LeekWarsClient {
                     }
                     case SocketMessage.ADD_RESOURCE: {
                         // console.log(`[WS ${this.username}] received ADD_RESOURCE`, data);
-                        console.log(`[WS ${this.username}] ` + (data[2]>1?data[2]:"") + " " + ITEMS[data[0]].name);
+                        console.log(`[WS ${this.username}] ` + (data[2]>1?data[2]:"") + " " + ITEMS[data[0]]?.name);
                         // console.log("add resource", data)
                         // const template = data[0]
                         // const id = data[1]

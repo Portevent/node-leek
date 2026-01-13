@@ -1,5 +1,7 @@
-import NodeLeekClient from "./node-leek-client/node-leek-client";
-import {CredentialsManager} from "./credentials/credentials-manager";
+import NodeLeekClient from "./node-leek-client/node-leek-client.js";
+import {CredentialsManager} from "./credentials/credentials-manager.js";
+import fs from "node:fs";
+import {FightResult} from "./codegen/model/fightResult.js";
 
 const args = require('minimist')(process.argv.slice(2));
 const readonly = (args['readonly'] ?? args['r']) != null;

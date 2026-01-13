@@ -1,5 +1,5 @@
-import NodeLeekClient from "./node-leek-client/node-leek-client";
-import {Credentials, CredentialsManager} from "./credentials/credentials-manager";
+import NodeLeekClient from "./node-leek-client/node-leek-client.js";
+import {Credentials, CredentialsManager} from "./credentials/credentials-manager.js";
 
 const args = require('minimist')(process.argv.slice(2));
 const path = args['path'] ?? args['p'] ?? "./leekscripts";

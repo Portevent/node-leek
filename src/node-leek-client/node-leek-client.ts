@@ -1,12 +1,12 @@
-import {Farmer} from "../codegen/model/farmer";
-import {Folder} from "../codegen/model/folder";
-import {Ia} from "../codegen/model/ia";
-import {Opponent} from "../codegen/model/opponent";
-import {FightResult} from "../codegen/model/fightResult";
-import LeekSyncClient from "../leek-sync/leek-sync-client";
-import LeekWarsClient from "./leek-wars-client";
-import {PublicLeek} from "../codegen/model/publicLeek";
-import {FightResume} from "../codegen/model/fightResume";
+import {Farmer} from "../codegen/model/farmer.js";
+import {Folder} from "../codegen/model/folder.js";
+import {Ia} from "../codegen/model/ia.js";
+import {Opponent} from "../codegen/model/opponent.js";
+import {FightResult} from "../codegen/model/fightResult.js";
+import LeekSyncClient from "../leek-sync/leek-sync-client.js";
+import LeekWarsClient from "./leek-wars-client.js";
+import {PublicLeek} from "../codegen/model/publicLeek.js";
+import {FightResume} from "../codegen/model/fightResume.js";
 
 function randomIn(array: any[]){
     return array[Math.floor(Math.random() * array.length)];

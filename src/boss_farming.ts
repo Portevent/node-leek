@@ -1,5 +1,5 @@
-import NodeLeekClient from "./node-leek-client/node-leek-client";
-import {CredentialsManager} from "./credentials/credentials-manager";
+import NodeLeekClient from "./node-leek-client/node-leek-client.js";
+import {CredentialsManager} from "./credentials/credentials-manager.js";
 
 const args = require('minimist')(process.argv.slice(2));
 const readonly = (args['readonly'] ?? args['r']) != null;
@@ -28,9 +28,11 @@ async function start(){
             });
 
             await client.startRoomFight();
-            await client.sleep(50);
         });
     }
+    await manager.forFirstAccount(async (client: NodeLeekClient, index: number)=> {
+        await client.sleep(15000);
+    });
 
     await manager.disconnectEachAccount();
 }

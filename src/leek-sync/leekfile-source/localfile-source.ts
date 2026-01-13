@@ -1,9 +1,9 @@
-import LeekFile from "../filelist/leekfile";
-import LeekfileSource from "./leekfile-source";
-import Filelist from "../filelist/filelist";
+import LeekFile from "../filelist/leekfile.js";
+import LeekfileSource from "./leekfile-source.js";
+import Filelist from "../filelist/filelist.js";
 import fs, {Dirent} from "node:fs";
 import Watcher from 'watcher';
-import Leekfile from "../filelist/leekfile";
+import Leekfile from "../filelist/leekfile.js";
 
 
 class LocalfileSource extends LeekfileSource {
@@ -35,7 +35,7 @@ class LocalfileSource extends LeekfileSource {
         });
     }
 
-    async deleteFile(file: LeekFile) {
+    override async deleteFile(file: LeekFile) {
         if (file.folder)
             fs.rmdir(this.path + file.name, (err) => { // TODO add recursive option
                 if (err) {
@@ -54,7 +54,7 @@ class LocalfileSource extends LeekfileSource {
             });
     }
 
-    async updateFile(file: LeekFile) {
+    override async updateFile(file: LeekFile) {
         if (file.name in this.filelist) {
             if (file.folder) return;
 
