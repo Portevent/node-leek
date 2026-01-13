@@ -330,10 +330,13 @@ class LeekWarsClient {
             });
     }
 
-    protected async getFight(fight_id: number): Promise<FightResult> {
+    public async getFight(fight_id: number): Promise<FightResult> {
         if (!this.ready) return new FightResult();
         return this.apiClient.getFight(fight_id)
-            .then(result => result.body)
+            .then(async result => {
+                await this.sleep(75);
+                return result.body
+            })
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
                     return this.sleep(15000)
