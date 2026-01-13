@@ -372,7 +372,10 @@ class LeekWarsClient {
                 console.log("Trophy unlocked : ", message);
                 break;
             case NotificationType.UP_LEVEL:
-                console.log("Level up : ", message);
+                this.on_level_up(message.parameters[0], message.parameters[1], message.parameters[2]);
+                break;
+            case NotificationType.BOSS_STARTED:
+                // console.log("Boss started")
                 break;
             default:
                 console.log("Notification : ", message);
@@ -413,7 +416,7 @@ class LeekWarsClient {
                 //     this.retry()
             },
             this.socket.onerror = e => {
-                console.error('[WS] erreur', e)
+                console.error(`[WS ${this.username}] erreur`, e)
             },
             this.socket.onmessage = msg => {
                 const json = JSON.parse(msg.data)
@@ -423,7 +426,7 @@ class LeekWarsClient {
 
                 switch (id) {
                     case SocketMessage.PONG: {
-                        console.log("[WS] recieved PONG", data);
+                        console.log(`"[WS ${this.username}] received PONG`, data);
                         break
                     }
                     case SocketMessage.NOTIFICATION_RECEIVE : {
@@ -439,56 +442,56 @@ class LeekWarsClient {
                         break
                     }
                     case SocketMessage.BATTLE_ROYALE_CHAT_NOTIF: {
-                        console.log("[WS] recieved BATTLE_ROYALE_CHAT_NOTIF", data);
+                        console.log(`[WS ${this.username}] received BATTLE_ROYALE_CHAT_NOTIF`, data);
                         break
                     }
                     case SocketMessage.BATTLE_ROYALE_UPDATE: {
-                        console.log("[WS] recieved BATTLE_ROYALE_UPDATE", data);
+                        console.log(`[WS ${this.username}] received BATTLE_ROYALE_UPDATE`, data);
                         break
                     }
                     case SocketMessage.BATTLE_ROYALE_START: {
-                        console.log("[WS] recieved BATTLE_ROYALE_START", data);
+                        console.log(`[WS ${this.username}] received BATTLE_ROYALE_START`, data);
                         break
                     }
                     case SocketMessage.BATTLE_ROYALE_LEAVE: {
-                        console.log("[WS] recieved BATTLE_ROYALE_LEAVE", data);
+                        console.log(`[WS ${this.username}] received BATTLE_ROYALE_LEAVE`, data);
                         break
                     }
                     case SocketMessage.GARDEN_QUEUE: {
-                        console.log("[WS] recieved GARDEN_QUEUE", data);
+                        console.log(`[WS ${this.username}] received GARDEN_QUEUE`, data);
                         break
                     }
                     case SocketMessage.FIGHT_PROGRESS: {
-                        console.log("[WS] recieved FIGHT_PROGRESS", data);
+                        console.log(`[WS ${this.username}] received FIGHT_PROGRESS`, data);
                         break
                     }
                     case SocketMessage.TOURNAMENT_UPDATE: {
-                        console.log("[WS] recieved TOURNAMENT_UPDATE", data);
+                        console.log(`[WS ${this.username}] received TOURNAMENT_UPDATE`, data);
                         break
                     }
                     case SocketMessage.UPDATE_HABS: {
-                        console.log("+" + data[0] + " 🪙");
+                        console.log(`[WS ${this.username}] +` + data[0] + " 🪙");
                         break
                     }
                     case SocketMessage.UPDATE_LEEK_XP: {
-                        console.log("+" + data[1] + " xp");
+                        console.log(`[WS ${this.username}] +` + data[1] + " xp");
                         break
                     }
                     case SocketMessage.UPDATE_LEEK_TALENT: {
-                        console.log((data[1]>0?"+":"") + data[1] + " talents");
+                        console.log(`[WS ${this.username}] ` + (data[1]>0?"+":"") + data[1] + " talents");
                         break
                     }
                     case SocketMessage.UPDATE_FARMER_TALENT: {
-                        console.log((data[1]>0?"+":"") + data[1] + " farmer talents");
+                        console.log(`[WS ${this.username}] ` + (data[1]>0?"+":"") + data[1] + " farmer talents");
                         break
                     }
                     case SocketMessage.UPDATE_TEAM_TALENT: {
-                        console.log((data[1]>0?"+":"") + data[1] + " team talents");
+                        console.log(`[WS ${this.username}] ` + (data[1]>0?"+":"") + data[1] + " team talents");
                         break
                     }
                     case SocketMessage.ADD_RESOURCE: {
-                        // console.log("[WS] recieved ADD_RESOURCE", data);
-                        console.log("+" + (data[2]>1?data[2]:"") + " " + ITEMS[data[0]].name);
+                        // console.log(`[WS ${this.username}] received ADD_RESOURCE`, data);
+                        console.log(`[WS ${this.username}] ` + (data[2]>1?data[2]:"") + " " + ITEMS[data[0]].name);
                         // console.log("add resource", data)
                         // const template = data[0]
                         // const id = data[1]
@@ -501,57 +504,61 @@ class LeekWarsClient {
                         break
                     }
                     case SocketMessage.GARDEN_BOSS_SQUADS: {
-                        // console.log("[WS] recieved GARDEN_BOSS_SQUADS", data);
+                        // console.log(`[WS ${this.username}] received GARDEN_BOSS_SQUADS`, data);
                         break
                     }
                     case SocketMessage.GARDEN_BOSS_SQUAD_JOINED: {
-                        console.log("[WS] recieved GARDEN_BOSS_SQUAD_JOINED");
+                        console.log(`[WS ${this.username}] received GARDEN_BOSS_SQUAD_JOINED`);
                         this.currentRoom = data.id;
                         break
                     }
                     case SocketMessage.GARDEN_BOSS_SQUAD: {
-                        // console.log("[WS] recieved GARDEN_BOSS_SQUAD", data);
+                        // console.log(`[WS ${this.username}] received GARDEN_BOSS_SQUAD`, data);
                         break
                     }
                     case SocketMessage.GARDEN_BOSS_NO_SUCH_SQUAD: {
-                        console.log("[WS] recieved GARDEN_BOSS_NO_SUCH_SQUAD", data);
+                        console.log(`[WS ${this.username}] received GARDEN_BOSS_NO_SUCH_SQUAD`, data);
                         break
                     }
                     case SocketMessage.GARDEN_BOSS_STARTED: {
-                        console.log("[WS] recieved GARDEN_BOSS_STARTED");
+                        console.log(`[WS ${this.username}] received GARDEN_BOSS_STARTED`);
                         this.currentRoom = "";
                         break
                     }
                     case SocketMessage.GARDEN_BOSS_LEFT: {
-                        console.log("[WS] recieved GARDEN_BOSS_LEFT", data);
+                        console.log(`[WS ${this.username}] received GARDEN_BOSS_LEFT`, data);
                         break
                     }
                     case SocketMessage.CONSOLE_RESULT: {
-                        console.log("[WS] recieved CONSOLE_RESULT", data);
+                        console.log(`[WS ${this.username}] received CONSOLE_RESULT`, data);
                         break
                     }
                     case SocketMessage.CONSOLE_ERROR: {
-                        console.log("[WS] recieved CONSOLE_ERROR", data);
+                        console.log(`[WS ${this.username}] received CONSOLE_ERROR`, data);
                         break
                     }
                     case SocketMessage.CONSOLE_LOG: {
-                        console.log("[WS] recieved CONSOLE_LOG", data);
+                        console.log(`[WS ${this.username}] received CONSOLE_LOG`, data);
                         break
                     }
                     case SocketMessage.EDITOR_ANALYZE: {
-                        console.log("[WS] recieved EDITOR_ANALYZE", data);
+                        console.log(`[WS ${this.username}] received EDITOR_ANALYZE`, data);
                         break
                     }
                     case SocketMessage.EDITOR_HOVER: {
-                        console.log("[WS] recieved EDITOR_HOVER", data);
+                        console.log(`[WS ${this.username}] received EDITOR_HOVER`, data);
                         break
                     }
                     case SocketMessage.EDITOR_COMPLETE: {
-                        console.log("[WS] recieved EDITOR_COMPLETE", data);
+                        console.log(`[WS ${this.username}] received EDITOR_COMPLETE`, data);
                         break
                     }
                 }
             }
+    }
+
+    private on_level_up(leekId: number, level: number, capitalToSpend: number): void {
+        console.log("Leek " + leekId + " reached level " + level + " (" + capitalToSpend + " capital to spend)");
     }
 }
 

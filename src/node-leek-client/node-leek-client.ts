@@ -202,6 +202,7 @@ class NodeLeekClient extends LeekWarsClient{
             await this.sleep(5000);
             return this.getCompleteFight(result.id);
         }
+        await this.sleep(100);
         return result;
     }
 
