@@ -1,18 +1,15 @@
 {
   "name": "node-leek",
   "version": "1.0.0",
-  "description": "",
-  "main": "src/app.ts",
+  "description": "A library for interacting with LeekWars API.",
+  "main": "dist/node-leek-client/node-leek-client.js",
+  "types": "dist/node-leek-client/node-leek-client.d.ts",
   "scripts": {
-    "build": "npx tsc -w",
-    "start": "npx tsc; node dist/app.js",
-    "leeksync": "npx tsc; node dist/leeksync.js",
-    "login": "npx tsc; node dist/login.js",
-    "boss": "npx tsc; node dist/boss_farming.js",
-    "autofighter": "npx tsc; node dist/autofighter.js",
+    "build": "tsc",
+    "prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": ["leekwars", "api", "client"],
   "author": "Portevent",
   "license": "ISC",
   "dependencies": {
@@ -20,5 +17,9 @@
     "request": "^2.88.2",
     "watcher": "^2.3.1"
   },
-  "files": ["dist"]
+  "files": ["dist"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Portevent/node-leek"
+  }
 }
