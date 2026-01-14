@@ -11,11 +11,15 @@
  */
 
 import { RequestFile } from './models';
+import { FightResume } from './fightResume';
+import { PublicLeekAi } from './publicLeekAi';
+import { PublicLeekChipsInner } from './publicLeekChipsInner';
+import { TournamentResume } from './tournamentResume';
 
 /**
-* Leek characteristics
+* Leek public characteristics
 */
-export class Leek {
+export class PublicLeek {
     /**
     * Unique character identifier
     */
@@ -25,17 +29,37 @@ export class Leek {
     */
     'name': string;
     /**
-    * Capital point to spend
+    * Talent points
     */
-    'capital': number;
+    'talent': number;
+    /**
+    * Talent points above average
+    */
+    'talentMore': number;
     /**
     * Leek level
     */
     'level': number;
     /**
-    * Talent points
+    * Leek xp
     */
-    'talent': number;
+    'xp': number;
+    /**
+    * Total xp required for next level
+    */
+    'upXp': number;
+    /**
+    * Total xp from previous level
+    */
+    'downXp': number;
+    /**
+    * Remaining xp needed to level up
+    */
+    'remainingXp': number;
+    /**
+    * Is xp locked
+    */
+    'xpBlocked': boolean;
     /**
     * Skin id
     */
@@ -44,14 +68,6 @@ export class Leek {
     * Hat id (nullable if none)
     */
     'hat'?: number;
-    /**
-    * leekscript id
-    */
-    'ai': number;
-    /**
-    * Displayed weapon id (cosmetic perk)
-    */
-    'weapon'?: number;
     /**
     * List of titles
     */
@@ -160,6 +176,43 @@ export class Leek {
     * Total MP with components
     */
     'totalMp': number;
+    /**
+    * Displayed weapon id (cosmetic perk)
+    */
+    'weapon'?: number;
+    /**
+    * Victory count
+    */
+    'victories': number;
+    /**
+    * Draw count
+    */
+    'draws': number;
+    /**
+    * Defeat count
+    */
+    'defeats': number;
+    /**
+    * Victory/Defeat ratio
+    */
+    'ratio': number;
+    /**
+    * Chips equipped
+    */
+    'chips': Array<PublicLeekChipsInner>;
+    /**
+    * Weapon equipped
+    */
+    'weapons': Array<PublicLeekChipsInner>;
+    'ai': PublicLeekAi;
+    'maxWeapons': number;
+    'maxChips': number;
+    'inGarden': boolean;
+    'ranking': number;
+    'talentHistory': Array<number>;
+    'fights': Array<FightResume>;
+    'tournaments': Array<TournamentResume>;
+    'components': Array<PublicLeekChipsInner>;
 
     static discriminator: string | undefined = undefined;
 
@@ -175,8 +228,13 @@ export class Leek {
             "type": "string"
         },
         {
-            "name": "capital",
-            "baseName": "capital",
+            "name": "talent",
+            "baseName": "talent",
+            "type": "number"
+        },
+        {
+            "name": "talentMore",
+            "baseName": "talent_more",
             "type": "number"
         },
         {
@@ -185,9 +243,29 @@ export class Leek {
             "type": "number"
         },
         {
-            "name": "talent",
-            "baseName": "talent",
+            "name": "xp",
+            "baseName": "xp",
             "type": "number"
+        },
+        {
+            "name": "upXp",
+            "baseName": "up_xp",
+            "type": "number"
+        },
+        {
+            "name": "downXp",
+            "baseName": "down_xp",
+            "type": "number"
+        },
+        {
+            "name": "remainingXp",
+            "baseName": "remaining_xp",
+            "type": "number"
+        },
+        {
+            "name": "xpBlocked",
+            "baseName": "xp_blocked",
+            "type": "boolean"
         },
         {
             "name": "skin",
@@ -197,16 +275,6 @@ export class Leek {
         {
             "name": "hat",
             "baseName": "hat",
-            "type": "number"
-        },
-        {
-            "name": "ai",
-            "baseName": "ai",
-            "type": "number"
-        },
-        {
-            "name": "weapon",
-            "baseName": "weapon",
             "type": "number"
         },
         {
@@ -343,10 +411,90 @@ export class Leek {
             "name": "totalMp",
             "baseName": "total_mp",
             "type": "number"
+        },
+        {
+            "name": "weapon",
+            "baseName": "weapon",
+            "type": "number"
+        },
+        {
+            "name": "victories",
+            "baseName": "victories",
+            "type": "number"
+        },
+        {
+            "name": "draws",
+            "baseName": "draws",
+            "type": "number"
+        },
+        {
+            "name": "defeats",
+            "baseName": "defeats",
+            "type": "number"
+        },
+        {
+            "name": "ratio",
+            "baseName": "ratio",
+            "type": "number"
+        },
+        {
+            "name": "chips",
+            "baseName": "chips",
+            "type": "Array<PublicLeekChipsInner>"
+        },
+        {
+            "name": "weapons",
+            "baseName": "weapons",
+            "type": "Array<PublicLeekChipsInner>"
+        },
+        {
+            "name": "ai",
+            "baseName": "ai",
+            "type": "PublicLeekAi"
+        },
+        {
+            "name": "maxWeapons",
+            "baseName": "max_weapons",
+            "type": "number"
+        },
+        {
+            "name": "maxChips",
+            "baseName": "max_chips",
+            "type": "number"
+        },
+        {
+            "name": "inGarden",
+            "baseName": "in_garden",
+            "type": "boolean"
+        },
+        {
+            "name": "ranking",
+            "baseName": "ranking",
+            "type": "number"
+        },
+        {
+            "name": "talentHistory",
+            "baseName": "talent_history",
+            "type": "Array<number>"
+        },
+        {
+            "name": "fights",
+            "baseName": "fights",
+            "type": "Array<FightResume>"
+        },
+        {
+            "name": "tournaments",
+            "baseName": "tournaments",
+            "type": "Array<TournamentResume>"
+        },
+        {
+            "name": "components",
+            "baseName": "components",
+            "type": "Array<PublicLeekChipsInner>"
         }    ];
 
     static getAttributeTypeMap() {
-        return Leek.attributeTypeMap;
+        return PublicLeek.attributeTypeMap;
     }
 }
 

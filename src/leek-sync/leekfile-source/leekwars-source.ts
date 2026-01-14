@@ -1,7 +1,7 @@
-import LeekFile from "../filelist/leekfile";
-import LeekfileSource from "./leekfile-source";
-import NodeLeekClient from "../../node-leek-client/node-leek-client";
-import Filelist from "../filelist/filelist";
+import LeekFile from "../filelist/leekfile.js";
+import LeekfileSource from "./leekfile-source.js";
+import NodeLeekClient from "../../node-leek-client/node-leek-client.js";
+import Filelist from "../filelist/filelist.js";
 
 class LeekwarsSource extends LeekfileSource {
     private nodeLeekClient: NodeLeekClient;
@@ -48,6 +48,7 @@ class LeekwarsSource extends LeekfileSource {
             .then(ais =>
                 ais.forEach(aiCode => {
                     const name = aiNames[aiCode.id];
+                    if (name == undefined) return;
                     this.filelist.set(name, new LeekFile(name, aiCode.id, aiCode.code, aiCode.modified));
                 })
             );
@@ -57,7 +58,7 @@ class LeekwarsSource extends LeekfileSource {
         return filename.charAt(filename.length - 1) == "/";
     }
 
-    async deleteFile(file: LeekFile) {
+    override async deleteFile(file: LeekFile) {
         var leekwarsFile = this.filelist.get(file.name);
         if (leekwarsFile != null) {
             if (leekwarsFile.folder) return this.nodeLeekClient.deleteFolder(leekwarsFile.id).then(() => super.deleteFile(file));
@@ -68,7 +69,7 @@ class LeekwarsSource extends LeekfileSource {
         }
     }
 
-    async updateFile(file: LeekFile): Promise<void> {
+    override async updateFile(file: LeekFile): Promise<void> {
         await this.createOrUpdateFileInLeekwars(file);
     }
 

@@ -1,9 +1,9 @@
-import LeekFile from "../filelist/leekfile";
-import LeekfileSource from "./leekfile-source";
-import Filelist from "../filelist/filelist";
+import LeekFile from "../filelist/leekfile.js";
+import LeekfileSource from "./leekfile-source.js";
+import Filelist from "../filelist/filelist.js";
 import fs, {Dirent} from "node:fs";
 import Watcher from 'watcher';
-import Leekfile from "../filelist/leekfile";
+import Leekfile from "../filelist/leekfile.js";
 
 
 class LocalfileSource extends LeekfileSource {
@@ -35,7 +35,7 @@ class LocalfileSource extends LeekfileSource {
         });
     }
 
-    async deleteFile(file: LeekFile) {
+    override async deleteFile(file: LeekFile) {
         if (file.folder)
             fs.rmdir(this.path + file.name, (err) => { // TODO add recursive option
                 if (err) {
@@ -54,7 +54,7 @@ class LocalfileSource extends LeekfileSource {
             });
     }
 
-    async updateFile(file: LeekFile) {
+    override async updateFile(file: LeekFile) {
         if (file.name in this.filelist) {
             if (file.folder) return;
 
@@ -106,14 +106,17 @@ class LocalfileSource extends LeekfileSource {
 
     public loadFile(filename: string, lazy: boolean = false): LeekFile {
         if (!lazy) console.debug("Loading " + filename);
+        console.debug("Loading " + filename);
         return new LeekFile(filename, 0, lazy ? "Lazy loaded file, shouldn't be upload to leekwars as such" : fs.readFileSync(this.path + filename, "utf8"), this.getFileTimestamp(filename), false);
     }
 
     private getFileTimestamp(filename: string) {
+        console.log("getFileTimestamp " + filename)
         return fs.statSync(this.path + filename).mtime.getTime();
     }
 
     private exploreFiles(from: string, filelist : Filelist | null = null) : Filelist {
+	    from = from.replace("//", "/");
         if(filelist == null) {
             filelist = new Filelist();
             filelist.set("/", LeekFile.Folder("/", 0))
@@ -125,7 +128,6 @@ class LocalfileSource extends LeekfileSource {
 
         fs.readdirSync(from, {withFileTypes: true}).forEach(file => {
             const trueFileName = this.cleanupPath(file);
-
             // Do process hidden files
             if(file.name[0] == ".") return
 
@@ -141,11 +143,20 @@ class LocalfileSource extends LeekfileSource {
     }
 
     private cleanupPath(file: Dirent<string>) {
-        var parentPath = file.parentPath.startsWith("./") ? file.parentPath.substring(1) : file.parentPath;
+        var parentPath = file.parentPath.startsWith("../")
+                                    ? file.parentPath.substring(2)
+                                    : file.parentPath.startsWith("./")
+                                        ? file.parentPath.substring(1)
+                                        : file.parentPath;
         if (!parentPath.endsWith("/")){
             parentPath = parentPath + "/"
         }
         var parentName = parentPath.substring(this.path.length - 1);
+        if (!parentName.endsWith("/")){
+            parentName = parentName + "/"
+        }if (!parentName.startsWith("/")){
+            parentName = "/" + parentName
+        }
         return parentName + file.name + (file.isDirectory() ? "/" : "");
     }
 

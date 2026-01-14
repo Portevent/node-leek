@@ -1,4 +1,4 @@
-import LeekFile from "./leekfile";
+import LeekFile from "./leekfile.js";
 
 
 class Filelist {
@@ -21,7 +21,7 @@ class Filelist {
     }
 
     get(name: string): LeekFile {
-        return this.fileList[name];
+        return this.fileList[name]!;
     }
 
     set(name: string, leekFile: LeekFile) {

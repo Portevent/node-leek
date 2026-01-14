@@ -1,6 +1,8 @@
 import localVarRequest from 'request';
 
 export * from './aicode';
+export * from './buy200Response';
+export * from './buyRequest';
 export * from './createFile200Response';
 export * from './createFile200ResponseAi';
 export * from './createFileRequest';
@@ -10,12 +12,16 @@ export * from './credentials';
 export * from './deleteFileRequest';
 export * from './deleteFolderRequest';
 export * from './farmer';
+export * from './farmerOpponent';
 export * from './fightResult';
+export * from './fightResume';
+export * from './fightResumeLeeks1Inner';
 export * from './folder';
 export * from './garden';
 export * from './gardenGarden';
 export * from './gardenGardenMyCompositionsInner';
 export * from './gardenGardenMyTeam';
+export * from './getFarmerOpponents200Response';
 export * from './getFilesContentRequest';
 export * from './getSoloOpponents200Response';
 export * from './ia';
@@ -23,11 +29,16 @@ export * from './item';
 export * from './leek';
 export * from './logindump';
 export * from './opponent';
+export * from './publicLeek';
+export * from './publicLeekAi';
+export * from './publicLeekChipsInner';
 export * from './saveFile200Response';
 export * from './saveFileRequest';
+export * from './startFarmerFightRequest';
 export * from './startSoloFight200Response';
 export * from './startSoloFightRequest';
 export * from './team';
+export * from './tournamentResume';
 
 import * as fs from 'fs';
 
@@ -43,6 +54,8 @@ export type RequestFile = string | Buffer | fs.ReadStream | RequestDetailedFile;
 
 
 import { Aicode } from './aicode';
+import { Buy200Response } from './buy200Response';
+import { BuyRequest } from './buyRequest';
 import { CreateFile200Response } from './createFile200Response';
 import { CreateFile200ResponseAi } from './createFile200ResponseAi';
 import { CreateFileRequest } from './createFileRequest';
@@ -52,12 +65,16 @@ import { Credentials } from './credentials';
 import { DeleteFileRequest } from './deleteFileRequest';
 import { DeleteFolderRequest } from './deleteFolderRequest';
 import { Farmer } from './farmer';
+import { FarmerOpponent } from './farmerOpponent';
 import { FightResult } from './fightResult';
+import { FightResume } from './fightResume';
+import { FightResumeLeeks1Inner } from './fightResumeLeeks1Inner';
 import { Folder } from './folder';
 import { Garden } from './garden';
 import { GardenGarden } from './gardenGarden';
 import { GardenGardenMyCompositionsInner } from './gardenGardenMyCompositionsInner';
 import { GardenGardenMyTeam } from './gardenGardenMyTeam';
+import { GetFarmerOpponents200Response } from './getFarmerOpponents200Response';
 import { GetFilesContentRequest } from './getFilesContentRequest';
 import { GetSoloOpponents200Response } from './getSoloOpponents200Response';
 import { Ia } from './ia';
@@ -65,11 +82,16 @@ import { Item } from './item';
 import { Leek } from './leek';
 import { Logindump } from './logindump';
 import { Opponent } from './opponent';
+import { PublicLeek } from './publicLeek';
+import { PublicLeekAi } from './publicLeekAi';
+import { PublicLeekChipsInner } from './publicLeekChipsInner';
 import { SaveFile200Response } from './saveFile200Response';
 import { SaveFileRequest } from './saveFileRequest';
+import { StartFarmerFightRequest } from './startFarmerFightRequest';
 import { StartSoloFight200Response } from './startSoloFight200Response';
 import { StartSoloFightRequest } from './startSoloFightRequest';
 import { Team } from './team';
+import { TournamentResume } from './tournamentResume';
 
 /* tslint:disable:no-unused-variable */
 let primitives = [
@@ -88,6 +110,8 @@ let enumsMap: {[index: string]: any} = {
 
 let typeMap: {[index: string]: any} = {
     "Aicode": Aicode,
+    "Buy200Response": Buy200Response,
+    "BuyRequest": BuyRequest,
     "CreateFile200Response": CreateFile200Response,
     "CreateFile200ResponseAi": CreateFile200ResponseAi,
     "CreateFileRequest": CreateFileRequest,
@@ -97,12 +121,16 @@ let typeMap: {[index: string]: any} = {
     "DeleteFileRequest": DeleteFileRequest,
     "DeleteFolderRequest": DeleteFolderRequest,
     "Farmer": Farmer,
+    "FarmerOpponent": FarmerOpponent,
     "FightResult": FightResult,
+    "FightResume": FightResume,
+    "FightResumeLeeks1Inner": FightResumeLeeks1Inner,
     "Folder": Folder,
     "Garden": Garden,
     "GardenGarden": GardenGarden,
     "GardenGardenMyCompositionsInner": GardenGardenMyCompositionsInner,
     "GardenGardenMyTeam": GardenGardenMyTeam,
+    "GetFarmerOpponents200Response": GetFarmerOpponents200Response,
     "GetFilesContentRequest": GetFilesContentRequest,
     "GetSoloOpponents200Response": GetSoloOpponents200Response,
     "Ia": Ia,
@@ -110,11 +138,16 @@ let typeMap: {[index: string]: any} = {
     "Leek": Leek,
     "Logindump": Logindump,
     "Opponent": Opponent,
+    "PublicLeek": PublicLeek,
+    "PublicLeekAi": PublicLeekAi,
+    "PublicLeekChipsInner": PublicLeekChipsInner,
     "SaveFile200Response": SaveFile200Response,
     "SaveFileRequest": SaveFileRequest,
+    "StartFarmerFightRequest": StartFarmerFightRequest,
     "StartSoloFight200Response": StartSoloFight200Response,
     "StartSoloFightRequest": StartSoloFightRequest,
     "Team": Team,
+    "TournamentResume": TournamentResume,
 }
 
 export class ObjectSerializer {

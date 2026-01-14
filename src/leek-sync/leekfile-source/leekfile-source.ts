@@ -1,5 +1,5 @@
-import LeekFile from "../filelist/leekfile";
-import Filelist from "../filelist/filelist";
+import LeekFile from "../filelist/leekfile.js";
+import Filelist from "../filelist/filelist.js";
 
 
 abstract class LeekfileSource {

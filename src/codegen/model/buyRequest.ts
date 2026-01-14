@@ -12,26 +12,26 @@
 
 import { RequestFile } from './models';
 
-export class GardenStartSoloFightPostRequest {
-    'leekId'?: number;
-    'targetId'?: number;
+export class BuyRequest {
+    'itemId'?: string;
+    'quantity'?: number;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "leekId",
-            "baseName": "leek_id",
-            "type": "number"
+            "name": "itemId",
+            "baseName": "item_id",
+            "type": "string"
         },
         {
-            "name": "targetId",
-            "baseName": "target_id",
+            "name": "quantity",
+            "baseName": "quantity",
             "type": "number"
         }    ];
 
     static getAttributeTypeMap() {
-        return GardenStartSoloFightPostRequest.attributeTypeMap;
+        return BuyRequest.attributeTypeMap;
     }
 }
 

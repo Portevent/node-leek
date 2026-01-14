@@ -1,9 +1,9 @@
-import NodeLeekClient from "../node-leek-client/node-leek-client";
-import CachedFilelist from "./filelist/cached-filelist";
-import LeekfileSource from "./leekfile-source/leekfile-source";
-import LeekwarsSource from "./leekfile-source/leekwars-source";
-import LocalfileSource from "./leekfile-source/localfile-source";
-import Filelist from "./filelist/filelist";
+import NodeLeekClient from "../node-leek-client/node-leek-client.js";
+import CachedFilelist from "./filelist/cached-filelist.js";
+import LeekfileSource from "./leekfile-source/leekfile-source.js";
+import LeekwarsSource from "./leekfile-source/leekwars-source.js";
+import LocalfileSource from "./leekfile-source/localfile-source.js";
+import Filelist from "./filelist/filelist.js";
 
 import readline from 'readline';
 
@@ -16,7 +16,7 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-class LeekSyncClient {
+export class LeekSyncClient {
 
     leekwarsFilelist: Filelist
     localFilelist: Filelist
@@ -103,5 +103,3 @@ class LeekSyncClient {
         return null;
     }
 }
-
-export default LeekSyncClient;

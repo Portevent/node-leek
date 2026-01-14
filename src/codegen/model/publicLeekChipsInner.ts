@@ -12,20 +12,26 @@
 
 import { RequestFile } from './models';
 
-export class FightGetFightIdGet200Response {
-    'fight': number;
+export class PublicLeekChipsInner {
+    'id'?: number;
+    'template'?: number;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "fight",
-            "baseName": "fight",
+            "name": "id",
+            "baseName": "id",
+            "type": "number"
+        },
+        {
+            "name": "template",
+            "baseName": "template",
             "type": "number"
         }    ];
 
     static getAttributeTypeMap() {
-        return FightGetFightIdGet200Response.attributeTypeMap;
+        return PublicLeekChipsInner.attributeTypeMap;
     }
 }
 
