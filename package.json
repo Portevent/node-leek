@@ -1,6 +1,6 @@
 {
   "name": "node-leek",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A library for interacting with LeekWars API.",
   "main": "dist/node-leek-client/node-leek-client.js",
   "types": "dist/node-leek-client/node-leek-client.d.ts",
