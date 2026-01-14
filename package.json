@@ -29,6 +29,7 @@
     "url": "https://github.com/Portevent/node-leek"
   },
   "devDependencies": {
-    "@types/node": "^25.0.8"
+    "@types/node": "^25.0.8",
+    "@types/request": "^2.48.13"
   }
 }
