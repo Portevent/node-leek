@@ -12,5 +12,5 @@ async function login(client: NodeLeekClient, index: number) {
 
 // Login on each account
 new CredentialsManager(args['credentials'] ?? "credentials.json")
-    .forEachAccount(login)
+    .forEachAccount(login, readonly)
     .then(() => console.log("LeekSync closed"));

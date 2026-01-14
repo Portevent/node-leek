@@ -1,5 +1,4 @@
 import {DefaultApi, DefaultApiApiKeys} from "../codegen/api/defaultApi.js";
-import {getCookieToken, getPhpsessidToken} from "./token-parsing.js";
 import {Farmer} from "../codegen/model/farmer.js";
 import {Aicode} from "../codegen/model/aicode.js";
 import {Opponent} from "../codegen/model/opponent.js";
@@ -12,11 +11,24 @@ import {SocketMessage} from "./leekwars-frontend/SocketMessage.js";
 import {NotificationType} from "./leekwars-frontend/Notification.js";
 import {ITEMS} from "./leekwars-frontend/Items.js";
 
-function randomIn(array: any[]) {
-    return array[Math.floor(Math.random() * array.length)];
+function getSetterOf(header: string[], attribute: string): string {
+    return header.find(cookie => cookie.trim().startsWith(`${attribute}=`) && !cookie.startsWith(`${attribute}=deleted;`)) ?? `${attribute}=;`;
+}
+function getCookieToken(header: string[] | undefined): string {
+    const cookie = getSetterOf(header ?? [], "token");
+    if (!cookie.includes("token=")) return "";
+    const value = cookie.split(";")[0].split("token=")[1];
+    return value !== undefined ? value : "";
 }
 
-class LeekWarsClient {
+function getPhpsessidToken(header: string[] | undefined): string {
+    const cookie = getSetterOf(header ?? [], "PHPSESSID");
+    if (!cookie.includes("PHPSESSID=")) return "";
+    const value = cookie.split(";")[0].split("PHPSESSID=")[1];
+    return value !== undefined ? value : "";
+}
+
+export class LeekWarsClient {
 
     private apiClient: DefaultApi;
     private ready: boolean = false;
@@ -561,5 +573,3 @@ class LeekWarsClient {
     // Make this an observable
     public on_level_up: (leekId: number, level: number, capitalToSpend: number) => void = (_) => {};
 }
-
-export {LeekWarsClient as default};

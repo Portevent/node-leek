@@ -16,7 +16,7 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-class LeekSyncClient {
+export class LeekSyncClient {
 
     leekwarsFilelist: Filelist
     localFilelist: Filelist
@@ -103,5 +103,3 @@ class LeekSyncClient {
         return null;
     }
 }
-
-export default LeekSyncClient;

@@ -3,8 +3,8 @@ import {Folder} from "../codegen/model/folder.js";
 import {Ia} from "../codegen/model/ia.js";
 import {Opponent} from "../codegen/model/opponent.js";
 import {FightResult} from "../codegen/model/fightResult.js";
-import LeekSyncClient from "../leek-sync/leek-sync-client.js";
-import LeekWarsClient from "./leek-wars-client.js";
+import {LeekSyncClient} from "../leek-sync/leek-sync-client.js";
+import {LeekWarsClient} from "./leek-wars-client.js";
 import {PublicLeek} from "../codegen/model/publicLeek.js";
 import {FightResume} from "../codegen/model/fightResume.js";
 
