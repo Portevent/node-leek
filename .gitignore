@@ -2,6 +2,6 @@
 /build
 /node_modules
 
-/leekscripts
-.local.filesystem.json
-.local.leekwars.json
+**/*.js
+**/*.js.map
+**/*.d.ts
