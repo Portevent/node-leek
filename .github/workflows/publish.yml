@@ -3,6 +3,13 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: 'Run in dry mode (no publish)'
+        required: false
+        default: 'false'
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -13,6 +20,11 @@ jobs:
           node-version: 20
       - run: npm install
       - run: npm run build
-      - run: npm publish
+      - name: Dry Run
+        if: github.event.inputs.dry-run == 'true'
+        run: echo Dry run, not publishing to npm.
+      - name: Publish
+        if: github.event.inputs.dry-run != 'true'
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
