@@ -10,6 +10,7 @@ import {Buy200Response} from "../codegen/model/buy200Response.js";
 import {SocketMessage} from "./leekwars-frontend/SocketMessage.js";
 import {NotificationType} from "./leekwars-frontend/Notification.js";
 import {ITEMS} from "./leekwars-frontend/Items.js";
+import {CapitalRequest} from "./model/capital-request";
 
 function getSetterOf(header: string[], attribute: string): string {
     return header.find(cookie => cookie.trim().startsWith(`${attribute}=`) && !cookie.startsWith(`${attribute}=deleted;`)) ?? `${attribute}=;`;
@@ -358,6 +359,27 @@ export class LeekWarsClient {
                 console.error("getFight " + fight_id + " -> [" + err.statusCode + "] " + err.body.error);
                 return new FightResult();
             });
+    }
+
+    public async spendCapital(leekId: number, capitals: CapitalRequest) : Promise<void>{
+        if (!this.ready) return;
+        const request = `{"life":${capitals.life ?? 0},"strength":${capitals.strength ?? 0},"wisdom":${capitals.wisdom ?? 0},"agility":${capitals.agility ?? 0},"resistance":${capitals.resistance ?? 0},"frequency":${capitals.frequency ?? 0},"science":${capitals.science ?? 0},"magic":${capitals.science ?? 0},"cores":${capitals.cores ?? 0},"ram":${capitals.ram ?? 0},"tp":${capitals.tp ?? 0},"mp":${capitals.mp ?? 0}}`
+        return this.apiClient.spendCapital({
+            leekId: leekId,
+            characteristics: request
+        })
+        .then(async result => {
+            return this.sleep(75);
+        })
+        .catch(err => {
+            if (err.statusCode == 429) { // TOO MANY REQUEST
+                return this.sleep(15000)
+                    .then(() => this.spendCapital(leekId, capitals))
+            }
+
+            console.error("Spend capital failed for " + leekId + " with " + capitals + " -> [" + err.statusCode + "] " + err.body.error);
+            return;
+        });
     }
 
     protected async createBossRoom(bossId: number = 1, locked: boolean = false, leeks: number[] = []){

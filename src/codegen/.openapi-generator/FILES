@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 api.ts
 api/apis.ts
 api/defaultApi.ts
@@ -39,6 +38,7 @@ model/publicLeekAi.ts
 model/publicLeekChipsInner.ts
 model/saveFile200Response.ts
 model/saveFileRequest.ts
+model/spendCapitalRequest.ts
 model/startFarmerFightRequest.ts
 model/startSoloFight200Response.ts
 model/startSoloFightRequest.ts
