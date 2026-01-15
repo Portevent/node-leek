@@ -153,11 +153,19 @@ class NodeLeekClient extends LeekWarsClient{
         return this.filesByName;
     }
 
+    private getLocalLeekName(id: number): string | null {
+        return this.farmer.leeks[id]?.name;
+    }
+
+    public async getLeekName(id: number): Promise<string> {
+        return this.getLocalLeekName(id) ?? (await this.getLeek(id))?.name ?? "Unknown";
+    }
+
     public async startRandomSoloFight(leek_id: number) : Promise<[Opponent, number]> {
         return this.getSoloOpponents(leek_id)
             .then((opponents) => {
                 if (opponents.length == 0) {
-                    console.error("Can't find opponent for " + leek_id);
+                    console.error("Can't find opponent for " + this.getLocalLeekName(leek_id));
                     return [null, -1];
                 }
 
