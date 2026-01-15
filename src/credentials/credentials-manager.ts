@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import NodeLeekClient from "../node-leek-client/node-leek-client.js";
+import {NodeLeekClient} from "../node-leek-client/node-leek-client";
 
 export class LeekwarsCredentials {
     public username: string = ""

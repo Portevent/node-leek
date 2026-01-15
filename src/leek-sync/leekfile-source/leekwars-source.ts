@@ -1,7 +1,7 @@
 import LeekFile from "../filelist/leekfile.js";
 import LeekfileSource from "./leekfile-source.js";
-import NodeLeekClient from "../../node-leek-client/node-leek-client.js";
 import Filelist from "../filelist/filelist.js";
+import {NodeLeekClient} from "../../node-leek-client/node-leek-client";
 
 class LeekwarsSource extends LeekfileSource {
     private nodeLeekClient: NodeLeekClient;

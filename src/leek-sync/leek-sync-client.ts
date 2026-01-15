@@ -1,4 +1,4 @@
-import NodeLeekClient from "../node-leek-client/node-leek-client.js";
+import {NodeLeekClient} from "../node-leek-client/node-leek-client.js";
 import CachedFilelist from "./filelist/cached-filelist.js";
 import LeekfileSource from "./leekfile-source/leekfile-source.js";
 import LeekwarsSource from "./leekfile-source/leekwars-source.js";

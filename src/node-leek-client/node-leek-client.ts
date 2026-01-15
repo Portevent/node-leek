@@ -12,7 +12,7 @@ function randomIn(array: any[]){
     return array[Math.floor(Math.random() * array.length)];
 }
 
-class NodeLeekClient extends LeekWarsClient{
+export class NodeLeekClient extends LeekWarsClient{
 
     public farmer: Farmer = new Farmer();
     public leeks: PublicLeek[] = [];
@@ -237,5 +237,3 @@ class NodeLeekClient extends LeekWarsClient{
         return this.currentRoom;
     }
 }
-
-export {NodeLeekClient as default};
