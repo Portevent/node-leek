@@ -1,53 +1,69 @@
 # 🥬 NodeLeek
-Simple NodeJs client for LeekWars.
-Uses OpenAPI to autogenerate API client (specifications are handwritten as no official uptodate spec exists).
-
+Simple NodeJs client for LeekWars. Can update scripts, buy items and start fight.  
+NodeLeek support the WebSocket connection, so it can read notification and start boss fight.
 ```typescript
-var nodeLeek = new NodeLeekClient();
-nodeLeek.login("YOUR_ACCOUNT", "YOUR_PASSWORD").then(() =>
-    nodeLeek.gardenGetGet().then(garden => console.log("I have " + garden.fights + " fights"))
-    nodeLeek.fetchFile(nodeLeek.farmer.files['myreworkediaagainagain2bis/new/mynewia'].id, 0).then(file => console.log("My AI code is : \n" + file.code))
-);
+const nodeLeek = new NodeLeekClient("Account", "Password");
+await nodeLeek.login();
+// Do stuff
+await nodeLeek.close()
+```
+> 💚 NodeLeek connected !  
+> 🤠 PorteventRemote (5000 habs)  
+> 🥬 PorteAutomatique lvl.1 - 100 talents - ⚠️ 50 capitals to spend
+
+Fight in garden :
+```typescript
+let myLeek: PublicLeek = nodeLeek.leeks[0];
+let opponent: Opponent;
+let fightId: number;
+
+[opponent, fightId] = await nodeLeek.startRandomSoloFight(myLeek.id);
+
+console.log("Fighting : ", opponent.name);
+console.log("Fight result : ", await nodeLeek.getCompleteFight(fightId));
 ```
 
-> ❗ Work in progress, we recommend to set `-- --readonly` on first uses to ensure no damages are done
+Fight bosses :
+```typescript
+const roomId = await nodeLeek.createRoom(1); // 1 for Nasu Samurai, 2 for Fennel King, 3 for Evil Pumpkin
+// use await nodeLeek.joinRoom(roomId); to join the room with another account
+await nodeLeek.startRoomFight();
+```
 
+## Get started
+Install NodeLeek from [npm](https://www.npmjs.com/package/node-leek) :
+```shell
+npm install node-leek
+```
 
-Done :
-- /farmer 
+## Routes supported
+Uses OpenAPI to autogenerate API client (specifications are handwritten as no official uptodate spec exists).
+Check the [OpenAPI](./src/openapi/leekwars-api.json) specification.  
+So far only the most used route are supported, further support will come.
+
+- /farmer
   - /login : partially, some part of the response (such as chat message) aren't done yet
 - /garden
-  - /start-solo-fight
-  - /get-leek-opponnents/{leekId}
   - /get
+  - /get-leek-opponnents/{leekId}
+  - /get-farmer-opponnents/
+  - /start-solo-fight
+  - /start-farmer-fight
+- /fight
+  - /get/{fightId}
+- /leek
+  - /spend-capital
+  - /get/{leekId}
+- /marker
+  - /buy-habs-quantity
 - /ai-folder
   - /new-name
   - /delete
 - /ai
-  - /save 
+  - /save
   - /new-name
   - /delete
   - /sync
-
-Planning to do :
-- ai rename
-- ai bin clear
-- other fight type
-- assign IA to leek
-
-Considering :
-- stats assignment, equipment & chip assignment
-- dashboard
-
-## How to install
-> This project works with NodeJS. You must install it beforehand.  
-
-Clone the repository and install the dependencies
-```shell
-git clone https://github.com/Portevent/node-leek
-npm update
-npm install
-```
 
 # 🔄 LeekSync (WIP)
 LeekSync allows you to clone your LeekWars file on your local computer and sync them with a file watcher.  
@@ -55,14 +71,12 @@ Open your favorite local IDE, edit some files and they get upload to LeekWars se
 If you happen to change your file locally while LeekSync is not running, or you edited file through LeekWars editor, LeekSync will ask you which source to use and update the other to be on the same page
 
 ### Download your leekscripts
+We recommend using `const nodeLeek = new NodeLeekClient("Account", "Password", true);` to start NodeLeek in read only mode.
+This will ensure no modification are done to your leekwars account. Once you downloaded your scripts and have a secured backup, you can remove this readonly flag.
 ```typescript
-npm run leeksync -- --readonly
+  nodeLeek.syncWith("../my-files/", false, "leekwars")
 ```
 
-> 💚 NodeLeek connected !  
-> 🤠 PorteventRemote (5000 habs)  
-> 🥬 PorteAutomatique lvl.1 - 100 talents - ⚠️ 50 capitals to spend  
-> LeekSync is ready !
 
 You should see your own code in leekscripts folder. Here is an example :
 
@@ -70,40 +84,24 @@ You should see your own code in leekscripts folder. Here is an example :
 ├── DamageCalculation  
 │   └── NaiveDamageCalculation.leek  
 ├── MyFirstIa.leek  
-└── Test.leek  
+└── Test.leek
 
 ### Upload your leekscripts
 **We strongly recommend to save your code, copying it or upload it to a Git repository**  
 **Uploading an empty folder will result in your leekwars account being just an empty folder.  
 Use LeekSync with care, and have a backup**
 
-First, we need to remove the ` --readonly` option to actually edit our leekwars account.  
-You can use the `--watch` option to activate the watcher. It will listen to any modification done, and will automaticly push them to Leekwars.
+First, we need to remove the `readonly` option to actually edit our leekwars account.  
+You can use the `watch` option to activate the watcher. It will listen to any modification done, and will automaticly push them to Leekwars.
 
 ```typescript
-npm run leeksync -- --watch --readonly
+  nodeLeek.syncWith("../my-files/", true, "leekwars")
 ```
 
 Edit your file and refresh Leekwars to see the updated files :
 
 ![Output](./doc/code_example.png)
 
-Additional information :
-- The first `--` are mandatory to use option, and tell `npm` the options coming next are not npm options but leeksync options
-- You can use `--path my_folder` to specify your code folder
-- You can use `-w` as a shorthand of `--watch`, and ` -r` for `--watch`
-- You can use `--choice <something>` to automaticly choose how to resolve out of sync situation (for instance `-c local` to always keep local file and push missing modification to leekwars)
-- LeekSync store your LeekWars timestamp and local timestamp in cache file, so that the next time you launch Leeksync, it won't reimport every files.
 
-### Supported operation
-Watcher :
-- LeekWars : not watching edit and don't plan to yet. Edit made on LeekWars while LeekSync is up won't be recorded
-- Local files : will watch for new file, file change, and file or folder deletion.
-    - Planning to add rename support
-
-
-## Road map
-Next feature will be adding auto fighter, and auto logger.
-I have other ideas but I want to focus on these two points first.
-I want to clean up a bit the codebase, so I might rework a lot of stuff after finishing the auto logger.
+## Help needed
 > ❗ Uses outdated package https://www.npmjs.com/package/request because I couldn't make other OpenAPI codegen variants work with cookie authentification. This issue must be resolved to ensure a cleaner code
