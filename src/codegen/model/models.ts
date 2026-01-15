@@ -34,6 +34,7 @@ export * from './publicLeekAi';
 export * from './publicLeekChipsInner';
 export * from './saveFile200Response';
 export * from './saveFileRequest';
+export * from './spendCapitalRequest';
 export * from './startFarmerFightRequest';
 export * from './startSoloFight200Response';
 export * from './startSoloFightRequest';
@@ -87,6 +88,7 @@ import { PublicLeekAi } from './publicLeekAi';
 import { PublicLeekChipsInner } from './publicLeekChipsInner';
 import { SaveFile200Response } from './saveFile200Response';
 import { SaveFileRequest } from './saveFileRequest';
+import { SpendCapitalRequest } from './spendCapitalRequest';
 import { StartFarmerFightRequest } from './startFarmerFightRequest';
 import { StartSoloFight200Response } from './startSoloFight200Response';
 import { StartSoloFightRequest } from './startSoloFightRequest';
@@ -143,6 +145,7 @@ let typeMap: {[index: string]: any} = {
     "PublicLeekChipsInner": PublicLeekChipsInner,
     "SaveFile200Response": SaveFile200Response,
     "SaveFileRequest": SaveFileRequest,
+    "SpendCapitalRequest": SpendCapitalRequest,
     "StartFarmerFightRequest": StartFarmerFightRequest,
     "StartSoloFight200Response": StartSoloFight200Response,
     "StartSoloFightRequest": StartSoloFightRequest,

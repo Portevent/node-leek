@@ -1,13 +1,13 @@
 import fs from "node:fs";
 import NodeLeekClient from "../node-leek-client/node-leek-client.js";
 
-export class Credentials {
+export class LeekwarsCredentials {
     public username: string = ""
     public password: string = ""
 }
 
 export class CredentialsManager {
-    private credentials: Credentials[] = [];
+    private credentials: LeekwarsCredentials[] = [];
     private clients: (NodeLeekClient | null)[] = [];
 
     constructor(path: string) {

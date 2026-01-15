@@ -40,6 +40,34 @@
         }
       }
     },
+    "/leek/spend-capital": {
+      "post": {
+        "description": "Spend capital points",
+        "operationId": "spendCapital",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "leek_id": {
+                    "type": "integer"
+                  },
+                  "characteristics": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/leek/get/{leekId}": {
       "get": {
         "description": "Get a leek detail",
