@@ -11,11 +11,10 @@
  */
 
 import { RequestFile } from './models';
-import { Text } from './text';
 
 export class AddMessageReactionRequest {
     'messageId'?: number;
-    'reaction'?: Text;
+    'reaction'?: string;
 
     static discriminator: string | undefined = undefined;
 
@@ -28,7 +27,7 @@ export class AddMessageReactionRequest {
         {
             "name": "reaction",
             "baseName": "reaction",
-            "type": "Text"
+            "type": "string"
         }    ];
 
     static getAttributeTypeMap() {

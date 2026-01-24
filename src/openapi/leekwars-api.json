@@ -600,7 +600,7 @@
                     "type": "integer"
                   },
                   "reaction": {
-                    "type": "text"
+                    "type": "string"
                   }
                 }
               }
