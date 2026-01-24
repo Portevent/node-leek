@@ -585,6 +585,34 @@
         },
         "security": []
       }
+    },
+    "/message-reaction/add": {
+      "post": {
+        "description": "React to a message",
+        "operationId": "addMessageReaction",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "reaction": {
+                    "type": "text"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok"
+          }
+        }
+      }
     }
   },
   "components": {

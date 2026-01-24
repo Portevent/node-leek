@@ -361,6 +361,26 @@ export class LeekWarsClient {
             });
     }
 
+    public async addMessageReaction(messageId: number, reaction: string): Promise<void> {
+        if (!this.ready) return;
+        return this.apiClient.addMessageReaction({
+            messageId: messageId,
+            reaction: reaction
+        })
+        .then(async result => {
+            return this.sleep(75);
+        })
+        .catch(err => {
+            if (err.statusCode == 429) { // TOO MANY REQUEST
+                return this.sleep(15000)
+                    .then(() => this.addMessageReaction(messageId, reaction))
+            }
+
+            console.error("Can't add reaction for " + messageId + " : " + reaction + " -> [" + err.statusCode + "] " + err.body.error);
+            return;
+        });
+    }
+
     public async spendCapital(leekId: number, capitals: CapitalRequest) : Promise<void>{
         if (!this.ready) return;
         const request = `{"life":${capitals.life ?? 0},"strength":${capitals.strength ?? 0},"wisdom":${capitals.wisdom ?? 0},"agility":${capitals.agility ?? 0},"resistance":${capitals.resistance ?? 0},"frequency":${capitals.frequency ?? 0},"science":${capitals.science ?? 0},"magic":${capitals.science ?? 0},"cores":${capitals.cores ?? 0},"ram":${capitals.ram ?? 0},"tp":${capitals.tp ?? 0},"mp":${capitals.mp ?? 0}}`

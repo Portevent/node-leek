@@ -15,6 +15,7 @@ import localVarRequest from 'request';
 import http from 'http';
 
 /* tslint:disable:no-unused-locals */
+import { AddMessageReactionRequest } from '../model/addMessageReactionRequest';
 import { Aicode } from '../model/aicode';
 import { Buy200Response } from '../model/buy200Response';
 import { BuyRequest } from '../model/buyRequest';
@@ -113,6 +114,67 @@ export class DefaultApi {
         this.interceptors.push(interceptor);
     }
 
+    /**
+     * React to a message
+     * @param addMessageReactionRequest 
+     */
+    public async addMessageReaction (addMessageReactionRequest?: AddMessageReactionRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body?: any;  }> {
+        const localVarPath = this.basePath + '/message-reaction/add';
+        let localVarQueryParameters: any = {};
+        let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
+        let localVarFormParams: any = {};
+
+        (<any>Object).assign(localVarHeaderParams, options.headers);
+
+        let localVarUseFormData = false;
+
+        let localVarRequestOptions: localVarRequest.Options = {
+            method: 'POST',
+            qs: localVarQueryParameters,
+            headers: localVarHeaderParams,
+            uri: localVarPath,
+            useQuerystring: this._useQuerystring,
+            json: true,
+            body: ObjectSerializer.serialize(addMessageReactionRequest, "AddMessageReactionRequest")
+        };
+
+        let authenticationPromise = Promise.resolve();
+        if (this.authentications.phpsessid.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.phpsessid.applyToRequest(localVarRequestOptions));
+        }
+        if (this.authentications.cookieAuth.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.cookieAuth.applyToRequest(localVarRequestOptions));
+        }
+        authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
+
+        let interceptorPromise = authenticationPromise;
+        for (const interceptor of this.interceptors) {
+            interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
+        }
+
+        return interceptorPromise.then(() => {
+            if (Object.keys(localVarFormParams).length) {
+                if (localVarUseFormData) {
+                    (<any>localVarRequestOptions).formData = localVarFormParams;
+                } else {
+                    localVarRequestOptions.form = localVarFormParams;
+                }
+            }
+            return new Promise<{ response: http.IncomingMessage; body?: any;  }>((resolve, reject) => {
+                localVarRequest(localVarRequestOptions, (error, response, body) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
+                            resolve({ response: response, body: body });
+                        } else {
+                            reject(new HttpError(response, body, response.statusCode));
+                        }
+                    }
+                });
+            });
+        });
+    }
     /**
      * Buy something
      * @param buyRequest 

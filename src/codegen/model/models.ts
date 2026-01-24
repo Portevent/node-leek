@@ -1,5 +1,6 @@
 import localVarRequest from 'request';
 
+export * from './addMessageReactionRequest';
 export * from './aicode';
 export * from './buy200Response';
 export * from './buyRequest';
@@ -54,6 +55,7 @@ export interface RequestDetailedFile {
 export type RequestFile = string | Buffer | fs.ReadStream | RequestDetailedFile;
 
 
+import { AddMessageReactionRequest } from './addMessageReactionRequest';
 import { Aicode } from './aicode';
 import { Buy200Response } from './buy200Response';
 import { BuyRequest } from './buyRequest';
@@ -111,6 +113,7 @@ let enumsMap: {[index: string]: any} = {
 }
 
 let typeMap: {[index: string]: any} = {
+    "AddMessageReactionRequest": AddMessageReactionRequest,
     "Aicode": Aicode,
     "Buy200Response": Buy200Response,
     "BuyRequest": BuyRequest,

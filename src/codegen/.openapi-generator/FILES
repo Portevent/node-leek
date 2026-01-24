@@ -3,6 +3,7 @@ api.ts
 api/apis.ts
 api/defaultApi.ts
 git_push.sh
+model/addMessageReactionRequest.ts
 model/aicode.ts
 model/buy200Response.ts
 model/buyRequest.ts
