@@ -42,6 +42,7 @@ export class LeekWarsClient {
     private phpsessid: string = "";
 
     protected currentRoom: string = "";
+    public inBattleRoyal: boolean = false;
 
     constructor(username: string, password: string, readonly: boolean = false) {
         this.readonly = readonly;
@@ -402,6 +403,12 @@ export class LeekWarsClient {
         });
     }
 
+    protected async registerInBattleRoyale(leek: number){
+        const r = `[${SocketMessage.BATTLE_ROYALE_REGISTER}, "${leek}"]`;
+        this.socket?.send(r);
+        console.log("Join battle royal : ", r);
+    }
+
     protected async createBossRoom(bossId: number = 1, locked: boolean = false, leeks: number[] = []){
         const r = `[${SocketMessage.GARDEN_BOSS_CREATE_SQUAD}, ${bossId}, ${locked}, [${leeks}]]`;
         this.socket?.send(r);
@@ -501,14 +508,17 @@ export class LeekWarsClient {
                         break
                     }
                     case SocketMessage.BATTLE_ROYALE_UPDATE: {
+                        this.inBattleRoyal = true;
                         console.log(`[WS ${this.username}] received BATTLE_ROYALE_UPDATE`, data);
                         break
                     }
                     case SocketMessage.BATTLE_ROYALE_START: {
+                        this.inBattleRoyal = false;
                         console.log(`[WS ${this.username}] received BATTLE_ROYALE_START`, data);
                         break
                     }
                     case SocketMessage.BATTLE_ROYALE_LEAVE: {
+                        this.inBattleRoyal = false;
                         console.log(`[WS ${this.username}] received BATTLE_ROYALE_LEAVE`, data);
                         break
                     }

@@ -219,6 +219,12 @@ export class NodeLeekClient extends LeekWarsClient{
         return this.leekSyncClient.start(watch, choice);
     }
 
+    public async joinBattleRoyale() : Promise<void>{
+        if (this.farmer.fights == 0) return;
+        await this.registerInBattleRoyale(Number(Object.keys(this.farmer.leeks)[0]));
+        await this.sleep(100);
+    }
+
     public async createRoom(bossId: number, locked: boolean = false) : Promise<string>{
         if (this.farmer.fights == 0) return "";
         this.currentRoom = "";
