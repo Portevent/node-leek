@@ -1,12 +1,13 @@
 {
   "name": "node-leek",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A library for interacting with LeekWars API.",
   "main": "dist/app.js",
   "types": "dist/app.d.ts",
   "scripts": {
     "build": "tsc",
     "prepublish": "npm run build",
+    "localtest": "npx tsc ; node dist/test.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
