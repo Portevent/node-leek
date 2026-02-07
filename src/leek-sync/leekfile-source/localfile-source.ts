@@ -106,12 +106,11 @@ class LocalfileSource extends LeekfileSource {
 
     public loadFile(filename: string, lazy: boolean = false): LeekFile {
         if (!lazy) console.debug("Loading " + filename);
-        console.debug("Loading " + filename);
         return new LeekFile(filename, 0, lazy ? "Lazy loaded file, shouldn't be upload to leekwars as such" : fs.readFileSync(this.path + filename, "utf8"), this.getFileTimestamp(filename), false);
     }
 
     private getFileTimestamp(filename: string) {
-        console.log("getFileTimestamp " + filename)
+        // console.log("getFileTimestamp " + filename)
         return fs.statSync(this.path + filename).mtime.getTime();
     }
 
