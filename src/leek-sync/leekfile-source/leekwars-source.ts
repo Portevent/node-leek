@@ -91,7 +91,7 @@ class LeekwarsSource extends LeekfileSource {
 
     private async createFileInLeekwars(file: LeekFile): Promise<void> {
         if(file.folder) return this.createFolderInLeekwars(file).then((id) => {});
-        return this.nodeLeekClient.createFile(await this.getOrCreateFolderId(file.getParentFolder()), file.getFilenameWithoutExtension())
+        return this.nodeLeekClient.createFile(await this.getOrCreateFolderId(file.getParentFolder()), file.getFilename())
             .then(async ia => {
                 const newFile = new LeekFile(file.name, ia.id, ia.code, 0);
                 this.filelist.set(file.name, newFile);

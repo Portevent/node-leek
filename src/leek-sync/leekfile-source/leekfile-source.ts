@@ -24,14 +24,18 @@ abstract class LeekfileSource {
         // Remove file not present in the otherSource
         for (const file of this.filelist.getFiles()
             .filter((file: LeekFile) => !otherSource.filelist.contains(file.name))) {
+            await new Promise(resolve => setTimeout(resolve, 50));
             await this.deleteFile(file)
+            await new Promise(resolve => setTimeout(resolve, 50));
         }
 
         // Update files
         for (const file of otherSource.filelist.getFiles()
             .filter((file: LeekFile) => !this.filelist.fileIsSimilar(file))) {
             console.log("Updating out of sync : " + file.name);
+            await new Promise(resolve => setTimeout(resolve, 50));
             await this.updateFile(file)
+            await new Promise(resolve => setTimeout(resolve, 50));
         }
     }
 

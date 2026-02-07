@@ -48,13 +48,17 @@ export class CredentialsManager {
         }
 
         if (this.clients[index] != null) {
+            await new Promise(resolve => setTimeout(resolve, 50));
             await this.clients[index]?.close();
+            await new Promise(resolve => setTimeout(resolve, 50));
         }
     }
 
     public async forEachAccount(input: any, readonly: boolean = false) {
         for (let i = 0; i < this.credentials.length; i++) {
+            await new Promise(resolve => setTimeout(resolve, 50));
             await input(await this.connectClient(i, readonly), i);
+            await new Promise(resolve => setTimeout(resolve, 50));
         }
     }
 
@@ -64,7 +68,9 @@ export class CredentialsManager {
 
     public async forOtherAccount(input: any, readonly: boolean = false) {
         for (let i = 1; i < this.credentials.length; i++) {
+            await new Promise(resolve => setTimeout(resolve, 50));
             await input(await this.connectClient(i, readonly), i);
+            await new Promise(resolve => setTimeout(resolve, 50));
         }
     }
 
@@ -77,13 +83,17 @@ export class CredentialsManager {
 
     public async connectEachAccount(readonly: boolean = false) {
         for (var i = 0; i < this.credentials.length; i++) {
+            await new Promise(resolve => setTimeout(resolve, 50));
             await this.connectClient(i, readonly);
+            await new Promise(resolve => setTimeout(resolve, 50));
         }
     }
 
     public async disconnectEachAccount() {
         for (var i = 0; i < this.credentials.length; i++) {
+            await new Promise(resolve => setTimeout(resolve, 50));
             await this.disconnectClient(i);
+            await new Promise(resolve => setTimeout(resolve, 50));
         }
     }
 }

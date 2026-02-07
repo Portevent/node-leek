@@ -44,7 +44,9 @@ export class NodeLeekClient extends LeekWarsClient{
         this.registerFolders(this.farmer.folders);
         this.registerAis(this.farmer.ais);
         for (const id of Object.keys(this.farmer.leeks)) {
+            await this.sleep(50);
             await this.registerOwnLeek(Number(id));
+            await this.sleep(50);
         }
         this.leeks.forEach(leek => this.logLeekInfos(leek));
     }

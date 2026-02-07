@@ -11,6 +11,7 @@ import {SocketMessage} from "./leekwars-frontend/SocketMessage.js";
 import {NotificationType} from "./leekwars-frontend/Notification.js";
 import {ITEMS} from "./leekwars-frontend/Items.js";
 import {CapitalRequest} from "./model/capital-request";
+import {Garden} from "../codegen/model/garden";
 
 function getSetterOf(header: string[], attribute: string): string {
     return header.find(cookie => cookie.trim().startsWith(`${attribute}=`) && !cookie.startsWith(`${attribute}=deleted;`)) ?? `${attribute}=;`;
@@ -359,6 +360,24 @@ export class LeekWarsClient {
 
                 console.error("getFight " + fight_id + " -> [" + err.statusCode + "] " + err.body.error);
                 return new FightResult();
+            });
+    }
+
+    public async getGarden(): Promise<Garden | null> {
+        if (!this.ready) return null;
+        return this.apiClient.gardenGet()
+            .then(async result => {
+                await this.sleep(75);
+                return result.body
+            })
+            .catch(err => {
+                if (err.statusCode == 429) { // TOO MANY REQUEST
+                    return this.sleep(15000)
+                        .then(() => this.getGarden())
+                }
+
+                console.error("getGarden -> [" + err.statusCode + "] " + err.body.error);
+                return null;
             });
     }
 
