@@ -147,7 +147,7 @@ export class NodeLeekClient extends LeekWarsClient{
 
     private registerAi(ai: Ia) {
         if (this.foldersById[ai.folder] != undefined) {
-            this.filesByName[(this.foldersById[ai.folder] ?? "/") + ai.name + ".leek"] = ai.id
+            this.filesByName[(this.foldersById[ai.folder] ?? "/") + ai.name] = ai.id
         }
     }
 
