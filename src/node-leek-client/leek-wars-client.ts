@@ -271,7 +271,11 @@ export class LeekWarsClient {
 
     protected async getSoloOpponents(leek_id: number): Promise<Opponent[]> {
         return this.apiClient.getSoloOpponents(leek_id)
-            .then(result => result.body.opponents)
+            .then(async result => {
+                // Add on purpose delay to avoid TOO_MANY_REQUEST
+                await this.sleep(100);
+                return result.body.opponents;
+            })
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
                     return this.sleep(15000)
@@ -289,6 +293,7 @@ export class LeekWarsClient {
             console.error("Readonly mode, can't start fight");
             return -1;
         }
+        await this.sleep(100);
         return this.apiClient.startSoloFight({
             leekId: leek_id,
             targetId: target_id
@@ -312,7 +317,11 @@ export class LeekWarsClient {
     protected async getFarmerOpponents() : Promise<FarmerOpponent[]> {
         if (!this.ready) return [];
         return this.apiClient.getFarmerOpponents()
-            .then(result => result.body.opponents)
+            .then(async result => {
+                // Add on purpose delay to avoid TOO_MANY_REQUEST
+                await this.sleep(100);
+                return result.body.opponents;
+            })
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
                     return this.sleep(15000)
@@ -349,7 +358,7 @@ export class LeekWarsClient {
         if (!this.ready) return new FightResult();
         return this.apiClient.getFight(fight_id)
             .then(async result => {
-                await this.sleep(75);
+                await this.sleep(100);
                 return result.body
             })
             .catch(err => {
@@ -367,7 +376,7 @@ export class LeekWarsClient {
         if (!this.ready) return null;
         return this.apiClient.gardenGet()
             .then(async result => {
-                await this.sleep(75);
+                await this.sleep(100);
                 return result.body
             })
             .catch(err => {
@@ -388,7 +397,7 @@ export class LeekWarsClient {
             reaction: reaction
         })
         .then(async result => {
-            return this.sleep(75);
+            return this.sleep(100);
         })
         .catch(err => {
             if (err.statusCode == 429) { // TOO MANY REQUEST
@@ -404,12 +413,13 @@ export class LeekWarsClient {
     public async spendCapital(leekId: number, capitals: CapitalRequest) : Promise<void>{
         if (!this.ready) return;
         const request = `{"life":${capitals.life ?? 0},"strength":${capitals.strength ?? 0},"wisdom":${capitals.wisdom ?? 0},"agility":${capitals.agility ?? 0},"resistance":${capitals.resistance ?? 0},"frequency":${capitals.frequency ?? 0},"science":${capitals.science ?? 0},"magic":${capitals.science ?? 0},"cores":${capitals.cores ?? 0},"ram":${capitals.ram ?? 0},"tp":${capitals.tp ?? 0},"mp":${capitals.mp ?? 0}}`
+        await this.sleep(100);
         return this.apiClient.spendCapital({
             leekId: leekId,
             characteristics: request
         })
         .then(async result => {
-            return this.sleep(75);
+            return this.sleep(100);
         })
         .catch(err => {
             if (err.statusCode == 429) { // TOO MANY REQUEST
