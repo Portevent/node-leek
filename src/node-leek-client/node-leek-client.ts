@@ -237,6 +237,16 @@ export class NodeLeekClient extends LeekWarsClient{
         return this.currentRoom;
     }
 
+    public async createRoomWith(bossId: number,  leeks: number[], locked: boolean = false) : Promise<string>{
+        if (this.farmer.fights == 0) return "";
+        this.currentRoom = "";
+        await this.createBossRoom(bossId, locked, leeks);
+        while(this.currentRoom == ""){
+            await this.sleep(10);
+        }
+        return this.currentRoom;
+    }
+
     public async joinRoom(roomId: string) : Promise<string>{
         await this.joinBossRoom(roomId, Object.keys(this.farmer.leeks).map(id => Number(id)));
         while(this.currentRoom == ""){

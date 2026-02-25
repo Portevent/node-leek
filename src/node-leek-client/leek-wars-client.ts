@@ -433,19 +433,19 @@ export class LeekWarsClient {
     }
 
     protected async registerInBattleRoyale(leek: number){
-        const r = `[${SocketMessage.BATTLE_ROYALE_REGISTER}, "${leek}"]`;
+        const r = `[${SocketMessage.BATTLE_ROYALE_REGISTER},"${leek}"]`;
         this.socket?.send(r);
         console.log("Join battle royal : ", r);
     }
 
     protected async createBossRoom(bossId: number = 1, locked: boolean = false, leeks: number[] = []){
-        const r = `[${SocketMessage.GARDEN_BOSS_CREATE_SQUAD}, ${bossId}, ${locked}, [${leeks}]]`;
+        const r = `[${SocketMessage.GARDEN_BOSS_CREATE_SQUAD},${bossId},${locked},[${leeks}]]`;
         this.socket?.send(r);
         console.log("Create room : ", r);
     }
 
     protected async joinBossRoom(roomId: string, leeks: number[] = []){
-        const r = `[${SocketMessage.GARDEN_BOSS_JOIN_SQUAD}, "${roomId}", [${leeks}]]`;
+        const r = `[${SocketMessage.GARDEN_BOSS_JOIN_SQUAD},"${roomId}",[${leeks}]]`;
         this.socket?.send(r);
         console.log("Join room : ", r);
     }
