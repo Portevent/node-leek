@@ -2030,7 +2030,7 @@
       "phpsessid": {
         "type": "apiKey",
         "in": "cookie",
-        "name": "PHPSESSID"
+        "name": "__Host-sess"
       }
     }
   },

@@ -24,9 +24,9 @@ function getCookieToken(header: string[] | undefined): string {
 }
 
 function getPhpsessidToken(header: string[] | undefined): string {
-    const cookie = getSetterOf(header ?? [], "PHPSESSID");
-    if (!cookie.includes("PHPSESSID=")) return "";
-    const value = cookie.split(";")[0].split("PHPSESSID=")[1];
+    const cookie = getSetterOf(header ?? [], "__Host-sess");
+    if (!cookie.includes("__Host-sess=")) return "";
+    const value = cookie.split(";")[0].split("__Host-sess=")[1];
     return value !== undefined ? value : "";
 }
 

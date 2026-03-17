@@ -64,7 +64,7 @@ export class DefaultApi {
     protected authentications = {
         'default': <Authentication>new VoidAuth(),
         'cookieAuth': new ApiKeyAuth('cookie', 'token'),
-        'phpsessid': new ApiKeyAuth('cookie', 'PHPSESSID'),
+        'phpsessid': new ApiKeyAuth('cookie', '__Host-sess'),
     }
 
     protected interceptors: Interceptor[] = [];
