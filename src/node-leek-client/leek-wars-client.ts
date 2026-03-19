@@ -287,6 +287,24 @@ export class LeekWarsClient {
             });
     }
 
+    protected async getTeamOpponents(composition_id: number): Promise<Opponent[]> {
+        return this.apiClient.getTeamOpponents(composition_id)
+            .then(async result => {
+                // Add on purpose delay to avoid TOO_MANY_REQUEST
+                await this.sleep(100);
+                return result.body.opponents;
+            })
+            .catch(err => {
+                if (err.statusCode == 429) { // TOO MANY REQUEST
+                    return this.sleep(15000)
+                        .then(() => this.getTeamOpponents(composition_id))
+                }
+
+                console.error("getTeamOpponents " + composition_id + " -> [" + err.statusCode + "] " + err.body.error);
+                return [];
+            });
+    }
+
     protected async startSoloFight(leek_id: number, target_id: number): Promise<number> {
         if (!this.ready) return -1;
         if (this.readonly) {
@@ -310,6 +328,34 @@ export class LeekWarsClient {
                 }
 
                 console.error("startSoloFight " + leek_id + " vs " + target_id + " -> [" + err.statusCode + "] " + err.body);
+                return -1;
+            });
+    }
+
+
+    protected async startTeamFight(composition_id: number, target_id: number): Promise<number> {
+        if (!this.ready) return -1;
+        if (this.readonly) {
+            console.error("Readonly mode, can't start fight");
+            return -1;
+        }
+        await this.sleep(100);
+        return this.apiClient.startTeamFight({
+            compositionId: composition_id,
+            targetId: target_id
+        })
+            .then(async result => {
+                // Add on purpose delay to avoid TOO_MANY_REQUEST
+                await this.sleep(100);
+                return result.body.fight;
+            })
+            .catch(err => {
+                if (err.statusCode == 429) { // TOO MANY REQUEST
+                    return this.sleep(15000)
+                        .then(() => this.startTeamFight(composition_id, target_id))
+                }
+
+                console.error("startTeamFight " + composition_id + " vs " + target_id + " -> [" + err.statusCode + "] " + err.body);
                 return -1;
             });
     }

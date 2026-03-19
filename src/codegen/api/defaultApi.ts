@@ -39,6 +39,7 @@ import { SpendCapitalRequest } from '../model/spendCapitalRequest';
 import { StartFarmerFightRequest } from '../model/startFarmerFightRequest';
 import { StartSoloFight200Response } from '../model/startSoloFight200Response';
 import { StartSoloFightRequest } from '../model/startSoloFightRequest';
+import { StartTeamFightRequest } from '../model/startTeamFightRequest';
 
 import { ObjectSerializer, Authentication, VoidAuth, Interceptor } from '../model/models';
 import { HttpBasicAuth, HttpBearerAuth, ApiKeyAuth, OAuth } from '../model/models';
@@ -930,6 +931,80 @@ export class DefaultApi {
         });
     }
     /**
+     * Get composition opponents
+     * @param compositionId ID of the composition
+     */
+    public async getTeamOpponents (compositionId: number, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: GetSoloOpponents200Response;  }> {
+        const localVarPath = this.basePath + '/garden/get-composition-opponents/{compositionId}'
+            .replace('{' + 'compositionId' + '}', encodeURIComponent(String(compositionId)));
+        let localVarQueryParameters: any = {};
+        let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
+        const produces = ['application/json'];
+        // give precedence to 'application/json'
+        if (produces.indexOf('application/json') >= 0) {
+            localVarHeaderParams.Accept = 'application/json';
+        } else {
+            localVarHeaderParams.Accept = produces.join(',');
+        }
+        let localVarFormParams: any = {};
+
+        // verify required parameter 'compositionId' is not null or undefined
+        if (compositionId === null || compositionId === undefined) {
+            throw new Error('Required parameter compositionId was null or undefined when calling getTeamOpponents.');
+        }
+
+        (<any>Object).assign(localVarHeaderParams, options.headers);
+
+        let localVarUseFormData = false;
+
+        let localVarRequestOptions: localVarRequest.Options = {
+            method: 'GET',
+            qs: localVarQueryParameters,
+            headers: localVarHeaderParams,
+            uri: localVarPath,
+            useQuerystring: this._useQuerystring,
+            json: true,
+        };
+
+        let authenticationPromise = Promise.resolve();
+        if (this.authentications.phpsessid.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.phpsessid.applyToRequest(localVarRequestOptions));
+        }
+        if (this.authentications.cookieAuth.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.cookieAuth.applyToRequest(localVarRequestOptions));
+        }
+        authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
+
+        let interceptorPromise = authenticationPromise;
+        for (const interceptor of this.interceptors) {
+            interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
+        }
+
+        return interceptorPromise.then(() => {
+            if (Object.keys(localVarFormParams).length) {
+                if (localVarUseFormData) {
+                    (<any>localVarRequestOptions).formData = localVarFormParams;
+                } else {
+                    localVarRequestOptions.form = localVarFormParams;
+                }
+            }
+            return new Promise<{ response: http.IncomingMessage; body: GetSoloOpponents200Response;  }>((resolve, reject) => {
+                localVarRequest(localVarRequestOptions, (error, response, body) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
+                            body = ObjectSerializer.deserialize(body, "GetSoloOpponents200Response");
+                            resolve({ response: response, body: body });
+                        } else {
+                            reject(new HttpError(response, body, response.statusCode));
+                        }
+                    }
+                });
+            });
+        });
+    }
+    /**
      * Login
      * @param credentials Credentials
      */
@@ -1225,6 +1300,75 @@ export class DefaultApi {
             useQuerystring: this._useQuerystring,
             json: true,
             body: ObjectSerializer.serialize(startSoloFightRequest, "StartSoloFightRequest")
+        };
+
+        let authenticationPromise = Promise.resolve();
+        if (this.authentications.phpsessid.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.phpsessid.applyToRequest(localVarRequestOptions));
+        }
+        if (this.authentications.cookieAuth.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.cookieAuth.applyToRequest(localVarRequestOptions));
+        }
+        authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
+
+        let interceptorPromise = authenticationPromise;
+        for (const interceptor of this.interceptors) {
+            interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
+        }
+
+        return interceptorPromise.then(() => {
+            if (Object.keys(localVarFormParams).length) {
+                if (localVarUseFormData) {
+                    (<any>localVarRequestOptions).formData = localVarFormParams;
+                } else {
+                    localVarRequestOptions.form = localVarFormParams;
+                }
+            }
+            return new Promise<{ response: http.IncomingMessage; body: StartSoloFight200Response;  }>((resolve, reject) => {
+                localVarRequest(localVarRequestOptions, (error, response, body) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
+                            body = ObjectSerializer.deserialize(body, "StartSoloFight200Response");
+                            resolve({ response: response, body: body });
+                        } else {
+                            reject(new HttpError(response, body, response.statusCode));
+                        }
+                    }
+                });
+            });
+        });
+    }
+    /**
+     * Start a team fight
+     * @param startTeamFightRequest 
+     */
+    public async startTeamFight (startTeamFightRequest?: StartTeamFightRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: StartSoloFight200Response;  }> {
+        const localVarPath = this.basePath + '/garden/start-team-fight';
+        let localVarQueryParameters: any = {};
+        let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
+        const produces = ['application/json'];
+        // give precedence to 'application/json'
+        if (produces.indexOf('application/json') >= 0) {
+            localVarHeaderParams.Accept = 'application/json';
+        } else {
+            localVarHeaderParams.Accept = produces.join(',');
+        }
+        let localVarFormParams: any = {};
+
+        (<any>Object).assign(localVarHeaderParams, options.headers);
+
+        let localVarUseFormData = false;
+
+        let localVarRequestOptions: localVarRequest.Options = {
+            method: 'POST',
+            qs: localVarQueryParameters,
+            headers: localVarHeaderParams,
+            uri: localVarPath,
+            useQuerystring: this._useQuerystring,
+            json: true,
+            body: ObjectSerializer.serialize(startTeamFightRequest, "StartTeamFightRequest")
         };
 
         let authenticationPromise = Promise.resolve();

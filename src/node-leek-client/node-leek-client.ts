@@ -177,6 +177,20 @@ export class NodeLeekClient extends LeekWarsClient{
             });
     }
 
+    public async startRandomTeamFight(composition_id: number) : Promise<[Opponent, number]> {
+        return this.getTeamOpponents(composition_id)
+            .then((opponents) => {
+                if (opponents.length == 0) {
+                    console.error("Can't find opponent for composition " + composition_id);
+                    return [null, -1];
+                }
+
+                const opponent = randomIn(opponents);
+                return this.startTeamFight(composition_id, opponent.id)
+                    .then((fightId) => [opponent, fightId]);
+            });
+    }
+
     public async startRandomFarmerFight() : Promise<[Opponent, number]> {
         return this.getFarmerOpponents()
             .then((opponents) => {
@@ -187,20 +201,6 @@ export class NodeLeekClient extends LeekWarsClient{
 
                 const opponent = randomIn(opponents);
                 return this.startFarmerFight(opponent.id)
-                    .then((fightId) => [opponent, fightId]);
-            });
-    }
-
-    public async startRandomTeamFight(leek_id: number) : Promise<[Opponent, number]> {
-        return this.getSoloOpponents(leek_id)
-            .then((opponents) => {
-                if (opponents.length == 0) {
-                    console.error("Can't find opponent for " + leek_id);
-                    return [null, -1];
-                }
-
-                const opponent = randomIn(opponents);
-                return this.startSoloFight(leek_id, opponent.id)
                     .then((fightId) => [opponent, fightId]);
             });
     }

@@ -11,61 +11,41 @@
     }
   ],
   "paths": {
-    "/fight/get/{fightId}": {
-      "get": {
-        "description": "Get a fight result",
-        "operationId": "getFight",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "fightId",
-            "description": "ID of the fight",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Fight result",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/fightResult"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/leek/spend-capital": {
+    "/farmer/login": {
       "post": {
-        "description": "Spend capital points",
-        "operationId": "spendCapital",
+        "operationId": "Login",
+        "description": "Login",
         "requestBody": {
+          "description": "Credentials",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "leek_id": {
-                    "type": "integer"
-                  },
-                  "characteristics": {
-                    "type": "string"
-                  }
-                }
+                "$ref": "#/components/schemas/credentials"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Authentication successfull",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/logindump"
+                }
+              }
+            },
+            "headers": {
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
-        }
+        },
+        "security": []
       }
     },
     "/leek/get/{leekId}": {
@@ -97,10 +77,10 @@
         }
       }
     },
-    "/garden/start-solo-fight": {
+    "/leek/spend-capital": {
       "post": {
-        "description": "Start a solo fight",
-        "operationId": "startSoloFight",
+        "description": "Spend capital points",
+        "operationId": "spendCapital",
         "requestBody": {
           "content": {
             "application/json": {
@@ -110,8 +90,8 @@
                   "leek_id": {
                     "type": "integer"
                   },
-                  "target_id": {
-                    "type": "integer"
+                  "characteristics": {
+                    "type": "string"
                   }
                 }
               }
@@ -120,22 +100,7 @@
         },
         "responses": {
           "200": {
-            "description": "Fight started",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "fight": {
-                      "type": "integer"
-                    }
-                  },
-                  "required": [
-                    "fight"
-                  ]
-                }
-              }
-            }
+            "description": "OK"
           }
         }
       }
@@ -180,111 +145,6 @@
                     "money",
                     "fight"
                   ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/garden/start-farmer-fight": {
-      "post": {
-        "description": "Start a farmer fight",
-        "operationId": "startFarmerFight",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "target_id": {
-                    "type": "integer"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Fight started",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "fight": {
-                      "type": "integer"
-                    }
-                  },
-                  "required": [
-                    "fight"
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/garden/get-leek-opponents/{leekId}": {
-      "get": {
-        "description": "Get solo fight opponents",
-        "operationId": "getSoloOpponents",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "leekId",
-            "description": "ID of the leek",
-            "required": "true",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Fight started",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "opponents": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/opponent"
-                      }
-                    }
-                  },
-                  "required": ["opponents"]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/garden/get-farmer-opponents/": {
-      "get": {
-        "description": "Get a farmer opponent",
-        "operationId": "getFarmerOpponents",
-        "responses": {
-          "200": {
-            "description": "Fight started",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "opponents": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/farmerOpponent"
-                      }
-                    }
-                  },
-                  "required": ["opponents"]
                 }
               }
             }
@@ -531,6 +391,35 @@
         }
       }
     },
+    "/fight/get/{fightId}": {
+      "get": {
+        "description": "Get a fight result",
+        "operationId": "getFight",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fightId",
+            "description": "ID of the fight",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fight result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/fightResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/garden/get": {
       "get": {
         "operationId": "GardenGet",
@@ -549,41 +438,233 @@
         }
       }
     },
-    "/farmer/login": {
+    "/garden/get-leek-opponents/{leekId}": {
+      "get": {
+        "description": "Get solo fight opponents",
+        "operationId": "getSoloOpponents",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "leekId",
+            "description": "ID of the leek",
+            "required": "true",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Opponents received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "opponents": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/opponent"
+                      }
+                    }
+                  },
+                  "required": ["opponents"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/garden/get-composition-opponents/{compositionId}": {
+      "get": {
+        "description": "Get composition opponents",
+        "operationId": "getTeamOpponents",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "compositionId",
+            "description": "ID of the composition",
+            "required": "true",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Opponent recieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "opponents": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/opponent"
+                      }
+                    }
+                  },
+                  "required": ["opponents"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/garden/get-farmer-opponents/": {
+      "get": {
+        "description": "Get a farmer opponent",
+        "operationId": "getFarmerOpponents",
+        "responses": {
+          "200": {
+            "description": "Opponents received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "opponents": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/farmerOpponent"
+                      }
+                    }
+                  },
+                  "required": ["opponents"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/garden/start-solo-fight": {
       "post": {
-        "operationId": "Login",
-        "description": "Login",
+        "description": "Start a solo fight",
+        "operationId": "startSoloFight",
         "requestBody": {
-          "description": "Credentials",
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/credentials"
+                "type": "object",
+                "properties": {
+                  "leek_id": {
+                    "type": "integer"
+                  },
+                  "target_id": {
+                    "type": "integer"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Authentication successfull",
+            "description": "Fight started",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/logindump"
+                  "type": "object",
+                  "properties": {
+                    "fight": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "fight"
+                  ]
                 }
               }
-            },
-            "headers": {
-              "Set-Cookie": {
-                "schema": {
-                  "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/garden/start-team-fight": {
+      "post": {
+        "description": "Start a team fight",
+        "operationId": "startTeamFight",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "composition_id": {
+                    "type": "integer"
+                  },
+                  "target_id": {
+                    "type": "integer"
+                  }
                 }
               }
             }
           }
         },
-        "security": []
+        "responses": {
+          "200": {
+            "description": "Fight started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "fight": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "fight"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/garden/start-farmer-fight": {
+      "post": {
+        "description": "Start a farmer fight",
+        "operationId": "startFarmerFight",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "target_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Fight started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "fight": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "fight"
+                  ]
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/message-reaction/add": {

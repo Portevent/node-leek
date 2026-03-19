@@ -43,5 +43,6 @@ model/spendCapitalRequest.ts
 model/startFarmerFightRequest.ts
 model/startSoloFight200Response.ts
 model/startSoloFightRequest.ts
+model/startTeamFightRequest.ts
 model/team.ts
 model/tournamentResume.ts

@@ -39,6 +39,7 @@ export * from './spendCapitalRequest';
 export * from './startFarmerFightRequest';
 export * from './startSoloFight200Response';
 export * from './startSoloFightRequest';
+export * from './startTeamFightRequest';
 export * from './team';
 export * from './tournamentResume';
 
@@ -94,6 +95,7 @@ import { SpendCapitalRequest } from './spendCapitalRequest';
 import { StartFarmerFightRequest } from './startFarmerFightRequest';
 import { StartSoloFight200Response } from './startSoloFight200Response';
 import { StartSoloFightRequest } from './startSoloFightRequest';
+import { StartTeamFightRequest } from './startTeamFightRequest';
 import { Team } from './team';
 import { TournamentResume } from './tournamentResume';
 
@@ -152,6 +154,7 @@ let typeMap: {[index: string]: any} = {
     "StartFarmerFightRequest": StartFarmerFightRequest,
     "StartSoloFight200Response": StartSoloFight200Response,
     "StartSoloFightRequest": StartSoloFightRequest,
+    "StartTeamFightRequest": StartTeamFightRequest,
     "Team": Team,
     "TournamentResume": TournamentResume,
 }
