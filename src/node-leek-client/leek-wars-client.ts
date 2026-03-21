@@ -132,6 +132,108 @@ export class LeekWarsClient {
             });
     }
 
+    public async equipWeapon(weapon_id: number, leek_id: number) : Promise<void> {
+        if (!this.ready) return;
+        if (this.readonly) {
+            console.error("Readonly mode, can't equip weapon");
+            return;
+        }
+        return this.apiClient.equipWeapon({
+            weaponId: weapon_id,
+            leekId: leek_id,
+        })
+            .then(async result => {
+                // Add on purpose delay to avoid TOO_MANY_REQUEST
+                await this.sleep(100);
+                return result.body;
+            })
+            .catch(err => {
+                if (err.statusCode == 429) { // TOO MANY REQUEST
+                    return this.sleep(15000)
+                        .then(() => this.equipWeapon(weapon_id, leek_id))
+                }
+
+                console.error("Can't equip weapon " + weapon_id + " on " + leek_id + " -> [" + err.statusCode + "] " + err.body.error);
+                return null;
+            });
+    }
+
+    public async equipChip(chip_id: number, leek_id: number) : Promise<void> {
+        if (!this.ready) return;
+        if (this.readonly) {
+            console.error("Readonly mode, can't equip chip");
+            return;
+        }
+        return this.apiClient.equipChip({
+            chipId: chip_id,
+            leekId: leek_id,
+        })
+            .then(async result => {
+                // Add on purpose delay to avoid TOO_MANY_REQUEST
+                await this.sleep(100);
+                return result.body;
+            })
+            .catch(err => {
+                if (err.statusCode == 429) { // TOO MANY REQUEST
+                    return this.sleep(15000)
+                        .then(() => this.equipWeapon(chip_id, leek_id))
+                }
+
+                console.error("Can't equip chip " + chip_id + " on " + leek_id + " -> [" + err.statusCode + "] " + err.body.error);
+                return null;
+            });
+    }
+
+    public async unequipWeapon(weapon_id: number) : Promise<void> {
+        if (!this.ready) return;
+        if (this.readonly) {
+            console.error("Readonly mode, can't unequip weapon");
+            return;
+        }
+        return this.apiClient.unequipWeapon({
+            weaponId: weapon_id,
+        })
+            .then(async result => {
+                // Add on purpose delay to avoid TOO_MANY_REQUEST
+                await this.sleep(100);
+                return result.body;
+            })
+            .catch(err => {
+                if (err.statusCode == 429) { // TOO MANY REQUEST
+                    return this.sleep(15000)
+                        .then(() => this.unequipWeapon(weapon_id))
+                }
+
+                console.error("Can't unequip weapon " + weapon_id + " -> [" + err.statusCode + "] " + err.body.error);
+                return null;
+            });
+    }
+
+    public async unequipChip(chip_id: number) : Promise<void> {
+        if (!this.ready) return;
+        if (this.readonly) {
+            console.error("Readonly mode, can't unequip chip");
+            return;
+        }
+        return this.apiClient.unequipChip({
+            chipId: chip_id,
+        })
+            .then(async result => {
+                // Add on purpose delay to avoid TOO_MANY_REQUEST
+                await this.sleep(100);
+                return result.body;
+            })
+            .catch(err => {
+                if (err.statusCode == 429) { // TOO MANY REQUEST
+                    return this.sleep(15000)
+                        .then(() => this.unequipChip(chip_id))
+                }
+
+                console.error("Can't unequip chip " + chip_id + " -> [" + err.statusCode + "] " + err.body.error);
+                return null;
+            });
+    }
+
     public async fetchFiles(requests: { [ai: number]: number }): Promise<Array<Aicode>> {
         if (!this.ready) return [new Aicode()];
         return this.apiClient.getFilesContent({

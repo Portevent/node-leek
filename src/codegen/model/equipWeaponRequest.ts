@@ -12,32 +12,26 @@
 
 import { RequestFile } from './models';
 
-export class Buy200Response {
-    'fights'?: number;
-    'item'?: number;
-    'money': number;
+export class EquipWeaponRequest {
+    'leekId'?: number;
+    'weaponId'?: number;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "fights",
-            "baseName": "fights",
+            "name": "leekId",
+            "baseName": "leek_id",
             "type": "number"
         },
         {
-            "name": "item",
-            "baseName": "item",
-            "type": "number"
-        },
-        {
-            "name": "money",
-            "baseName": "money",
+            "name": "weaponId",
+            "baseName": "weapon_id",
             "type": "number"
         }    ];
 
     static getAttributeTypeMap() {
-        return Buy200Response.attributeTypeMap;
+        return EquipWeaponRequest.attributeTypeMap;
     }
 }
 

@@ -26,6 +26,8 @@ import { CreateFolderRequest } from '../model/createFolderRequest';
 import { Credentials } from '../model/credentials';
 import { DeleteFileRequest } from '../model/deleteFileRequest';
 import { DeleteFolderRequest } from '../model/deleteFolderRequest';
+import { EquipChipRequest } from '../model/equipChipRequest';
+import { EquipWeaponRequest } from '../model/equipWeaponRequest';
 import { FightResult } from '../model/fightResult';
 import { Garden } from '../model/garden';
 import { GetFarmerOpponents200Response } from '../model/getFarmerOpponents200Response';
@@ -40,6 +42,8 @@ import { StartFarmerFightRequest } from '../model/startFarmerFightRequest';
 import { StartSoloFight200Response } from '../model/startSoloFight200Response';
 import { StartSoloFightRequest } from '../model/startSoloFightRequest';
 import { StartTeamFightRequest } from '../model/startTeamFightRequest';
+import { UnequipChipRequest } from '../model/unequipChipRequest';
+import { UnequipWeaponRequest } from '../model/unequipWeaponRequest';
 
 import { ObjectSerializer, Authentication, VoidAuth, Interceptor } from '../model/models';
 import { HttpBasicAuth, HttpBearerAuth, ApiKeyAuth, OAuth } from '../model/models';
@@ -466,6 +470,128 @@ export class DefaultApi {
             useQuerystring: this._useQuerystring,
             json: true,
             body: ObjectSerializer.serialize(deleteFolderRequest, "DeleteFolderRequest")
+        };
+
+        let authenticationPromise = Promise.resolve();
+        if (this.authentications.phpsessid.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.phpsessid.applyToRequest(localVarRequestOptions));
+        }
+        if (this.authentications.cookieAuth.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.cookieAuth.applyToRequest(localVarRequestOptions));
+        }
+        authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
+
+        let interceptorPromise = authenticationPromise;
+        for (const interceptor of this.interceptors) {
+            interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
+        }
+
+        return interceptorPromise.then(() => {
+            if (Object.keys(localVarFormParams).length) {
+                if (localVarUseFormData) {
+                    (<any>localVarRequestOptions).formData = localVarFormParams;
+                } else {
+                    localVarRequestOptions.form = localVarFormParams;
+                }
+            }
+            return new Promise<{ response: http.IncomingMessage; body?: any;  }>((resolve, reject) => {
+                localVarRequest(localVarRequestOptions, (error, response, body) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
+                            resolve({ response: response, body: body });
+                        } else {
+                            reject(new HttpError(response, body, response.statusCode));
+                        }
+                    }
+                });
+            });
+        });
+    }
+    /**
+     * Add chip to leek
+     * @param equipChipRequest 
+     */
+    public async equipChip (equipChipRequest?: EquipChipRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body?: any;  }> {
+        const localVarPath = this.basePath + '/leek/add-chip';
+        let localVarQueryParameters: any = {};
+        let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
+        let localVarFormParams: any = {};
+
+        (<any>Object).assign(localVarHeaderParams, options.headers);
+
+        let localVarUseFormData = false;
+
+        let localVarRequestOptions: localVarRequest.Options = {
+            method: 'POST',
+            qs: localVarQueryParameters,
+            headers: localVarHeaderParams,
+            uri: localVarPath,
+            useQuerystring: this._useQuerystring,
+            json: true,
+            body: ObjectSerializer.serialize(equipChipRequest, "EquipChipRequest")
+        };
+
+        let authenticationPromise = Promise.resolve();
+        if (this.authentications.phpsessid.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.phpsessid.applyToRequest(localVarRequestOptions));
+        }
+        if (this.authentications.cookieAuth.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.cookieAuth.applyToRequest(localVarRequestOptions));
+        }
+        authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
+
+        let interceptorPromise = authenticationPromise;
+        for (const interceptor of this.interceptors) {
+            interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
+        }
+
+        return interceptorPromise.then(() => {
+            if (Object.keys(localVarFormParams).length) {
+                if (localVarUseFormData) {
+                    (<any>localVarRequestOptions).formData = localVarFormParams;
+                } else {
+                    localVarRequestOptions.form = localVarFormParams;
+                }
+            }
+            return new Promise<{ response: http.IncomingMessage; body?: any;  }>((resolve, reject) => {
+                localVarRequest(localVarRequestOptions, (error, response, body) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
+                            resolve({ response: response, body: body });
+                        } else {
+                            reject(new HttpError(response, body, response.statusCode));
+                        }
+                    }
+                });
+            });
+        });
+    }
+    /**
+     * Add weapon to leek
+     * @param equipWeaponRequest 
+     */
+    public async equipWeapon (equipWeaponRequest?: EquipWeaponRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body?: any;  }> {
+        const localVarPath = this.basePath + '/leek/add-weapon';
+        let localVarQueryParameters: any = {};
+        let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
+        let localVarFormParams: any = {};
+
+        (<any>Object).assign(localVarHeaderParams, options.headers);
+
+        let localVarUseFormData = false;
+
+        let localVarRequestOptions: localVarRequest.Options = {
+            method: 'POST',
+            qs: localVarQueryParameters,
+            headers: localVarHeaderParams,
+            uri: localVarPath,
+            useQuerystring: this._useQuerystring,
+            json: true,
+            body: ObjectSerializer.serialize(equipWeaponRequest, "EquipWeaponRequest")
         };
 
         let authenticationPromise = Promise.resolve();
@@ -1400,6 +1526,128 @@ export class DefaultApi {
                     } else {
                         if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
                             body = ObjectSerializer.deserialize(body, "StartSoloFight200Response");
+                            resolve({ response: response, body: body });
+                        } else {
+                            reject(new HttpError(response, body, response.statusCode));
+                        }
+                    }
+                });
+            });
+        });
+    }
+    /**
+     * Remove chip
+     * @param unequipChipRequest 
+     */
+    public async unequipChip (unequipChipRequest?: UnequipChipRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body?: any;  }> {
+        const localVarPath = this.basePath + '/leek/remove-chip';
+        let localVarQueryParameters: any = {};
+        let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
+        let localVarFormParams: any = {};
+
+        (<any>Object).assign(localVarHeaderParams, options.headers);
+
+        let localVarUseFormData = false;
+
+        let localVarRequestOptions: localVarRequest.Options = {
+            method: 'POST',
+            qs: localVarQueryParameters,
+            headers: localVarHeaderParams,
+            uri: localVarPath,
+            useQuerystring: this._useQuerystring,
+            json: true,
+            body: ObjectSerializer.serialize(unequipChipRequest, "UnequipChipRequest")
+        };
+
+        let authenticationPromise = Promise.resolve();
+        if (this.authentications.phpsessid.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.phpsessid.applyToRequest(localVarRequestOptions));
+        }
+        if (this.authentications.cookieAuth.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.cookieAuth.applyToRequest(localVarRequestOptions));
+        }
+        authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
+
+        let interceptorPromise = authenticationPromise;
+        for (const interceptor of this.interceptors) {
+            interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
+        }
+
+        return interceptorPromise.then(() => {
+            if (Object.keys(localVarFormParams).length) {
+                if (localVarUseFormData) {
+                    (<any>localVarRequestOptions).formData = localVarFormParams;
+                } else {
+                    localVarRequestOptions.form = localVarFormParams;
+                }
+            }
+            return new Promise<{ response: http.IncomingMessage; body?: any;  }>((resolve, reject) => {
+                localVarRequest(localVarRequestOptions, (error, response, body) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
+                            resolve({ response: response, body: body });
+                        } else {
+                            reject(new HttpError(response, body, response.statusCode));
+                        }
+                    }
+                });
+            });
+        });
+    }
+    /**
+     * Remove weapon
+     * @param unequipWeaponRequest 
+     */
+    public async unequipWeapon (unequipWeaponRequest?: UnequipWeaponRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body?: any;  }> {
+        const localVarPath = this.basePath + '/leek/remove-weapon';
+        let localVarQueryParameters: any = {};
+        let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
+        let localVarFormParams: any = {};
+
+        (<any>Object).assign(localVarHeaderParams, options.headers);
+
+        let localVarUseFormData = false;
+
+        let localVarRequestOptions: localVarRequest.Options = {
+            method: 'POST',
+            qs: localVarQueryParameters,
+            headers: localVarHeaderParams,
+            uri: localVarPath,
+            useQuerystring: this._useQuerystring,
+            json: true,
+            body: ObjectSerializer.serialize(unequipWeaponRequest, "UnequipWeaponRequest")
+        };
+
+        let authenticationPromise = Promise.resolve();
+        if (this.authentications.phpsessid.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.phpsessid.applyToRequest(localVarRequestOptions));
+        }
+        if (this.authentications.cookieAuth.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.cookieAuth.applyToRequest(localVarRequestOptions));
+        }
+        authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
+
+        let interceptorPromise = authenticationPromise;
+        for (const interceptor of this.interceptors) {
+            interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
+        }
+
+        return interceptorPromise.then(() => {
+            if (Object.keys(localVarFormParams).length) {
+                if (localVarUseFormData) {
+                    (<any>localVarRequestOptions).formData = localVarFormParams;
+                } else {
+                    localVarRequestOptions.form = localVarFormParams;
+                }
+            }
+            return new Promise<{ response: http.IncomingMessage; body?: any;  }>((resolve, reject) => {
+                localVarRequest(localVarRequestOptions, (error, response, body) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
                             resolve({ response: response, body: body });
                         } else {
                             reject(new HttpError(response, body, response.statusCode));

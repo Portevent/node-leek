@@ -105,6 +105,112 @@
         }
       }
     },
+    "/leek/add-weapon": {
+      "post": {
+        "description": "Add weapon to leek",
+        "operationId": "equipWeapon",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "leek_id": {
+                    "type": "integer"
+                  },
+                  "weapon_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/leek/add-chip": {
+      "post": {
+        "description": "Add chip to leek",
+        "operationId": "equipChip",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "leek_id": {
+                    "type": "integer"
+                  },
+                  "chip_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/leek/remove-weapon": {
+      "post": {
+        "description": "Remove weapon",
+        "operationId": "unequipWeapon",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "weapon_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/leek/remove-chip": {
+      "post": {
+        "description": "Remove chip",
+        "operationId": "unequipChip",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "chip_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/market/buy-habs-quantity": {
       "post": {
         "description": "Buy something",
@@ -137,13 +243,15 @@
                     "fights": {
                       "type": "integer"
                     },
+                    "item": {
+                      "type": "integer"
+                    },
                     "money": {
                       "type": "integer"
                     }
                   },
                   "required": [
-                    "money",
-                    "fight"
+                    "money"
                   ]
                 }
               }

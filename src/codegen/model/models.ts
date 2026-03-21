@@ -12,6 +12,8 @@ export * from './createFolderRequest';
 export * from './credentials';
 export * from './deleteFileRequest';
 export * from './deleteFolderRequest';
+export * from './equipChipRequest';
+export * from './equipWeaponRequest';
 export * from './farmer';
 export * from './farmerOpponent';
 export * from './fightResult';
@@ -42,6 +44,8 @@ export * from './startSoloFightRequest';
 export * from './startTeamFightRequest';
 export * from './team';
 export * from './tournamentResume';
+export * from './unequipChipRequest';
+export * from './unequipWeaponRequest';
 
 import * as fs from 'fs';
 
@@ -68,6 +72,8 @@ import { CreateFolderRequest } from './createFolderRequest';
 import { Credentials } from './credentials';
 import { DeleteFileRequest } from './deleteFileRequest';
 import { DeleteFolderRequest } from './deleteFolderRequest';
+import { EquipChipRequest } from './equipChipRequest';
+import { EquipWeaponRequest } from './equipWeaponRequest';
 import { Farmer } from './farmer';
 import { FarmerOpponent } from './farmerOpponent';
 import { FightResult } from './fightResult';
@@ -98,6 +104,8 @@ import { StartSoloFightRequest } from './startSoloFightRequest';
 import { StartTeamFightRequest } from './startTeamFightRequest';
 import { Team } from './team';
 import { TournamentResume } from './tournamentResume';
+import { UnequipChipRequest } from './unequipChipRequest';
+import { UnequipWeaponRequest } from './unequipWeaponRequest';
 
 /* tslint:disable:no-unused-variable */
 let primitives = [
@@ -127,6 +135,8 @@ let typeMap: {[index: string]: any} = {
     "Credentials": Credentials,
     "DeleteFileRequest": DeleteFileRequest,
     "DeleteFolderRequest": DeleteFolderRequest,
+    "EquipChipRequest": EquipChipRequest,
+    "EquipWeaponRequest": EquipWeaponRequest,
     "Farmer": Farmer,
     "FarmerOpponent": FarmerOpponent,
     "FightResult": FightResult,
@@ -157,6 +167,8 @@ let typeMap: {[index: string]: any} = {
     "StartTeamFightRequest": StartTeamFightRequest,
     "Team": Team,
     "TournamentResume": TournamentResume,
+    "UnequipChipRequest": UnequipChipRequest,
+    "UnequipWeaponRequest": UnequipWeaponRequest,
 }
 
 export class ObjectSerializer {
