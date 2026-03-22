@@ -92,8 +92,10 @@ export class LeekWarsClient {
 
     public async getLeek(leek_id: number) : Promise<PublicLeek | null> {
         if (!this.ready) return null;
+        await this.sleep(300);
         return this.apiClient.getLeek(leek_id)
-            .then(result => {
+            .then(async result => {
+                await this.sleep(300);
                 return result.body;
             })
             .catch(err => {
@@ -112,13 +114,14 @@ export class LeekWarsClient {
             console.error("Readonly mode, can't buy items");
             return null;
         }
+        await this.sleep(300);
         return this.apiClient.buy({
             itemId: item_id,
             quantity: quantity
         })
             .then(async result => {
                 // Add on purpose delay to avoid TOO_MANY_REQUEST
-                await this.sleep(100);
+                await this.sleep(300);
                 return result.body;
             })
             .catch(err => {
@@ -138,13 +141,14 @@ export class LeekWarsClient {
             console.error("Readonly mode, can't equip weapon");
             return;
         }
+        await this.sleep(300);
         return this.apiClient.equipWeapon({
             weaponId: weapon_id,
             leekId: leek_id,
         })
             .then(async result => {
                 // Add on purpose delay to avoid TOO_MANY_REQUEST
-                await this.sleep(100);
+                await this.sleep(300);
                 return result.body;
             })
             .catch(err => {
@@ -164,13 +168,14 @@ export class LeekWarsClient {
             console.error("Readonly mode, can't equip chip");
             return;
         }
+        await this.sleep(300);
         return this.apiClient.equipChip({
             chipId: chip_id,
             leekId: leek_id,
         })
             .then(async result => {
                 // Add on purpose delay to avoid TOO_MANY_REQUEST
-                await this.sleep(100);
+                await this.sleep(300);
                 return result.body;
             })
             .catch(err => {
@@ -190,12 +195,13 @@ export class LeekWarsClient {
             console.error("Readonly mode, can't unequip weapon");
             return;
         }
+        await this.sleep(300);
         return this.apiClient.unequipWeapon({
             weaponId: weapon_id,
         })
             .then(async result => {
                 // Add on purpose delay to avoid TOO_MANY_REQUEST
-                await this.sleep(100);
+                await this.sleep(300);
                 return result.body;
             })
             .catch(err => {
@@ -215,12 +221,13 @@ export class LeekWarsClient {
             console.error("Readonly mode, can't unequip chip");
             return;
         }
+        await this.sleep(300);
         return this.apiClient.unequipChip({
             chipId: chip_id,
         })
             .then(async result => {
                 // Add on purpose delay to avoid TOO_MANY_REQUEST
-                await this.sleep(100);
+                await this.sleep(300);
                 return result.body;
             })
             .catch(err => {
@@ -375,7 +382,7 @@ export class LeekWarsClient {
         return this.apiClient.getSoloOpponents(leek_id)
             .then(async result => {
                 // Add on purpose delay to avoid TOO_MANY_REQUEST
-                await this.sleep(100);
+                await this.sleep(300);
                 return result.body.opponents;
             })
             .catch(err => {
@@ -389,11 +396,30 @@ export class LeekWarsClient {
             });
     }
 
+    protected async getFarmerOpponents() : Promise<FarmerOpponent[]> {
+        if (!this.ready) return [];
+        return this.apiClient.getFarmerOpponents()
+            .then(async result => {
+                // Add on purpose delay to avoid TOO_MANY_REQUEST
+                await this.sleep(300);
+                return result.body.opponents;
+            })
+            .catch(err => {
+                if (err.statusCode == 429) { // TOO MANY REQUEST
+                    return this.sleep(15000)
+                        .then(() => this.getFarmerOpponents())
+                }
+
+                console.error("getFarmerOpponents -> [" + err.statusCode + "] " + err.body.error);
+                return [];
+            });
+    }
+
     protected async getTeamOpponents(composition_id: number): Promise<Opponent[]> {
         return this.apiClient.getTeamOpponents(composition_id)
             .then(async result => {
                 // Add on purpose delay to avoid TOO_MANY_REQUEST
-                await this.sleep(100);
+                await this.sleep(300);
                 return result.body.opponents;
             })
             .catch(err => {
@@ -413,14 +439,14 @@ export class LeekWarsClient {
             console.error("Readonly mode, can't start fight");
             return -1;
         }
-        await this.sleep(100);
+        await this.sleep(300);
         return this.apiClient.startSoloFight({
             leekId: leek_id,
             targetId: target_id
         })
             .then(async result => {
                 // Add on purpose delay to avoid TOO_MANY_REQUEST
-                await this.sleep(100);
+                await this.sleep(300);
                 return result.body.fight;
             })
             .catch(err => {
@@ -434,6 +460,30 @@ export class LeekWarsClient {
             });
     }
 
+    protected async startFarmerFight(target_id: number): Promise<number> {
+        if (!this.ready) return -1;
+        if (this.readonly) {
+            console.error("Readonly mode, can't start fight");
+            return -1;
+        }
+        await this.sleep(300);
+        return this.apiClient.startFarmerFight({
+            targetId: target_id
+        })
+            .then(async result => {
+                await this.sleep(300);
+                return result.body.fight
+            })
+            .catch(err => {
+                if (err.statusCode == 429) { // TOO MANY REQUEST
+                    return this.sleep(15000)
+                        .then(() => this.startFarmerFight(target_id))
+                }
+
+                console.error("startFarmerFight vs " + target_id + " -> [" + err.statusCode + "] " + err.body);
+                return -1;
+            });
+    }
 
     protected async startTeamFight(composition_id: number, target_id: number): Promise<number> {
         if (!this.ready) return -1;
@@ -441,14 +491,14 @@ export class LeekWarsClient {
             console.error("Readonly mode, can't start fight");
             return -1;
         }
-        await this.sleep(100);
+        await this.sleep(300);
         return this.apiClient.startTeamFight({
             compositionId: composition_id,
             targetId: target_id
         })
             .then(async result => {
                 // Add on purpose delay to avoid TOO_MANY_REQUEST
-                await this.sleep(100);
+                await this.sleep(300);
                 return result.body.fight;
             })
             .catch(err => {
@@ -458,46 +508,6 @@ export class LeekWarsClient {
                 }
 
                 console.error("startTeamFight " + composition_id + " vs " + target_id + " -> [" + err.statusCode + "] " + err.body);
-                return -1;
-            });
-    }
-
-    protected async getFarmerOpponents() : Promise<FarmerOpponent[]> {
-        if (!this.ready) return [];
-        return this.apiClient.getFarmerOpponents()
-            .then(async result => {
-                // Add on purpose delay to avoid TOO_MANY_REQUEST
-                await this.sleep(100);
-                return result.body.opponents;
-            })
-            .catch(err => {
-                if (err.statusCode == 429) { // TOO MANY REQUEST
-                    return this.sleep(15000)
-                        .then(() => this.getFarmerOpponents())
-                }
-
-                console.error("getFarmerOpponents -> [" + err.statusCode + "] " + err.body.error);
-                return [];
-            });
-    }
-
-    protected async startFarmerFight(target_id: number): Promise<number> {
-        if (!this.ready) return -1;
-        if (this.readonly) {
-            console.error("Readonly mode, can't start fight");
-            return -1;
-        }
-        return this.apiClient.startFarmerFight({
-            targetId: target_id
-        })
-            .then(result => result.body.fight)
-            .catch(err => {
-                if (err.statusCode == 429) { // TOO MANY REQUEST
-                    return this.sleep(15000)
-                        .then(() => this.startFarmerFight(target_id))
-                }
-
-                console.error("startFarmerFight vs " + target_id + " -> [" + err.statusCode + "] " + err.body);
                 return -1;
             });
     }

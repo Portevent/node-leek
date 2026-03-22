@@ -162,7 +162,7 @@
       }
     },
     "/leek/remove-weapon": {
-      "post": {
+      "delete": {
         "description": "Remove weapon",
         "operationId": "unequipWeapon",
         "requestBody": {
@@ -187,7 +187,7 @@
       }
     },
     "/leek/remove-chip": {
-      "post": {
+      "delete": {
         "description": "Remove chip",
         "operationId": "unequipChip",
         "requestBody": {
@@ -645,6 +645,11 @@
                 }
               }
             }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {}
           }
         }
       }
