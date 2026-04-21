@@ -7,6 +7,8 @@ import {LeekSyncClient} from "../leek-sync/leek-sync-client.js";
 import {LeekWarsClient} from "./leek-wars-client.js";
 import {PublicLeek} from "../codegen/model/publicLeek.js";
 import {FightResume} from "../codegen/model/fightResume.js";
+import {AiTree} from "../codegen/model/aiTree";
+import {Ai} from "../codegen/model/ai";
 
 function randomIn(array: any[]){
     return array[Math.floor(Math.random() * array.length)];
@@ -41,8 +43,7 @@ export class NodeLeekClient extends LeekWarsClient{
     private async initClient(farmer: Farmer): Promise<void> {
         this.farmer = farmer;
         this.logFarmerInfos();
-        this.registerFolders(this.farmer.folders);
-        this.registerAis(this.farmer.ais);
+        this.registerAis(this.farmer.aiTree);
         for (const id of Object.keys(this.farmer.leeks)) {
             await this.sleep(50);
             await this.registerOwnLeek(Number(id));
@@ -141,14 +142,14 @@ export class NodeLeekClient extends LeekWarsClient{
         }
     }
 
-    private registerAis(ais: Array<Ia>) {
-        ais.forEach(ai => this.registerAi(ai));
+    private registerAis(ais: AiTree) {
+        ais.files!.forEach(ai => this.registerAi(ai));
     }
 
-    private registerAi(ai: Ia) {
-        if (this.foldersById[ai.folder] != undefined) {
+    private registerAi(ai: Ai) {
+        /*if (this.foldersById[ai.folder] != undefined) {
             this.filesByName[(this.foldersById[ai.folder] ?? "/") + ai.name] = ai.id
-        }
+        }*/
     }
 
     public getFiles(): { [name: string]: number } {
@@ -217,8 +218,11 @@ export class NodeLeekClient extends LeekWarsClient{
     }
 
     public async syncWith(path: string, watch: boolean, choice: string = ""){
+        console.error("SyncWith doesn't work with new LeekWars API");
+        /*
         this.leekSyncClient = new LeekSyncClient(this, path);
         return this.leekSyncClient.start(watch, choice);
+        */
     }
 
     public async joinBattleRoyale() : Promise<void>{

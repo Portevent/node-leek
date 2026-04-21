@@ -734,7 +734,7 @@ export class LeekWarsClient {
                         break
                     }
                     case SocketMessage.UPDATE_FARMER_TALENT: {
-                        console.log(`[WS ${this.username}] ` + (data[1]>0?"+":"") + data[1] + " farmer talents");
+                        console.log(`[WS ${this.username}] ` + (data[0]>0?"+":"") + data[0] + " farmer talents");
                         break
                     }
                     case SocketMessage.UPDATE_TEAM_TALENT: {

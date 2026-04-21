@@ -11,8 +11,7 @@
  */
 
 import { RequestFile } from './models';
-import { Folder } from './folder';
-import { Ia } from './ia';
+import { AiTree } from './aiTree';
 import { Item } from './item';
 import { Leek } from './leek';
 import { Team } from './team';
@@ -25,6 +24,8 @@ export class Farmer {
     'login': string;
     'name': string;
     'talent': number;
+    'maxTalent': number;
+    'talentMore': number;
     'victories': number;
     'draws': number;
     'defeats': number;
@@ -32,7 +33,6 @@ export class Farmer {
     'admin': boolean;
     'moderator': boolean;
     'banned': boolean;
-    'inGarden': boolean;
     'verified': boolean;
     'wonSoloTournaments': number;
     'wonFarmerTournaments': number;
@@ -40,12 +40,13 @@ export class Farmer {
     'wonBattleRoyale': number;
     'totalLevel': number;
     'leekCount': number;
+    'inGarden': boolean;
     'fights': number;
+    'boughtFight': number;
     'teamFights': number;
     'trophies': number;
     'points': number;
     'ranking': number;
-    'godsonsLevel': number;
     'habs': number;
     'crystals': number;
     'team': Team;
@@ -85,15 +86,7 @@ export class Farmer {
     * Leeks by id
     */
     'leeks': { [key: string]: Leek; };
-    /**
-    * Associated IA for each leek id
-    */
-    'leekAis': { [key: string]: string; };
-    'folders': Array<Folder>;
-    /**
-    * List of ai
-    */
-    'ais': Array<Ia>;
+    'aiTree': AiTree;
 
     static discriminator: string | undefined = undefined;
 
@@ -116,6 +109,16 @@ export class Farmer {
         {
             "name": "talent",
             "baseName": "talent",
+            "type": "number"
+        },
+        {
+            "name": "maxTalent",
+            "baseName": "max_talent",
+            "type": "number"
+        },
+        {
+            "name": "talentMore",
+            "baseName": "talent_more",
             "type": "number"
         },
         {
@@ -154,11 +157,6 @@ export class Farmer {
             "type": "boolean"
         },
         {
-            "name": "inGarden",
-            "baseName": "in_garden",
-            "type": "boolean"
-        },
-        {
             "name": "verified",
             "baseName": "verified",
             "type": "boolean"
@@ -194,8 +192,18 @@ export class Farmer {
             "type": "number"
         },
         {
+            "name": "inGarden",
+            "baseName": "in_garden",
+            "type": "boolean"
+        },
+        {
             "name": "fights",
             "baseName": "fights",
+            "type": "number"
+        },
+        {
+            "name": "boughtFight",
+            "baseName": "bought_fight",
             "type": "number"
         },
         {
@@ -216,11 +224,6 @@ export class Farmer {
         {
             "name": "ranking",
             "baseName": "ranking",
-            "type": "number"
-        },
-        {
-            "name": "godsonsLevel",
-            "baseName": "godsons_level",
             "type": "number"
         },
         {
@@ -284,19 +287,9 @@ export class Farmer {
             "type": "{ [key: string]: Leek; }"
         },
         {
-            "name": "leekAis",
-            "baseName": "leek_ais",
-            "type": "{ [key: string]: string; }"
-        },
-        {
-            "name": "folders",
-            "baseName": "folders",
-            "type": "Array<Folder>"
-        },
-        {
-            "name": "ais",
-            "baseName": "ais",
-            "type": "Array<Ia>"
+            "name": "aiTree",
+            "baseName": "ai_tree",
+            "type": "AiTree"
         }    ];
 
     static getAttributeTypeMap() {

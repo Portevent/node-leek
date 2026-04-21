@@ -11,36 +11,31 @@
  */
 
 import { RequestFile } from './models';
+import { Ai } from './ai';
 
 /**
-* AI Folder
+* AI Tree
 */
-export class Folder {
-    'id': number;
-    'folder': number;
-    'name': string;
+export class AiTree {
+    'files'?: Array<Ai>;
+    'folders': Array<string>;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "id",
-            "baseName": "id",
-            "type": "number"
+            "name": "files",
+            "baseName": "files",
+            "type": "Array<Ai>"
         },
         {
-            "name": "folder",
-            "baseName": "folder",
-            "type": "number"
-        },
-        {
-            "name": "name",
-            "baseName": "name",
-            "type": "string"
+            "name": "folders",
+            "baseName": "folders",
+            "type": "Array<string>"
         }    ];
 
     static getAttributeTypeMap() {
-        return Folder.attributeTypeMap;
+        return AiTree.attributeTypeMap;
     }
 }
 

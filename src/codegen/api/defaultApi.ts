@@ -702,7 +702,7 @@ export class DefaultApi {
      * Get a farmer opponent
      */
     public async getFarmerOpponents (options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: GetFarmerOpponents200Response;  }> {
-        const localVarPath = this.basePath + '/garden/get-farmer-opponents/';
+        const localVarPath = this.basePath + '/garden/get-farmer-opponents';
         let localVarQueryParameters: any = {};
         let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
         const produces = ['application/json'];

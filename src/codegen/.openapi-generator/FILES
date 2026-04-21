@@ -4,6 +4,8 @@ api/apis.ts
 api/defaultApi.ts
 git_push.sh
 model/addMessageReactionRequest.ts
+model/ai.ts
+model/aiTree.ts
 model/aicode.ts
 model/buy200Response.ts
 model/buyRequest.ts
@@ -30,7 +32,6 @@ model/gardenGardenMyTeam.ts
 model/getFarmerOpponents200Response.ts
 model/getFilesContentRequest.ts
 model/getSoloOpponents200Response.ts
-model/ia.ts
 model/item.ts
 model/leek.ts
 model/logindump.ts

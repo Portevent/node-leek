@@ -1,6 +1,8 @@
 import localVarRequest from 'request';
 
 export * from './addMessageReactionRequest';
+export * from './ai';
+export * from './aiTree';
 export * from './aicode';
 export * from './buy200Response';
 export * from './buyRequest';
@@ -27,7 +29,6 @@ export * from './gardenGardenMyTeam';
 export * from './getFarmerOpponents200Response';
 export * from './getFilesContentRequest';
 export * from './getSoloOpponents200Response';
-export * from './ia';
 export * from './item';
 export * from './leek';
 export * from './logindump';
@@ -61,6 +62,8 @@ export type RequestFile = string | Buffer | fs.ReadStream | RequestDetailedFile;
 
 
 import { AddMessageReactionRequest } from './addMessageReactionRequest';
+import { Ai } from './ai';
+import { AiTree } from './aiTree';
 import { Aicode } from './aicode';
 import { Buy200Response } from './buy200Response';
 import { BuyRequest } from './buyRequest';
@@ -87,7 +90,6 @@ import { GardenGardenMyTeam } from './gardenGardenMyTeam';
 import { GetFarmerOpponents200Response } from './getFarmerOpponents200Response';
 import { GetFilesContentRequest } from './getFilesContentRequest';
 import { GetSoloOpponents200Response } from './getSoloOpponents200Response';
-import { Ia } from './ia';
 import { Item } from './item';
 import { Leek } from './leek';
 import { Logindump } from './logindump';
@@ -124,6 +126,8 @@ let enumsMap: {[index: string]: any} = {
 
 let typeMap: {[index: string]: any} = {
     "AddMessageReactionRequest": AddMessageReactionRequest,
+    "Ai": Ai,
+    "AiTree": AiTree,
     "Aicode": Aicode,
     "Buy200Response": Buy200Response,
     "BuyRequest": BuyRequest,
@@ -150,7 +154,6 @@ let typeMap: {[index: string]: any} = {
     "GetFarmerOpponents200Response": GetFarmerOpponents200Response,
     "GetFilesContentRequest": GetFilesContentRequest,
     "GetSoloOpponents200Response": GetSoloOpponents200Response,
-    "Ia": Ia,
     "Item": Item,
     "Leek": Leek,
     "Logindump": Logindump,
