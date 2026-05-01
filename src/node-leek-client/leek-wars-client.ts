@@ -779,6 +779,7 @@ export class LeekWarsClient {
                     }
                     case SocketMessage.GARDEN_BOSS_LEFT: {
                         console.log(`[WS ${this.username}] received GARDEN_BOSS_LEFT`, data);
+                        this.currentRoom = "";
                         break
                     }
                     case SocketMessage.CONSOLE_RESULT: {
