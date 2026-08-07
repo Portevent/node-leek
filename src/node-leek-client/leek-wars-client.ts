@@ -609,14 +609,14 @@ export class LeekWarsClient {
     }
 
     protected async addLeekInBossRoom(leeks: number){
-        const r = `[${SocketMessage.GARDEN_BOSS_ADD_LEEK},[${leeks}]]`;
+        const r = `[${SocketMessage.GARDEN_BOSS_ADD_LEEK},${leeks}]`;
         this.socket?.send(r);
         console.log("Add leek in room : ", r);
     }
 
 
     protected async removeLeekInBossRoom(leeks: number){
-        const r = `[${SocketMessage.GARDEN_BOSS_REMOVE_LEEK},[${leeks}]]`;
+        const r = `[${SocketMessage.GARDEN_BOSS_REMOVE_LEEK},${leeks}]`;
         this.socket?.send(r);
         console.log("Remove leek in room : ", r);
     }
