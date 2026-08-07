@@ -256,4 +256,12 @@ export class NodeLeekClient extends LeekWarsClient{
         }
         return this.currentRoom;
     }
+
+    public async engageLeekInRoom(leek: number) : Promise<void>{
+        return this.addLeekInBossRoom(leek);
+    }
+
+    public async disengageLeekInRoom(leek: number) : Promise<void>{
+        return this.removeLeekInBossRoom(leek);
+    }
 }
