@@ -42,7 +42,7 @@ export class LeekWarsClient {
     private token: string = "";
     private phpsessid: string = "";
 
-    protected currentRoom: string = "";
+    public currentRoom: string = "";
     public inBattleRoyal: boolean = false;
 
     constructor(username: string, password: string, readonly: boolean = false) {
@@ -600,6 +600,12 @@ export class LeekWarsClient {
         const r = `[${SocketMessage.GARDEN_BOSS_CREATE_SQUAD},${bossId},${locked},[${leeks}]]`;
         this.socket?.send(r);
         console.log("Create room : ", r);
+    }
+
+    protected async leaveBossRoom(){
+        const r = `[${SocketMessage.GARDEN_BOSS_LEAVE_SQUAD}]`;
+        this.socket?.send(r);
+        console.log("Left room : ", r);
     }
 
     protected async joinBossRoom(roomId: string, leeks: number[] = []){

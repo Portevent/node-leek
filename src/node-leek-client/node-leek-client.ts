@@ -231,6 +231,10 @@ export class NodeLeekClient extends LeekWarsClient{
         await this.sleep(100);
     }
 
+    public async leaveRoom() : Promise<void>{
+        return this.leaveBossRoom();
+    }
+
     public async createRoom(bossId: number, locked: boolean = false) : Promise<string>{
         return this.createRoomWith(bossId,  Object.keys(this.farmer.leeks).map(id => Number(id)), locked);
     }
