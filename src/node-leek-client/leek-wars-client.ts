@@ -44,6 +44,7 @@ export class LeekWarsClient {
 
     public currentRoom: string = "";
     public inBattleRoyal: boolean = false;
+    private websocketConnected: boolean = false;
 
     constructor(username: string, password: string, readonly: boolean = false) {
         this.readonly = readonly;
@@ -53,7 +54,7 @@ export class LeekWarsClient {
         this.apiClient = new DefaultApi();
     }
 
-    protected async loginOnLeekwars() : Promise<Farmer> {
+    protected async loginOnLeekwars(): Promise<Farmer> {
         return this.apiClient.login({
             login: this.username,
             password: this.password,
@@ -66,31 +67,32 @@ export class LeekWarsClient {
             this.apiClient.setApiKey(DefaultApiApiKeys.phpsessid, this.phpsessid)
 
             this.ready = true;
+            await this.sleep(100);
             await this.connectWebSocket();
 
             // Add on purpose delay to avoid TOO_MANY_REQUEST
             await this.sleep(100);
             return r.body.farmer;
         })
-        .catch(err => {
-            if (err.statusCode == 429) { // TOO MANY REQUEST
-                return this.sleep(15000).then(() => this.loginOnLeekwars())
-            }
+            .catch(err => {
+                if (err.statusCode == 429) { // TOO MANY REQUEST
+                    return this.sleep(15000).then(() => this.loginOnLeekwars())
+                }
 
-            console.error("Can't connect " + this.username + " -> [" + err.statusCode + "] " + err.body.error);
-            throw err;
-        });
+                console.error("Can't connect " + this.username + " -> [" + err.statusCode + "] " + err.body.error);
+                throw err;
+            });
     }
 
-    public async close(){
+    public async close() {
         this.socket?.close();
     }
-    
+
     public async sleep(delay: number): Promise<void> {
         return new Promise(resolve => setTimeout(resolve, delay));
     }
 
-    public async getLeek(leek_id: number) : Promise<PublicLeek | null> {
+    public async getLeek(leek_id: number): Promise<PublicLeek | null> {
         if (!this.ready) return null;
         await this.sleep(300);
         return this.apiClient.getLeek(leek_id)
@@ -108,7 +110,7 @@ export class LeekWarsClient {
             });
     }
 
-    public async buy(item_id: string, quantity: number = 1) : Promise<Buy200Response | null> {
+    public async buy(item_id: string, quantity: number = 1): Promise<Buy200Response | null> {
         if (!this.ready) return null;
         if (this.readonly) {
             console.error("Readonly mode, can't buy items");
@@ -135,7 +137,7 @@ export class LeekWarsClient {
             });
     }
 
-    public async equipWeapon(weapon_id: number, leek_id: number) : Promise<void> {
+    public async equipWeapon(weapon_id: number, leek_id: number): Promise<void> {
         if (!this.ready) return;
         if (this.readonly) {
             console.error("Readonly mode, can't equip weapon");
@@ -162,7 +164,7 @@ export class LeekWarsClient {
             });
     }
 
-    public async equipChip(chip_id: number, leek_id: number) : Promise<void> {
+    public async equipChip(chip_id: number, leek_id: number): Promise<void> {
         if (!this.ready) return;
         if (this.readonly) {
             console.error("Readonly mode, can't equip chip");
@@ -189,7 +191,7 @@ export class LeekWarsClient {
             });
     }
 
-    public async unequipWeapon(weapon_id: number) : Promise<void> {
+    public async unequipWeapon(weapon_id: number): Promise<void> {
         if (!this.ready) return;
         if (this.readonly) {
             console.error("Readonly mode, can't unequip weapon");
@@ -215,7 +217,7 @@ export class LeekWarsClient {
             });
     }
 
-    public async unequipChip(chip_id: number) : Promise<void> {
+    public async unequipChip(chip_id: number): Promise<void> {
         if (!this.ready) return;
         if (this.readonly) {
             console.error("Readonly mode, can't unequip chip");
@@ -338,7 +340,7 @@ export class LeekWarsClient {
             });
     }
 
-    public async deleteFile(ai_id: number) : Promise<void> {
+    public async deleteFile(ai_id: number): Promise<void> {
         if (!this.ready) return;
         if (this.readonly) {
             console.error("Readonly mode, can't delete file");
@@ -347,7 +349,8 @@ export class LeekWarsClient {
         return this.apiClient.deleteFile({
             aiId: ai_id,
         })
-            .then(result => {})
+            .then(result => {
+            })
             .catch(err => {
                 if (err.statusCode == 429) { // TOO MANY REQUEST
                     return this.sleep(15000)
@@ -358,7 +361,7 @@ export class LeekWarsClient {
             });
     }
 
-    public async deleteFolder(folder_id: number) : Promise<void> {
+    public async deleteFolder(folder_id: number): Promise<void> {
         if (!this.ready) return;
         if (this.readonly) {
             console.error("Readonly mode, can't delete folder");
@@ -396,7 +399,7 @@ export class LeekWarsClient {
             });
     }
 
-    protected async getFarmerOpponents() : Promise<FarmerOpponent[]> {
+    protected async getFarmerOpponents(): Promise<FarmerOpponent[]> {
         if (!this.ready) return [];
         return this.apiClient.getFarmerOpponents()
             .then(async result => {
@@ -554,21 +557,21 @@ export class LeekWarsClient {
             messageId: messageId,
             reaction: reaction
         })
-        .then(async result => {
-            return this.sleep(100);
-        })
-        .catch(err => {
-            if (err.statusCode == 429) { // TOO MANY REQUEST
-                return this.sleep(15000)
-                    .then(() => this.addMessageReaction(messageId, reaction))
-            }
+            .then(async result => {
+                return this.sleep(100);
+            })
+            .catch(err => {
+                if (err.statusCode == 429) { // TOO MANY REQUEST
+                    return this.sleep(15000)
+                        .then(() => this.addMessageReaction(messageId, reaction))
+                }
 
-            console.error("Can't add reaction for " + messageId + " : " + reaction + " -> [" + err.statusCode + "] " + err.body.error);
-            return;
-        });
+                console.error("Can't add reaction for " + messageId + " : " + reaction + " -> [" + err.statusCode + "] " + err.body.error);
+                return;
+            });
     }
 
-    public async spendCapital(leekId: number, capitals: CapitalRequest) : Promise<void>{
+    public async spendCapital(leekId: number, capitals: CapitalRequest): Promise<void> {
         if (!this.ready) return;
         const request = `{"life":${capitals.life ?? 0},"strength":${capitals.strength ?? 0},"wisdom":${capitals.wisdom ?? 0},"agility":${capitals.agility ?? 0},"resistance":${capitals.resistance ?? 0},"frequency":${capitals.frequency ?? 0},"science":${capitals.science ?? 0},"magic":${capitals.science ?? 0},"cores":${capitals.cores ?? 0},"ram":${capitals.ram ?? 0},"tp":${capitals.tp ?? 0},"mp":${capitals.mp ?? 0}}`
         await this.sleep(100);
@@ -576,64 +579,64 @@ export class LeekWarsClient {
             leekId: leekId,
             characteristics: request
         })
-        .then(async result => {
-            return this.sleep(100);
-        })
-        .catch(err => {
-            if (err.statusCode == 429) { // TOO MANY REQUEST
-                return this.sleep(15000)
-                    .then(() => this.spendCapital(leekId, capitals))
-            }
+            .then(async result => {
+                return this.sleep(100);
+            })
+            .catch(err => {
+                if (err.statusCode == 429) { // TOO MANY REQUEST
+                    return this.sleep(15000)
+                        .then(() => this.spendCapital(leekId, capitals))
+                }
 
-            console.error("Spend capital failed for " + leekId + " with " + capitals + " -> [" + err.statusCode + "] " + err.body.error);
-            return;
-        });
+                console.error("Spend capital failed for " + leekId + " with " + capitals + " -> [" + err.statusCode + "] " + err.body.error);
+                return;
+            });
     }
 
-    protected async registerInBattleRoyale(leek: number){
+    protected async registerInBattleRoyale(leek: number) {
         const r = `[${SocketMessage.BATTLE_ROYALE_REGISTER},"${leek}"]`;
         this.socket?.send(r);
         console.log("Join battle royal : ", r);
     }
 
-    protected async createBossRoom(bossId: number = 1, locked: boolean = false, leeks: number[] = []){
+    protected async createBossRoom(bossId: number = 1, locked: boolean = false, leeks: number[] = []) {
         const r = `[${SocketMessage.GARDEN_BOSS_CREATE_SQUAD},${bossId},${locked},[${leeks}]]`;
         this.socket?.send(r);
         console.log("Create room : ", r);
     }
 
-    protected async leaveBossRoom(){
+    protected async leaveBossRoom() {
         const r = `[${SocketMessage.GARDEN_BOSS_LEAVE_SQUAD}]`;
         this.socket?.send(r);
         console.log("Left room : ", r);
     }
 
-    protected async joinBossRoom(roomId: string, leeks: number[] = []){
+    protected async joinBossRoom(roomId: string, leeks: number[] = []) {
         const r = `[${SocketMessage.GARDEN_BOSS_JOIN_SQUAD},"${roomId}",[${leeks}]]`;
         this.socket?.send(r);
         console.log("Join room : ", r);
     }
 
-    protected async addLeekInBossRoom(leeks: number){
+    protected async addLeekInBossRoom(leeks: number) {
         const r = `[${SocketMessage.GARDEN_BOSS_ADD_LEEK},${leeks}]`;
         this.socket?.send(r);
         console.log("Add leek in room : ", r);
     }
 
 
-    protected async removeLeekInBossRoom(leeks: number){
+    protected async removeLeekInBossRoom(leeks: number) {
         const r = `[${SocketMessage.GARDEN_BOSS_REMOVE_LEEK},${leeks}]`;
         this.socket?.send(r);
         console.log("Remove leek in room : ", r);
     }
 
-    public async startRoomFight(){
+    public async startRoomFight() {
         const r = `[${SocketMessage.GARDEN_BOSS_ATTACK}]`;
         this.socket?.send(r);
         console.log("Start room : ", r);
     }
 
-    protected async recieveNotification(message: any){
+    protected async recieveNotification(message: any) {
         switch (message.type) {
             case NotificationType.TROPHY_UNLOCKED:
                 console.log(`[WS ${this.username}] Trophy unlocked :`, message);
@@ -651,14 +654,15 @@ export class LeekWarsClient {
         }
     }
 
-    protected async connectWebSocket(){
+    protected async connectWebSocket() {
         if (!this.ready) return;
         this.socket = new WebSocket('wss://leekwars.com/ws', [
             'leek-wars',
             this.token
-        ]),
+        ]);
         this.socket.onopen = () => {
-            console.log("Websocket connected !")
+            console.log("Websocket connected !");
+            this.websocketConnected = true;
             // o.M.commit('invalidate-chats'),
             //     o.M.commit('wsconnected'),
             //     this.retry_count = 10,
@@ -667,168 +671,178 @@ export class LeekWarsClient {
             // this.queue = [],
             //     r.H.battleRoyale.init(),
             //     r.H.bossSquads.init()
-        },
-            this.socket.onclose = () => {
-                console.log("Websocket closed ! ")
-                // if (
-                //     o.M.getters.admin ||
-                //     r.H.LOCAL ||
-                //     r.H.DEV ||
-                //     window.__FARMER__ &&
-                //     1 === window.__FARMER__.farmer.id
-                // ) {
-                //     const e = '[WS] fermée';
-                //     console.error(e)
-                // }
-                // o.M.commit('wsclose'),
-                //     this.retry()
-            },
-            this.socket.onerror = e => {
-                console.error(`[WS ${this.username}] erreur`, e)
-            },
-            this.socket.onmessage = msg => {
-                const json = JSON.parse(msg.data)
-                const id = json[0]
-                const data = json[1]
-                const request_id = json[2]
+        };
+        this.socket.onclose = (e) => {
+            console.log("Websocket closed ! ", e)
+            this.websocketConnected = false;
+            this.connectWebSocket();
+            // if (
+            //     o.M.getters.admin ||
+            //     r.H.LOCAL ||
+            //     r.H.DEV ||
+            //     window.__FARMER__ &&
+            //     1 === window.__FARMER__.farmer.id
+            // ) {
+            //     const e = '[WS] fermée';
+            //     console.error(e)
+            // }
+            // o.M.commit('wsclose'),
+            //     this.retry()
+        };
+        this.socket.onerror = e => {
+            console.error(`[WS ${this.username}] erreur`, e)
+        };
+        this.socket.onmessage = msg => {
+            const json = JSON.parse(msg.data)
+            const id = json[0]
+            const data = json[1]
+            const request_id = json[2]
 
-                switch (id) {
-                    case SocketMessage.PONG: {
-                        console.log(`"[WS ${this.username}] received PONG`, data);
-                        break
-                    }
-                    case SocketMessage.NOTIFICATION_RECEIVE : {
-                        this.recieveNotification({ id: data[0], type: data[1], parameters: data[2], new: true });
-                        break
-                    }
-                    case SocketMessage.LUCKY: {
-                        // NOTHING TO DO
-                        break
-                    }
-                    case SocketMessage.FAKE_LUCKY: {
-                        // CLICK ON LUCKY
-                        break
-                    }
-                    case SocketMessage.BATTLE_ROYALE_CHAT_NOTIF: {
-                        console.log(`[WS ${this.username}] received BATTLE_ROYALE_CHAT_NOTIF`, data);
-                        break
-                    }
-                    case SocketMessage.BATTLE_ROYALE_UPDATE: {
-                        this.inBattleRoyal = true;
-                        console.log(`[WS ${this.username}] received BATTLE_ROYALE_UPDATE`, data);
-                        break
-                    }
-                    case SocketMessage.BATTLE_ROYALE_START: {
-                        this.inBattleRoyal = false;
-                        console.log(`[WS ${this.username}] received BATTLE_ROYALE_START`, data);
-                        break
-                    }
-                    case SocketMessage.BATTLE_ROYALE_LEAVE: {
-                        this.inBattleRoyal = false;
-                        console.log(`[WS ${this.username}] received BATTLE_ROYALE_LEAVE`, data);
-                        break
-                    }
-                    case SocketMessage.GARDEN_QUEUE: {
-                        console.log(`[WS ${this.username}] received GARDEN_QUEUE`, data);
-                        break
-                    }
-                    case SocketMessage.FIGHT_PROGRESS: {
-                        console.log(`[WS ${this.username}] received FIGHT_PROGRESS`, data);
-                        break
-                    }
-                    case SocketMessage.TOURNAMENT_UPDATE: {
-                        console.log(`[WS ${this.username}] received TOURNAMENT_UPDATE`, data);
-                        break
-                    }
-                    case SocketMessage.UPDATE_HABS: {
-                        console.log(`[WS ${this.username}] +` + data[0] + " 🪙");
-                        break
-                    }
-                    case SocketMessage.UPDATE_LEEK_XP: {
-                        console.log(`[WS ${this.username}] +` + data[1] + " xp");
-                        break
-                    }
-                    case SocketMessage.UPDATE_LEEK_TALENT: {
-                        console.log(`[WS ${this.username}] ` + (data[1]>0?"+":"") + data[1] + " talents");
-                        break
-                    }
-                    case SocketMessage.UPDATE_FARMER_TALENT: {
-                        console.log(`[WS ${this.username}] ` + (data[0]>0?"+":"") + data[0] + " farmer talents");
-                        break
-                    }
-                    case SocketMessage.UPDATE_TEAM_TALENT: {
-                        console.log(`[WS ${this.username}] ` + (data[1]>0?"+":"") + data[1] + " team talents");
-                        break
-                    }
-                    case SocketMessage.ADD_RESOURCE: {
-                        // console.log(`[WS ${this.username}] received ADD_RESOURCE`, data);
-                        console.log(`[WS ${this.username}] ` + (data[2]>1?data[2]:"") + " " + ITEMS[data[0]]?.name);
-                        // console.log("add resource", data)
-                        // const template = data[0]
-                        // const id = data[1]
-                        // const quantity = data[2]
-                        // const item = "" // TODO LeekWars.items[data[0]]
-                        // const time = data[3]
-                        // if (item) {
-                        //     //store.commit('add-inventory', { type: item.type, template, id, quantity, time })
-                        // }
-                        break
-                    }
-                    case SocketMessage.GARDEN_BOSS_SQUADS: {
-                        // console.log(`[WS ${this.username}] received GARDEN_BOSS_SQUADS`, data);
-                        break
-                    }
-                    case SocketMessage.GARDEN_BOSS_SQUAD_JOINED: {
-                        console.log(`[WS ${this.username}] received GARDEN_BOSS_SQUAD_JOINED`);
-                        this.currentRoom = data.id;
-                        break
-                    }
-                    case SocketMessage.GARDEN_BOSS_SQUAD: {
-                        // console.log(`[WS ${this.username}] received GARDEN_BOSS_SQUAD`, data);
-                        break
-                    }
-                    case SocketMessage.GARDEN_BOSS_NO_SUCH_SQUAD: {
-                        console.log(`[WS ${this.username}] received GARDEN_BOSS_NO_SUCH_SQUAD`, data);
-                        break
-                    }
-                    case SocketMessage.GARDEN_BOSS_STARTED: {
-                        console.log(`[WS ${this.username}] received GARDEN_BOSS_STARTED`);
-                        this.currentRoom = "";
-                        break
-                    }
-                    case SocketMessage.GARDEN_BOSS_LEFT: {
-                        console.log(`[WS ${this.username}] received GARDEN_BOSS_LEFT`, data);
-                        this.currentRoom = "";
-                        break
-                    }
-                    case SocketMessage.CONSOLE_RESULT: {
-                        console.log(`[WS ${this.username}] received CONSOLE_RESULT`, data);
-                        break
-                    }
-                    case SocketMessage.CONSOLE_ERROR: {
-                        console.log(`[WS ${this.username}] received CONSOLE_ERROR`, data);
-                        break
-                    }
-                    case SocketMessage.CONSOLE_LOG: {
-                        console.log(`[WS ${this.username}] received CONSOLE_LOG`, data);
-                        break
-                    }
-                    case SocketMessage.EDITOR_ANALYZE: {
-                        console.log(`[WS ${this.username}] received EDITOR_ANALYZE`, data);
-                        break
-                    }
-                    case SocketMessage.EDITOR_HOVER: {
-                        console.log(`[WS ${this.username}] received EDITOR_HOVER`, data);
-                        break
-                    }
-                    case SocketMessage.EDITOR_COMPLETE: {
-                        console.log(`[WS ${this.username}] received EDITOR_COMPLETE`, data);
-                        break
-                    }
+            switch (id) {
+                case SocketMessage.PONG: {
+                    console.log(`"[WS ${this.username}] received PONG`, data);
+                    break
                 }
+                case SocketMessage.NOTIFICATION_RECEIVE : {
+                    this.recieveNotification({id: data[0], type: data[1], parameters: data[2], new: true});
+                    break
+                }
+                case SocketMessage.LUCKY: {
+                    // NOTHING TO DO
+                    break
+                }
+                case SocketMessage.FAKE_LUCKY: {
+                    // CLICK ON LUCKY
+                    break
+                }
+                case SocketMessage.BATTLE_ROYALE_CHAT_NOTIF: {
+                    console.log(`[WS ${this.username}] received BATTLE_ROYALE_CHAT_NOTIF`, data);
+                    break
+                }
+                case SocketMessage.BATTLE_ROYALE_UPDATE: {
+                    this.inBattleRoyal = true;
+                    console.log(`[WS ${this.username}] received BATTLE_ROYALE_UPDATE`, data);
+                    break
+                }
+                case SocketMessage.BATTLE_ROYALE_START: {
+                    this.inBattleRoyal = false;
+                    console.log(`[WS ${this.username}] received BATTLE_ROYALE_START`, data);
+                    break
+                }
+                case SocketMessage.BATTLE_ROYALE_LEAVE: {
+                    this.inBattleRoyal = false;
+                    console.log(`[WS ${this.username}] received BATTLE_ROYALE_LEAVE`, data);
+                    break
+                }
+                case SocketMessage.GARDEN_QUEUE: {
+                    console.log(`[WS ${this.username}] received GARDEN_QUEUE`, data);
+                    break
+                }
+                case SocketMessage.FIGHT_PROGRESS: {
+                    console.log(`[WS ${this.username}] received FIGHT_PROGRESS`, data);
+                    break
+                }
+                case SocketMessage.TOURNAMENT_UPDATE: {
+                    console.log(`[WS ${this.username}] received TOURNAMENT_UPDATE`, data);
+                    break
+                }
+                case SocketMessage.UPDATE_HABS: {
+                    console.log(`[WS ${this.username}] +` + data[0] + " 🪙");
+                    break
+                }
+                case SocketMessage.UPDATE_LEEK_XP: {
+                    console.log(`[WS ${this.username}] +` + data[1] + " xp");
+                    break
+                }
+                case SocketMessage.UPDATE_LEEK_TALENT: {
+                    console.log(`[WS ${this.username}] ` + (data[1] > 0 ? "+" : "") + data[1] + " talents");
+                    break
+                }
+                case SocketMessage.UPDATE_FARMER_TALENT: {
+                    console.log(`[WS ${this.username}] ` + (data[0] > 0 ? "+" : "") + data[0] + " farmer talents");
+                    break
+                }
+                case SocketMessage.UPDATE_TEAM_TALENT: {
+                    console.log(`[WS ${this.username}] ` + (data[1] > 0 ? "+" : "") + data[1] + " team talents");
+                    break
+                }
+                case SocketMessage.ADD_RESOURCE: {
+                    // console.log(`[WS ${this.username}] received ADD_RESOURCE`, data);
+                    console.log(`[WS ${this.username}] ` + (data[2] > 1 ? data[2] : "") + " " + ITEMS[data[0]]?.name);
+                    // console.log("add resource", data)
+                    // const template = data[0]
+                    // const id = data[1]
+                    // const quantity = data[2]
+                    // const item = "" // TODO LeekWars.items[data[0]]
+                    // const time = data[3]
+                    // if (item) {
+                    //     //store.commit('add-inventory', { type: item.type, template, id, quantity, time })
+                    // }
+                    break
+                }
+                case SocketMessage.GARDEN_BOSS_SQUADS: {
+                    // console.log(`[WS ${this.username}] received GARDEN_BOSS_SQUADS`, data);
+                    break
+                }
+                case SocketMessage.GARDEN_BOSS_SQUAD_JOINED: {
+                    console.log(`[WS ${this.username}] received GARDEN_BOSS_SQUAD_JOINED`);
+                    this.currentRoom = data.id;
+                    break
+                }
+                case SocketMessage.GARDEN_BOSS_SQUAD: {
+                    // console.log(`[WS ${this.username}] received GARDEN_BOSS_SQUAD`, data);
+                    break
+                }
+                case SocketMessage.GARDEN_BOSS_NO_SUCH_SQUAD: {
+                    console.log(`[WS ${this.username}] received GARDEN_BOSS_NO_SUCH_SQUAD`, data);
+                    break
+                }
+                case SocketMessage.GARDEN_BOSS_STARTED: {
+                    console.log(`[WS ${this.username}] received GARDEN_BOSS_STARTED`);
+                    this.currentRoom = "";
+                    break
+                }
+                case SocketMessage.GARDEN_BOSS_LEFT: {
+                    console.log(`[WS ${this.username}] received GARDEN_BOSS_LEFT`, data);
+                    this.currentRoom = "";
+                    break
+                }
+                case SocketMessage.CONSOLE_RESULT: {
+                    console.log(`[WS ${this.username}] received CONSOLE_RESULT`, data);
+                    break
+                }
+                case SocketMessage.CONSOLE_ERROR: {
+                    console.log(`[WS ${this.username}] received CONSOLE_ERROR`, data);
+                    break
+                }
+                case SocketMessage.CONSOLE_LOG: {
+                    console.log(`[WS ${this.username}] received CONSOLE_LOG`, data);
+                    break
+                }
+                case SocketMessage.EDITOR_ANALYZE: {
+                    console.log(`[WS ${this.username}] received EDITOR_ANALYZE`, data);
+                    break
+                }
+                case SocketMessage.EDITOR_HOVER: {
+                    console.log(`[WS ${this.username}] received EDITOR_HOVER`, data);
+                    break
+                }
+                case SocketMessage.EDITOR_COMPLETE: {
+                    console.log(`[WS ${this.username}] received EDITOR_COMPLETE`, data);
+                    break
+                }
+                default:
+                    console.log(`[WS ${this.username}] received UNKNOWN`, data);
+                    break
             }
+        };
+
+        while(!this.websocketConnected){
+
+        }
     }
 
     // Make this an observable
-    public on_level_up: (leekId: number, level: number, capitalToSpend: number) => void = (_) => {};
+    public on_level_up: (leekId: number, level: number, capitalToSpend: number) => void = (_) => {
+    };
 }
